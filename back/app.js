@@ -13,7 +13,6 @@ app.get("/", async (req, res) => {
   res.send({ usuarios });
   });
   
-    
 app.listen(port, () => {
     console.log(`La aplicacion esta funcionando en: ${port}`);
   });
