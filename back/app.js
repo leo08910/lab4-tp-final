@@ -17,7 +17,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/", usuarios);
-app.use("/auth", router);
+app.use("/", router);
 
 
 app.listen(port, () => {
