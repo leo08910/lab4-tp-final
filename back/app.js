@@ -4,6 +4,7 @@ import cors from "cors";
 import { conectarDB } from "./db.js";
 import usuarios from "./usuarios.js";
 import router from "./auth.js"
+import { vehiculosRouter } from "./vehiculos.js";
 
 const app = express();
 const port = 3000;
