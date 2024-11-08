@@ -145,7 +145,7 @@ CREATE TABLE `usuarios` (
   `apellido` varchar(100) NOT NULL,
   `email` varchar(80) NOT NULL,
   `telefono` varchar(20) DEFAULT NULL,
-  `password` varchar(40) NOT NULL,
+  `password` varchar(100) NOT NULL,
   `superusuario` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id_usuario`),
   UNIQUE KEY `email` (`email`),
