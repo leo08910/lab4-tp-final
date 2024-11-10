@@ -1,7 +1,10 @@
+import Tarifas from "./tarifas"
+
+
 function App() {
   return (
     <>
-    <h1>Hola mundo</h1>
+    <Tarifas/>
     </>
   )
 }
