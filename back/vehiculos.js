@@ -29,6 +29,20 @@ vehiculosRouter.post("/", async (req,res)=>{
         return res.status(400).send("Todos los campos deben de llenarse")
     } 
 
+    const [usuarioExiste] = await db.execute(
+        'select id_usuario from usuarios where id_usuario=?',[id_usuario]
+    )
+    if (usuarioExiste.length==0){
+        return res.status(404).send("Este usuario no existe")
+    }
+
+    const [vehiculoExiste]= await db.execute(
+        'select id_tipo_vehiculo from tipos_vehiculo where id_tipo_vehiculo=?',[id_tipo_vehiculo]
+    )
+    if (vehiculoExiste.length==0){
+        return res.status(400).send("Tipo de vehiculo invalido")
+    }
+
     const sql = await db.execute(
         "insert into vehiculos (matricula,id_usuario,id_tipo_vehiculo) values(?,?,?)",
         [matricula,id_usuario,id_tipo_vehiculo]
@@ -37,4 +51,19 @@ vehiculosRouter.post("/", async (req,res)=>{
     res
     .status(201)
     .send({vehiculo:{id_vehiculo:sql.insertId,matricula,id_usuario,id_tipo_vehiculo}})
+})
+
+vehiculosRouter.delete("/:id_vehiculo", async (req,res)=>{
+    const {id_vehiculo}=req.params
+
+    const [existe]= await db.execute(
+        'select id_vehiculo from vehiculos where id_vehiculo=?',[id_vehiculo]
+    )
+    if (existe.length==0){
+        return res.status(404).send('Este vehiculo no existe')
+    }
+    else{
+        await db.execute('delete from vehiculos where id_vehiculo=?',[id_vehiculo])
+        res.status(200).send('Vehiculo retirado correctamente')
+    }
 })

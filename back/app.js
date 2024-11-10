@@ -1,4 +1,3 @@
-
 import express from "express";
 import cors from "cors";
 import { conectarDB } from "./db.js";
@@ -22,8 +21,7 @@ app.get("/usuarios", async (req, res) => {
   const [usuarios] = await db.execute("select * from usuarios");
   res.send({ usuarios });
   });
-
-
+  
 app.listen(port, () => {
   console.log(`La aplicacion esta funcionando en: ${port}`);
 });
