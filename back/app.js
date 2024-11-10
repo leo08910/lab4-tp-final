@@ -6,6 +6,7 @@ import usuarios from "./usuarios.js";
 import router from "./auth.js"
 import { vehiculosRouter } from "./vehiculos.js";
 import { EstacionamientoRouter } from "./Estacionamiento.js"
+import tarifas from "./tarifas.js"
 
 
 const app = express();
@@ -19,7 +20,7 @@ app.use(cors());
 app.use("/", usuarios);
 app.use("/", router);
 app.use('/vehiculos',vehiculosRouter)
-
+app.use('/',tarifas)
 app.use("/estacionamiento",EstacionamientoRouter)
 
 app.get("/usuarios", async (req, res) => {
