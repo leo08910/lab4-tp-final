@@ -2,14 +2,17 @@ import express from "express";
 import {db} from "./db.js"
 import { body, param, validationResult } from "express-validator";
 
-
 const tarifas = express.Router()
 
 // traer todas las tarifas.
 tarifas.get("/tarifas", async (req, res) => {
   try {
-    const [result] = await db.query("SELECT * FROM tarifas");
-    res.status(200).send(result);
+    const [result] = await db.query(`
+      SELECT t.id_tarifa, t.tipo_tarifa, t.id_tipo_vehiculo, t.precio, tv.tipo_vehiculo
+      FROM tarifas t
+      JOIN tipos_vehiculo tv ON t.id_tipo_vehiculo = tv.id_tipo_vehiculo
+    `);
+    res.status(200).send({result});
   } catch (error) {
     res.status(500).send("Error al obtener los tarifas");
   }
@@ -44,6 +47,16 @@ tarifas.get("/tarifas/:id/tipo_vehiculo", async (req, res) => {
     res.status(500).send("Error al obtener los tarifas");
   }
 }) 
+
+// Obtener todos los tipos de vehículos
+tarifas.get("/tipos_vehiculo", async (req, res) => {
+  try {
+    const [result] = await db.query("SELECT id_tipo_vehiculo, tipo_vehiculo FROM tipos_vehiculo");
+    res.status(200).send({ tipos_vehiculo: result });
+  } catch (error) {
+    res.status(500).send("Error al obtener los tipos de vehículos");
+  }
+});
 
 //crear una tarifa
 tarifas.post("/tarifas",
@@ -82,18 +95,18 @@ tarifas.post("/tarifas",
     body("tipo_tarifa").isAlpha().notEmpty().isLength({ max: 25 }),
     body("id_tipo_vehiculo").isInt().notEmpty(),
     body("precio").isDecimal().notEmpty(),
+    
     async (req, res) => {
       const validacion = validationResult(req);
       if (!validacion.isEmpty()) {
         res.status(400).send({ errores: validacion.array() });
         return;
       }
-  
       const id = Number(req.params.id);
       const { tipo_tarifa, id_tipo_vehiculo, precio } = req.body;
   
       await db.execute(
-        "update tarifas set tipo_tarifa=?, id_tipo_vehiculo=?, precio=? where id_tarifa=?",
+        "update tarifas set tipo_tarifa=?, id_tipo_vehiculo=?, precio=? where id_tarifa=? order by id_tarifa",
         [tipo_tarifa, id_tipo_vehiculo, precio, id]
       );
   
