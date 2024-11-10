@@ -5,7 +5,9 @@ import { conectarDB } from "./db.js";
 import usuarios from "./usuarios.js";
 import router from "./auth.js"
 import { vehiculosRouter } from "./vehiculos.js";
+import { EstacionamientoRouter } from "./Estacionamiento.js"
 import tarifas from "./tarifas.js"
+
 
 const app = express();
 const port = 3000;
@@ -19,6 +21,7 @@ app.use("/", usuarios);
 app.use("/", router);
 app.use('/vehiculos',vehiculosRouter)
 app.use('/',tarifas)
+app.use("/estacionamiento",EstacionamientoRouter)
 
 app.get("/usuarios", async (req, res) => {
   const [usuarios] = await db.execute("select * from usuarios");
