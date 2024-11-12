@@ -1,10 +1,10 @@
 import express from "express";
 import { db } from "./db.js";
-import { body, param, validationResult } from "express-validator";
-import reloj from "./reloj.js";
+import { body, validationResult } from "express-validator";
 
 const registros = express.Router();
 
+// GET /registros
 registros.get("/registros", async (req, res) => {
   try {
     const [result] = await db.query(`SELECT * FROM registros`);
@@ -15,6 +15,8 @@ registros.get("/registros", async (req, res) => {
   }
 });
 
+
+// POST /registros
 registros.post(
   "/registros",
   body("id_lugar").isInt().notEmpty(),
@@ -28,20 +30,25 @@ registros.post(
     const validacion = validationResult(req);
 
     if (!validacion.isEmpty()) {
-      res.status(400).send({ errores: validacion.array() });
-      return;
+      return res.status(400).send({ errores: validacion.array() });
     }
 
-    const { id_lugar, id_vehiculo, inicio, fin, id_tarifa, precio_final } =
-      req.body;
+    const { id_lugar, id_vehiculo, inicio, fin, id_tarifa, precio_final } = req.body;
 
     try {
+      const [lugar] = await db.query("SELECT ocupado FROM lugares WHERE id_lugar = ?", [id_lugar]);
+
+      //Para verificar si un lugar está ocupado o no
+      if (lugar[0]?.ocupado === 1) {
+        return res.status(400).send({ mensaje: `El lugar ${id_lugar} ya está ocupado` });
+      }
+
       const [result] = await db.query(
         `INSERT INTO registros(id_lugar, id_vehiculo, inicio, fin, id_tarifa, precio_final) VALUES(?, ?, ?, ?, ?, ?)`,
-        [id_lugar, id_vehiculo, inicio, fin, id_tarifa, precio_final, id_lugar]
+        [id_lugar, id_vehiculo, inicio, fin, id_tarifa, precio_final]
       );
-      db.query("UPDATE lugares SET ocupado = 1 WHERE id_lugar = ?", id_lugar);
 
+      await db.query("UPDATE lugares SET ocupado = 1 WHERE id_lugar = ?", [id_lugar]);
       res.status(201).send({ result });
 
       if (fin) {
@@ -50,10 +57,7 @@ registros.post(
         if (tiempoRestante > 0) {
           setTimeout(async () => {
             try {
-              await db.query(
-                `UPDATE lugares SET ocupado = 0 WHERE id_lugar = ?`,
-                [id_lugar]
-              );
+              await db.query("UPDATE lugares SET ocupado = 0 WHERE id_lugar = ?", [id_lugar]);
               console.log(`Lugar ${id_lugar} liberado`);
             } catch (error) {
               console.log(`Error al liberar el lugar ${id_lugar}:`, error);
@@ -66,11 +70,7 @@ registros.post(
       
     } catch (error) {
       console.log(error);
-      if (error.code === "ER_SIGNAL_EXCEPTION") {
-        res.status(400).send("Error del cliente");
-      } else {
-        res.status(500).send("Error en el servidor");
-      }
+      res.status(error.code === "ER_SIGNAL_EXCEPTION" ? 400 : 500).send("Error en el servidor");
     }
   }
 );
