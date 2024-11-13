@@ -23,7 +23,6 @@ usuarios.get("/usuarios",
 });
 
 usuarios.post("/usuarios",
-  passport.authenticate("jwt", { session: false }),
   body("nombre").isAlphanumeric().notEmpty().isLength({ max: 25 }),
   body("password").isStrongPassword({
     minLength: 8, // Minino de 8 caracteres (letras y numeros)
