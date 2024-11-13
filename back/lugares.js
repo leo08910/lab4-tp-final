@@ -2,10 +2,10 @@ import express from "express";
 import { body, validationResult } from "express-validator";
 import { db } from './db.js';
 
-export const lugaresRouter = express.Router();
+export const LugaresRouter = express.Router();
 
 // Obtener la lista de lugares y su estado de ocupación
-lugaresRouter.get('/', async (req, res) => {
+LugaresRouter.get('/', async (req, res) => {
     try {
         let sql = 'SELECT l.id_lugar, l.ocupado FROM lugares l';
         const [lugares] = await db.query(sql);
@@ -15,11 +15,8 @@ lugaresRouter.get('/', async (req, res) => {
     }
 });
 
-const validacionesLugares = () => {
-
-}
 // Registrar un vehículo en un lugar si hay espacio disponible
-lugaresRouter.post('/ocupar', 
+LugaresRouter.post('/ocupar', 
     body("id_vehiculo").isInt().notEmpty(),
     body("id_lugar").isInt().notEmpty(),
     async (req, res) => {
@@ -61,7 +58,7 @@ lugaresRouter.post('/ocupar',
 });
 
 // Liberar un lugar cuando el vehículo sale
-lugaresRouter.post('/liberar', async (req, res) => {
+LugaresRouter.post('/liberar', async (req, res) => {
     try {
         const { id_lugar } = req.body;
 
