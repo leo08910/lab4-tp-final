@@ -3,20 +3,19 @@ import {db} from "./db.js"
 import { body, validationResult } from "express-validator";
 import bcrypt from "bcrypt";
 import passport from "passport";
+import { validarSuperUsuario } from "./auth.js";
+
 
 
 const usuarios = express.Router()
 
 usuarios.get("/usuarios",
-  passport.authenticate("jwt", { session: false })
-   ,async (req, res) => {
+  passport.authenticate("jwt", { session: false }),
+  validarSuperUsuario,
+   async (req, res) => {
   try {
-    if (req.user.superusuario != 1) {
-      res.status(401).send({mensaje: "No tiene permisos para ver los usuarios"})
-    }else{
     const [result] = await db.query("SELECT * FROM usuarios");
     res.status(200).send(result);
-    }
   } catch (error) {
     res.status(500).send("Error al obtener los usuarios");
   }
