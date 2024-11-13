@@ -15,7 +15,6 @@ registros.get("/registros", async (req, res) => {
   }
 });
 
-
 // POST /registros
 registros.post(
   "/registros",
@@ -33,14 +32,27 @@ registros.post(
       return res.status(400).send({ errores: validacion.array() });
     }
 
-    const { id_lugar, id_vehiculo, inicio, fin, id_tarifa, precio_final } = req.body;
+    const { id_lugar, id_vehiculo, inicio, fin, id_tarifa, precio_final } =
+      req.body;
 
     try {
-      const [lugar] = await db.query("SELECT ocupado FROM lugares WHERE id_lugar = ?", [id_lugar]);
 
-      //Para verificar si un lugar está ocupado o no
+      const [lugar] = await db.query(
+        "SELECT ocupado FROM lugares WHERE id_lugar = ?",
+        [id_lugar]
+      );
+
       if (lugar[0]?.ocupado === 1) {
         return res.status(400).send({ mensaje: `El lugar ${id_lugar} ya está ocupado` });
+      }
+
+      const [vehiculoEnUso] = await db.query(
+        "SELECT * FROM registros WHERE id_vehiculo = ? AND (fin IS NULL OR fin > NOW())",
+        [id_vehiculo]
+      );
+
+      if (vehiculoEnUso.length > 0) {
+        return res.status(400).send({mensaje: `El vehículo ${id_vehiculo} ya está estacionado en otro lugar`});
       }
 
       const [result] = await db.query(
@@ -48,26 +60,35 @@ registros.post(
         [id_lugar, id_vehiculo, inicio, fin, id_tarifa, precio_final]
       );
 
-      await db.query("UPDATE lugares SET ocupado = 1 WHERE id_lugar = ?", [id_lugar]);
+      await db.query("UPDATE lugares SET ocupado = 1 WHERE id_lugar = ?", [
+        id_lugar,
+      ]);
       res.status(201).send({ result });
 
       if (fin) {
         const tiempoRestante = new Date(fin).getTime() - new Date().getTime();
 
         if (tiempoRestante > 0) {
+
           setTimeout(async () => {
             try {
-              await db.query("UPDATE lugares SET ocupado = 0 WHERE id_lugar = ?", [id_lugar]);
+              await db.query(
+                "UPDATE lugares SET ocupado = 0 WHERE id_lugar = ?",
+                [id_lugar]
+              );
               console.log(`Lugar ${id_lugar} liberado`);
+
             } catch (error) {
               console.log(`Error al liberar el lugar ${id_lugar}:`, error);
             }
           }, tiempoRestante);
+
         }
+
       } else {
         console.log(`Lugar ${id_lugar} reservado por tiempo indefinido.`);
       }
-      
+
     } catch (error) {
       console.log(error);
       res.status(error.code === "ER_SIGNAL_EXCEPTION" ? 400 : 500).send("Error en el servidor");
