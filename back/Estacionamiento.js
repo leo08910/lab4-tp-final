@@ -1,4 +1,5 @@
 import express from "express";
+import { body, validationResult } from "express-validator";
 import { db } from './db.js';
 
 export const EstacionamientoRouter = express.Router();
@@ -15,10 +16,17 @@ EstacionamientoRouter.get('/', async (req, res) => {
 });
 
 // Registrar un vehículo en un lugar si hay espacio disponible
-EstacionamientoRouter.post('/ocupar', async (req, res) => {
+EstacionamientoRouter.post('/ocupar', 
+    body("id_vehiculo").isInt().notEmpty(),
+    body("id_lugar").isInt().notEmpty(),
+    async (req, res) => {
+        const validacion = validationResult(req);
+        if (!validacion.isEmpty()) {
+          res.status(400).send({ errores: validacion.array() });
+          return;
+        }
     try {
         const { id_vehiculo, id_lugar } = req.body;
-
         // Cuento los lugares disp con el query y verifico para q no pase de los lugares q quiero tener
         const [[{ ocupados }]] = await db.query('SELECT COUNT(*) AS ocupados FROM lugares WHERE ocupado = 1');
         if (ocupados >= 5) {
@@ -28,7 +36,7 @@ EstacionamientoRouter.post('/ocupar', async (req, res) => {
         // Verificar que el lugar esté libre
         const [[lugar]] = await db.query('SELECT ocupado FROM lugares WHERE id_lugar = ?', [id_lugar]);
         if (!lugar || lugar.ocupado === 1) {
-            res.status(400).send({ mensaje: 'El lugar ya está ocupado'}) 
+            return res.status(400).send({ mensaje: 'El lugar ya está ocupado'}) 
         }
 
        // Ocupo el lugar asignado al id que se paso x el body 

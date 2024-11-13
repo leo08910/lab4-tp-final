@@ -84,7 +84,7 @@ tarifas.post("/tarifas",
     } catch (error) {
       console.log(error)
       if (error.code === "ER_SIGNAL_EXCEPTION") {
-        res.status(400).send("hay dios mio");
+        res.status(400).send("asi no es");
       } else {
         res.status(500).send("Error en el servidor");
       }

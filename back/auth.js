@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.post(
   "/login",
-  body("username").isAlphanumeric().notEmpty().isLength({ max: 25 }),
+  body("nombre").isAlphanumeric().notEmpty().isLength({ max: 25 }),
   body("password").isStrongPassword({
     minLength: 5, // Minino de 8 caracteres (letras y numeros)
     minLowercase: 1, // Al menos una letra minuscula
@@ -24,12 +24,12 @@ router.post(
       return;
     }
 
-    const { username, password } = req.body;
+    const { nombre, password } = req.body;
 
     // Obtener usuario
     const [usuarios] = await db.execute(
       "select * from usuarios where nombre=?",
-      [username]
+      [nombre]
     );
 
     if (usuarios.length === 0) {
