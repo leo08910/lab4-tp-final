@@ -1,8 +1,11 @@
 import express from "express";
 import {db} from "./db.js"
 import { body, param, validationResult } from "express-validator";
+import passport from "passport";
 
 const tarifas = express.Router()
+
+tarifas.post("")
 
 // traer todas las tarifas.
 tarifas.get("/tarifas", async (req, res) => {
@@ -60,17 +63,16 @@ tarifas.get("/tipos_vehiculo", async (req, res) => {
 
 //crear una tarifa
 tarifas.post("/tarifas",
+  passport.authenticate("jwt", { session: false }),
   body("tipo_tarifa").isAlpha().notEmpty().isLength({ max: 25 }),
   body("id_tipo_vehiculo").isInt().notEmpty(),
   body("precio").isDecimal().notEmpty(),
   async (req, res) => {
     const validacion = validationResult(req);
-    if (!validacion.isEmpty()) {
-      res.status(400).send({ errores: validacion.array() });
-      return;
-    }
-    const { tipo_tarifa, id_tipo_vehiculo, precio } = req.body;
-
+    if (req.user.superusuario != 1) {
+      res.status(401).send({mensaje: "No tiene permisos para crear una nueva tarifa"})
+    }else{
+          const { tipo_tarifa, id_tipo_vehiculo, precio } = req.body;
     try {
     const [result] = await db.query(`insert into tarifas(tipo_tarifa, id_tipo_vehiculo, precio) values(?, ?, ?)`,
     [
@@ -78,9 +80,7 @@ tarifas.post("/tarifas",
     id_tipo_vehiculo,
     precio
     ]);
-
-    res.status(201).send({result});
-
+    return res.status(201).send({result: "se creo la tarifa correctamente"});
     } catch (error) {
       console.log(error)
       if (error.code === "ER_SIGNAL_EXCEPTION") {
@@ -89,15 +89,28 @@ tarifas.post("/tarifas",
         res.status(500).send("Error en el servidor");
       }
     }
+    }
+    if (!validacion.isEmpty()) {
+      res.status(400).send({ errores: validacion.array() });
+      return;
+    }
+
   });
   //modificar una tarifa
   tarifas.put("/tarifas/:id",
+    passport.authenticate("jwt", { session: false }),
     body("tipo_tarifa").isAlpha().notEmpty().isLength({ max: 25 }),
     body("id_tipo_vehiculo").isInt().notEmpty(),
     body("precio").isDecimal().notEmpty(),
     
     async (req, res) => {
       const validacion = validationResult(req);
+      if (req.user.superusuario != 1) {
+        res.status(401).send({mensaje: "No tiene permisos para ver los usuarios"})
+      }else{
+      const [result] = await db.query("SELECT * FROM usuarios");
+      res.status(200).send(result);
+      }
       if (!validacion.isEmpty()) {
         res.status(400).send({ errores: validacion.array() });
         return;
@@ -114,7 +127,14 @@ tarifas.post("/tarifas",
     }
   );
   //eliminar tarifa
-  tarifas.delete("/tarifas/:id", async (req, res) => {
+  tarifas.delete("/tarifas/:id",passport.authenticate("jwt", { session: false }), 
+  async (req, res) => {
+    if (req.user.superusuario != 1) {
+      res.status(401).send({mensaje: "No tiene permisos para ver los usuarios"})
+    }else{
+    const [result] = await db.query("SELECT * FROM usuarios");
+    res.status(200).send(result);
+    }
     const id = Number(req.params.id);
     await db.execute(
       "delete from tarifas where id_tarifa=?",
