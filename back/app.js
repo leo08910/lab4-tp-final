@@ -3,11 +3,12 @@ import cors from "cors";
 import { conectarDB } from "./db.js";
 import reloj from "./reloj.js";
 import usuarios from "./usuarios.js";
-import router from "./auth.js";
+import router,{ authConfig } from "./auth.js";
 import { vehiculosRouter } from "./vehiculos.js";
 import { EstacionamientoRouter } from "./Estacionamiento.js";
 import tarifas from "./tarifas.js";
 import registros from "./registros.js";
+
 
 const app = express();
 const port = 3000;
@@ -16,6 +17,7 @@ conectarDB();
 
 app.use(express.json());
 app.use(cors());
+authConfig();
 
 app.use("/", usuarios);
 app.use("/", router);
