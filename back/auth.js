@@ -3,12 +3,44 @@ import { db } from "./db.js";
 import { body, validationResult } from "express-validator";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { Strategy, ExtractJwt } from "passport-jwt";
+import passport from "passport";
 
-const router = express.Router();
+const authRouter = express.Router();
 
-router.post(
+
+export function authConfig() {
+  // Opciones de configuracion de passport-jwt
+  const jwtOptions = {
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey: process.env.JWT_SECRET,
+  };
+
+  // Creo estrategia jwt
+  passport.use(
+    new Strategy(jwtOptions, async (payload, next) => {
+
+      console.log("en strategy", payload);
+
+      const [usuarios] = await db.execute(
+      "SELECT nombre, superusuario FROM usuarios WHERE nombre = ?",
+        [payload.nombre]
+        );
+
+        // Si hay al menos un usuario reenviarlo
+        if (usuarios.length > 0) {
+          console.log(usuarios[0])
+          next(null, usuarios[0]);
+        } else {
+          next(null, false);
+        }
+    })
+  );
+}
+
+authRouter.post(
   "/login",
-  body("username").isAlphanumeric().notEmpty().isLength({ max: 25 }),
+  body("nombre").isAlphanumeric().notEmpty().isLength({ max: 25 }),
   body("password").isStrongPassword({
     minLength: 5, // Minino de 8 caracteres (letras y numeros)
     minLowercase: 1, // Al menos una letra minuscula
@@ -24,12 +56,12 @@ router.post(
       return;
     }
 
-    const { username, password } = req.body;
+    const { nombre, password } = req.body;
 
     // Obtener usuario
     const [usuarios] = await db.execute(
       "select * from usuarios where nombre=?",
-      [username]
+      [nombre]
     );
 
     if (usuarios.length === 0) {
@@ -48,7 +80,7 @@ router.post(
     }
 
     // Crear jwt
-    const payload = { username, rol: "admin", dato: 123 };
+    const payload = { nombre, dato: 123 };
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: "2h",
     });
@@ -58,4 +90,4 @@ router.post(
   }
 );
 
-export default router;
+export default authRouter;
