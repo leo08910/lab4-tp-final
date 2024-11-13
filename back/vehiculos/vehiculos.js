@@ -1,5 +1,5 @@
 import express from 'express'
-import { db } from './db.js'
+import { db } from '../db.js'
 export const vehiculosRouter = express.Router()
 
 vehiculosRouter.get('/', async (req,res)=>{

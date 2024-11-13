@@ -1,6 +1,6 @@
 import express from "express";
 import { body, validationResult } from "express-validator";
-import { db } from './db.js';
+import { db } from '../db.js';
 
 export const LugaresRouter = express.Router();
 

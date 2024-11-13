@@ -1,5 +1,5 @@
 import express from "express";
-import {db} from "./db.js"
+import {db} from "../db.js"
 import { body, validationResult } from "express-validator";
 import bcrypt from "bcrypt";
 import passport from "passport";
