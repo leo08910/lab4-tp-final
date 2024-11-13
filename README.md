@@ -2,8 +2,8 @@
 
 ## Miembros del grupo
 
-- Ahumada, Gaspar
-- Gimenez, Mateo
-- Gómez, Alejandro
-- Sotomayor, Ignacio
-- Torres, Leonel
+- Ahumada, Gaspar Alejandro
+- Gimenez, Mateo Jorge
+- Gómez, Alejandro Javier
+- Sotomayor, Juan Ignacio
+- Torres, Leonel Alejandro
