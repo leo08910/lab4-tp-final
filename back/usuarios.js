@@ -2,11 +2,17 @@ import express from "express";
 import {db} from "./db.js"
 import { body, validationResult } from "express-validator";
 import bcrypt from "bcrypt";
+import passport from "passport";
+import { validarSuperUsuario } from "./auth.js";
+
 
 
 const usuarios = express.Router()
 
-usuarios.get("/usuarios", async (req, res) => {
+usuarios.get("/usuarios",
+  passport.authenticate("jwt", { session: false }),
+  validarSuperUsuario,
+   async (req, res) => {
   try {
     const [result] = await db.query("SELECT * FROM usuarios");
     res.status(200).send(result);
