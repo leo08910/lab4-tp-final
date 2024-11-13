@@ -4,6 +4,7 @@ import { db } from './db.js';
 
 export const LugaresRouter = express.Router();
 
+
 // Obtener la lista de lugares y su estado de ocupación
 LugaresRouter.get('/', async (req, res) => {
     try {
@@ -16,15 +17,19 @@ LugaresRouter.get('/', async (req, res) => {
 });
 
 // Registrar un vehículo en un lugar si hay espacio disponible
-LugaresRouter.post('/ocupar', 
-    body("id_vehiculo").isInt().notEmpty(),
-    body("id_lugar").isInt().notEmpty(),
-    async (req, res) => {
-        const validacion = validationResult(req);
-        if (!validacion.isEmpty()) {
-          res.status(400).send({ errores: validacion.array() });
-          return;
-        }
+
+const validacionesLugares = () => [
+    body("id_vehiculo").isInt().notEmpty().withMessage('El ID del vehiculo debe ser un numero entero y tiene q ser requerido') ,
+    body("id_lugar").isInt().notEmpty().withMessage("El ID del lugar de ser numero y tiene que ser requerido")
+]
+
+LugaresRouter.post('/ocupar', validacionesLugares(),async (req, res) => {
+
+    const validacion = validationResult(req); // guardar los errores en una variable
+    if (!validacion.isEmpty()) {
+        res.status(400).send({ errores: validacion.array() });
+        return;
+    }
     try{
         const { id_vehiculo, id_lugar } = req.body;
         // Cuento los lugares disp con el query y verifico para q no pase de los lugares q quiero tener
@@ -45,14 +50,13 @@ LugaresRouter.post('/ocupar',
 
         // Inserción en la tabla de registros usando id_tarifa
         await db.query(
-            'INSERT INTO registros (id_lugar, id_vehiculo, inicio, id_tarifa) VALUES (?, ?, NOW(), ?)',
+            'INSERT INTO registros (id_lugar, id_vehiculo, inicio, id_tarifa) VALUES (?, ?, NOW())',
             [id_lugar, id_vehiculo]
         );
         
-
         res.status(201).send({ mensaje: 'Lugar ocupado exitosamente.' });
     } catch (error) {
-        console.error(error); // Para depuración
+        console.error(error);
         res.status(500).send({ mensaje: 'Error al ocupar el lugar.' });
     }
 });
