@@ -37,29 +37,31 @@ registros.post(
 
     try {
 
+      //Para verificar si un lugar ya está ocupado
       const [lugar] = await db.query(
         "SELECT ocupado FROM lugares WHERE id_lugar = ?",
         [id_lugar]
       );
-
       if (lugar[0]?.ocupado === 1) {
         return res.status(400).send({ mensaje: `El lugar ${id_lugar} ya está ocupado` });
       }
 
+      //Para verificar si un vehículo se encuentra ya estacionado
       const [vehiculoEnUso] = await db.query(
         "SELECT * FROM registros WHERE id_vehiculo = ? AND (fin IS NULL OR fin > NOW())",
         [id_vehiculo]
       );
-
       if (vehiculoEnUso.length > 0) {
         return res.status(400).send({mensaje: `El vehículo ${id_vehiculo} ya está estacionado en otro lugar`});
       }
 
+      //Inserción de los datos al registro
       const [result] = await db.query(
         `INSERT INTO registros(id_lugar, id_vehiculo, inicio, fin, id_tarifa, precio_final) VALUES(?, ?, ?, ?, ?, ?)`,
         [id_lugar, id_vehiculo, inicio, fin, id_tarifa, precio_final]
       );
 
+      //Actualización 
       await db.query("UPDATE lugares SET ocupado = 1 WHERE id_lugar = ?", [
         id_lugar,
       ]);
