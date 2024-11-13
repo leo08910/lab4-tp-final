@@ -53,17 +53,28 @@ vehiculosRouter.post("/", async (req,res)=>{
     .send({vehiculo:{id_vehiculo:sql.insertId,matricula,id_usuario,id_tipo_vehiculo}})
 })
 
-vehiculosRouter.delete("/:id_vehiculo", async (req,res)=>{
+vehiculosRouter.put('/:id_vehiculo/inhabilitar', async (req,res)=>{
     const {id_vehiculo}=req.params
 
     const [existe]= await db.execute(
-        'select id_vehiculo from vehiculos where id_vehiculo=?',[id_vehiculo]
-    )
+        'select * from vehiculos where id_vehiculo=? and estacionado=1',[id_vehiculo])
     if (existe.length==0){
-        return res.status(404).send('Este vehiculo no existe')
+        return res.status(404).send('Vehiculo no encontrado')
     }
-    else{
-        await db.execute('delete from vehiculos where id_vehiculo=?',[id_vehiculo])
-        res.status(200).send('Vehiculo retirado correctamente')
+
+    await db.execute('update vehiculos set estacionado=0 where id_vehiculo=?',[id_vehiculo])
+    res.status(200).send('Vehiculo retirado')
+})
+
+vehiculosRouter.put('/:id_vehiculo/habilitar', async (req,res)=>{
+    const {id_vehiculo}= req.params
+
+    const [existe]= await db.execute(
+        'select * from vehiculos where id_vehiculo=? and estacionado=0', [id_vehiculo])
+    if (existe.length==0){
+        return res.status(404).send('Este vehiculo no se encuentra estacionado')
     }
+
+    await db.execute('update vehiculos set estacionado=1 where id_vehiculo=?',[id_vehiculo])
+    res.status(200).send('Vehiculo ingresado')
 })
