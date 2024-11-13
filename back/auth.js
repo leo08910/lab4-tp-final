@@ -21,7 +21,19 @@ export function authConfig() {
     new Strategy(jwtOptions, async (payload, next) => {
 
       console.log("en strategy", payload);
-      next(null, payload);
+
+      const [usuarios] = await db.execute(
+      "SELECT nombre, superusuario FROM usuarios WHERE nombre = ?",
+        [payload.nombre]
+        );
+
+        // Si hay al menos un usuario reenviarlo
+        if (usuarios.length > 0) {
+          console.log(usuarios[0])
+          next(null, usuarios[0]);
+        } else {
+          next(null, false);
+        }
     })
   );
 }
@@ -68,7 +80,7 @@ authRouter.post(
     }
 
     // Crear jwt
-    const payload = { nombre, rol: "admin", dato: 123 };
+    const payload = { nombre, dato: 123 };
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: "2h",
     });
