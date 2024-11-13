@@ -1,4 +1,5 @@
-import Lugares from "../components/lugares/lugares"
+import Lugares from "./components/Lugares/Lugares"
+
 function App() {
   return(
     <div id="lugaresContenedor">

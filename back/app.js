@@ -1,13 +1,13 @@
 import express from "express";
 import cors from "cors";
 import { conectarDB } from "./db.js";
-import reloj from "./reloj.js";
-import usuarios from "./usuarios.js";
-import router,{ authConfig } from "./auth.js";
-import { vehiculosRouter } from "./vehiculos.js";
-import { LugaresRouter } from "./lugares.js"
-import tarifas from "./tarifas.js";
-import registros from "./registros.js";
+import reloj from "./registros/reloj.js";
+import usuarios from "./usuarios/usuarios.js";
+import router,{ authConfig } from "./usuarios/auth.js";
+import { vehiculosRouter } from "./vehiculos/vehiculos.js";
+import { LugaresRouter } from "./lugares/lugares.js"
+import tarifas from "./tarifas/tarifas.js";
+import registros from "./registros/registros.js";
 
 const app = express();
 const port = 3000;
