@@ -5,10 +5,9 @@ import reloj from "./reloj.js";
 import usuarios from "./usuarios.js";
 import router,{ authConfig } from "./auth.js";
 import { vehiculosRouter } from "./vehiculos.js";
-import { EstacionamientoRouter } from "./Estacionamiento.js";
+import { LugaresRouter } from "./lugares.js"
 import tarifas from "./tarifas.js";
 import registros from "./registros.js";
-
 
 const app = express();
 const port = 3000;
@@ -23,10 +22,11 @@ app.use("/", usuarios);
 app.use("/", router);
 app.use("/vehiculos", vehiculosRouter);
 app.use("/", tarifas);
-app.use("/estacionamiento", EstacionamientoRouter);
 
 app.use(reloj)
 app.use("/", registros);
+
+app.use("/lugares",LugaresRouter)
 
 app.get("/usuarios", async (req, res) => {
   const [usuarios] = await db.execute("select * from usuarios");

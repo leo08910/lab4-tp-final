@@ -1,11 +1,9 @@
-import Tarifas from "./tarifas"
-
-
+import Lugares from "../components/lugares/lugares"
 function App() {
-  return (
-    <>
-    <Tarifas/>
-    </>
+  return(
+    <div id="lugaresContenedor">
+      <Lugares/>
+    </div>
   )
 }
 
