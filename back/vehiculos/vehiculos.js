@@ -1,39 +1,46 @@
 import express from 'express'
 import { db } from '../db.js'
+import { ExpressValidator, body, validationResult } from 'express-validator'
 export const vehiculosRouter = express.Router()
 
+const validarAuto=()=>[
+    body("matricula")
+    .isLength({min:5,max:5}).withMessage('La matricula debe tener 5 caracteres')
+    .notEmpty().withMessage('La matricula es obligatoria'),
+
+    body('id_usuario').isNumeric()
+    .withMessage('La id de usuario debe ser un numero')
+    .notEmpty().withMessage('La id de usuario es obligatoria'),
+
+    body('id_tipo_vehiculo').isNumeric()
+    .withMessage('El tipo de vehiculo se indica con un numero')
+    .notEmpty().withMessage('El tipo de vehiculo es obligatorio')
+]
+
 vehiculosRouter.get('/', async (req,res)=>{
-    const filtros = [];
-    const parametros = [];
-
-    const id_tipo_vehiculo = req.query.id_tipo_vehiculo;
-    if (id_tipo_vehiculo !== undefined) {
-        filtros.push("id_tipo_vehiculo = ?");
-        parametros.push(id_tipo_vehiculo);
-    }
-
-    let sql = "SELECT * FROM vehiculos";
-    
-    if (filtros.length > 0) {
-        sql += ` WHERE ${filtros.join(" AND ")}`;
-    }
-
-    const [vehiculos] = await db.execute(sql,parametros)
+    const [vehiculos] = await db.execute('select * from vehiculos')
     res.send({vehiculos})
 })
 
-vehiculosRouter.post("/", async (req,res)=>{
+vehiculosRouter.post("/", validarAuto(),async (req,res)=>{
+    const validacion =validationResult(req);
+    if (!validacion.isEmpty()){
+       return res.status(400).send({errores:validacion.array()})
+    }
     const { matricula, id_usuario, id_tipo_vehiculo } = req.body
-
-    if ( !matricula || !id_usuario || !id_tipo_vehiculo){
-        return res.status(400).send("Todos los campos deben de llenarse")
-    } 
 
     const [usuarioExiste] = await db.execute(
         'select id_usuario from usuarios where id_usuario=?',[id_usuario]
     )
     if (usuarioExiste.length==0){
         return res.status(404).send("Este usuario no existe")
+    }
+
+    const [matriculaRepetida]= await db.execute(
+        'select matricula from vehiculos where matricula=?',[matricula]
+    )
+    if (matriculaRepetida.length>0){
+        return res.status(400).send('Esta matricula ya esta registrada')
     }
 
     const [vehiculoExiste]= await db.execute(
@@ -44,7 +51,7 @@ vehiculosRouter.post("/", async (req,res)=>{
     }
 
     const sql = await db.execute(
-        "insert into vehiculos (matricula,id_usuario,id_tipo_vehiculo) values(?,?,?)",
+        "insert into vehiculos (matricula,id_usuario,id_tipo_vehiculo,estacionado) values(?,?,?,1)",
         [matricula,id_usuario,id_tipo_vehiculo]
     )
 
