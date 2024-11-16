@@ -38,12 +38,6 @@ export function authConfig() {
   );
 }
 
-export function validarSuperUsuario(req,res,next){
-  if (req.user.superusuario != 1) {
-   return res.status(401).send({mensaje: "No autorizado"})
-  }
-  next();
-}
 
 authRouter.post(
   "/login",

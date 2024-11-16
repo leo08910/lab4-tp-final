@@ -2,15 +2,14 @@ import express from "express";
 import {db} from "../db.js"
 import { body, validationResult } from "express-validator";
 import bcrypt from "bcrypt";
-import passport from "passport";
-import { validarSuperUsuario } from "./auth.js";
+import { validarSuperUsuario,validarJwt } from "./auth.js";
 
 
 
 const usuarios = express.Router()
 
 usuarios.get("/usuarios",
-  passport.authenticate("jwt", { session: false }),
+  validarJwt,
   validarSuperUsuario,
    async (req, res) => {
   try {
