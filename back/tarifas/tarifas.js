@@ -108,12 +108,8 @@ tarifas.post("/tarifas",
       if (req.user.superusuario != 1) {
         res.status(401).send({mensaje: "No tiene permisos para ver los usuarios"})
       }else{
-      const [result] = await db.query("SELECT * FROM usuarios");
-      res.status(200).send(result);
-      }
       if (!validacion.isEmpty()) {
-        res.status(400).send({ errores: validacion.array() });
-        return;
+        return res.status(400).send({ errores: validacion.array() });
       }
       const id = Number(req.params.id);
       const { tipo_tarifa, id_tipo_vehiculo, precio } = req.body;
@@ -122,8 +118,9 @@ tarifas.post("/tarifas",
         "update tarifas set tipo_tarifa=?, id_tipo_vehiculo=?, precio=? where id_tarifa=? order by id_tarifa",
         [tipo_tarifa, id_tipo_vehiculo, precio, id]
       );
-  
-      res.send("tarifa modificada");
+      res.status(200).send(`tarifa modificada`);
+      }
+
     }
   );
   //eliminar tarifa
@@ -132,16 +129,14 @@ tarifas.post("/tarifas",
     if (req.user.superusuario != 1) {
       res.status(401).send({mensaje: "No tiene permisos para ver los usuarios"})
     }else{
-    const [result] = await db.query("SELECT * FROM usuarios");
-    res.status(200).send(result);
-    }
     const id = Number(req.params.id);
     await db.execute(
       "delete from tarifas where id_tarifa=?",
       [id]
     );
-
     res.send("tarifa eliminada");
+    }
+
   })
 
 export default tarifas;
