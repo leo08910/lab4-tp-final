@@ -1,5 +1,5 @@
-import express from "express";
-import { body, validationResult } from "express-validator";
+import express, { query } from "express";
+import { body, param, validationResult } from "express-validator";
 import { db } from '../db.js';
 
 export const LugaresRouter = express.Router();
@@ -18,70 +18,83 @@ LugaresRouter.get('/', async (req, res) => {
 
 // Registrar un vehículo en un lugar si hay espacio disponible
 
-const validacionesLugares = () => [
-    body("id_vehiculo").isInt().notEmpty().withMessage('El ID del vehiculo debe ser un numero entero y tiene q ser requerido') ,
-    body("id_lugar").isInt().notEmpty().withMessage("El ID del lugar de ser numero y tiene que ser requerido")
-]
-
-LugaresRouter.post('/ocupar', validacionesLugares(),async (req, res) => {
-
-    const validacion = validationResult(req); // guardar los errores en una variable
-    if (!validacion.isEmpty()) {
-        res.status(400).send({ errores: validacion.array() });
-        return;
+const validarConsulta = () => [
+    param("id_vehiculo").isInt({ min: 1 }).withMessage("El ID del vehículo debe ser un número entero positivo."),
+    param("id_lugar").isInt({ min: 1 }).notEmpty().withMessage("El ID del lugar debe ser un número entero positivo."),
+    (req, res, next) => {
+        //Pide ponerlo aca para encapsular el manejo de validaciones asegura q se procese antes de llegar a otras capas
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).send({ errores: errors.array() });
+        }
+        next();
     }
-    try{
-        const { id_vehiculo, id_lugar } = req.body;
-        // Cuento los lugares disp con el query y verifico para q no pase de los lugares q quiero tener
+];
+
+const validacionesLugares = async (req, res, next) => {
+    try {
+        const { id_lugar } = req.params;
+        const { id_vehiculo } = req.params;
+
+        // Consulta para verificar si los lugares están llenos
         const [[{ ocupados }]] = await db.query('SELECT COUNT(*) AS ocupados FROM lugares WHERE ocupado = 1');
         if (ocupados >= 5) {
             return res.status(400).send({ mensaje: 'No hay lugares disponibles. Máximo alcanzado de 5 lugares ocupados.' });
         }
 
-        // Verificar que el lugar esté libre
-        const [[lugar]] = await db.query('SELECT ocupado FROM lugares WHERE id_lugar = ?', [id_lugar]);
-        if (!lugar || lugar.ocupado === 1) {
-            return res.status(400).send({ mensaje: 'El lugar ya está ocupado'}) 
+        // Verificar si el lugar pasado x la ruta  estaa ocupado
+        const [[LugarVerif]] = await db.query('SELECT ocupado FROM lugares WHERE id_lugar = ?', [id_lugar]);
+        if (!LugarVerif || LugarVerif.ocupado === 1) {
+            return res.status(400).send({ mensaje: 'El lugar que deseas estacionar ya está ocupado.' });
         }
 
-       // Ocupo el lugar asignado al id que se paso x el body 
-        await db.query('UPDATE lugares SET ocupado = 1 WHERE id_lugar = ?', [id_lugar]);
-
-
-        // Inserción en la tabla de registros usando id_tarifa
-        await db.query(
-            'INSERT INTO registros (id_lugar, id_vehiculo, inicio, id_tarifa) VALUES (?, ?, NOW())',
-            [id_lugar, id_vehiculo]
-        );
+        //validacion para saber si el id del vehiculo existe en la base de datos
+        const [[vehiculo]] = await db.query("SELECT * FROM vehiculos WHERE id_vehiculo = ? ",[id_vehiculo])
+        if(! vehiculo){
+            return res.status(400).send({mensaje : 'El id del vehiculo no existe'})
+        }
         
+        //verifico si el vehiculo ya esta estacionado en algun lugar
+        const [[estacionado]] = await db.query('SELECT estacionado from vehiculos where id_vehiculo = ?', [id_vehiculo])
+        if(estacionado.estacionado === 1){
+            console.log('true' , estacionado)
+            return res.status(400).send({mensaje : 'El vehiculo con ese id ya esta estacionado en un lugar'})
+        }
+        next();
+    } catch (error) {
+        console.error("Error en las validaciones de lugares:", error);
+        res.status(500).send({ mensaje: 'Error al validar los lugares.' });
+    }
+};
+
+LugaresRouter.put('/:id_lugar/:id_vehiculo/ocupar', validarConsulta(), validacionesLugares, async (req, res) => {
+    try {
+        const { id_lugar } = req.params;
+        const { id_vehiculo } = req.params;
+
+        // Ocupo el lugar especificado previamente 
+        await db.query('UPDATE lugares SET ocupado = 1, descripcion = ? WHERE id_lugar = ?', [id_vehiculo, id_lugar]);
+
         res.status(201).send({ mensaje: 'Lugar ocupado exitosamente.' });
     } catch (error) {
-        console.error(error);
-        res.status(500).send({ mensaje: 'Error al ocupar el lugar.' });
+        console.error("Error en la API al querer ocupar un lugar:", error);
+        res.status(500).send({ mensaje: 'Error en la API al querer ocupar un lugar.' });
     }
 });
 
+
+
 // Liberar un lugar cuando el vehículo sale
-LugaresRouter.post('/liberar', async (req, res) => {
-    try {
-        const { id_lugar } = req.body;
+LugaresRouter.put('/:id_lugar/desocupar',validarConsulta(), async (req, res) => {
+    const {id_lugar} = req.params
+    try{
+        //Desocupo el lugar pasado x la ruta
+        await db.query('UPDATE lugares set ocupado = 0 where id_lugar = ?',[id_lugar])
 
-        // Verificar que el lugar esté ocupado
-        const [[lugar]] = await db.query('SELECT ocupado FROM lugares WHERE id_lugar = ?', [id_lugar]);
-        if (!lugar || lugar.ocupado === 0) {
-            return res.status(400).send({ mensaje: 'El lugar ya está libre ' });
-        }
+        res.status(201).send({mensaje : 'Se desocupo el lugar exitosamente'})
+    }catch(error){
+        console.error('Error en la API al querer desocupar uin lugar')
+        res.status(500).send({mensaje : 'Error en la API al querer desocupar uin lugar '})
+    }
 
-        // Liberar el lugar
-        await db.query('UPDATE lugares SET ocupado = 0 WHERE id_lugar = ?', [id_lugar]);
-        await db.query(
-            'UPDATE registros SET fin = NOW() WHERE id_lugar = ? AND fin IS NULL',
-            [id_lugar]
-        );
-
-        res.status(200).send({ mensaje: 'Lugar liberado exitosamente.' });
-    } catch (error) {
-        console.error(error); // Para depuración
-        res.status(500).send({ mensaje: 'Error al liberar el lugar.' });
-    }
 });
