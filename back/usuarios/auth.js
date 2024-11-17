@@ -81,13 +81,13 @@ authRouter.post(
     }
 
     // Crear jwt
-    const payload = { nombre, dato: 123 };
+    const payload = { nombre: usuarios[0].nombre, superusuario: usuarios[0].superusuario};
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: "2h",
     });
 
     // Enviar jwt
-    res.send({ token });
+    res.send({ nombre: usuarios[0].nombre, superusuario: usuarios[0].superusuario ,token });
   }
 );
 

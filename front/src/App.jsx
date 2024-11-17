@@ -8,6 +8,7 @@ import { SinRuta } from "./SinRuta";
 import { TareasPage } from "./TareasPage";
 import { UsuariosPage } from "./UsuariosPage";
 import { AuthPage } from "./Auth";
+import Tarifas from "../src/Tarifas/Tarifas"
 
 function App() {
   return (
@@ -45,6 +46,14 @@ function App() {
             element={
               <AuthPage>
                 <UsuariosPage />
+              </AuthPage>
+            }
+          />
+                    <Route
+            path="/tarifas"
+            element={
+              <AuthPage>
+                <Tarifas />
               </AuthPage>
             }
           />

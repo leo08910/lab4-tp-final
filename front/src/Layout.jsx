@@ -22,6 +22,9 @@ export const Layout = () => {
           <li>
             <Link to="/usuarios">Usuarios</Link>
           </li>
+          <li>
+            <Link to="/tarifas">Tarifas</Link>
+          </li>
         </ul>
       </nav>
       <Outlet />

@@ -12,11 +12,11 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [sesion, setSesion] = useState(null);
 
-  const login = async (username, password, ok, error) => {
-    const response = await fetch("http://localhost:3000/auth/login", {
+  const login = async (nombre, password, ok, error) => {
+    const response = await fetch("http://localhost:3000/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ nombre, password }),
     });
     if (!response.ok) {
       error();
@@ -50,11 +50,11 @@ export const AuthPage = ({ children }) => {
   return children;
 };
 
-// Autorizar rol
-export const AuthRol = ({ rol, children }) => {
+// Autorizar superusuario
+export const AuthRol = ({ superusuario, children }) => {
   const { sesion } = useAuth();
-
-  if (!sesion || sesion.rol !== rol) {
+  console.log(sesion);
+  if (!sesion || sesion.superusuario !== superusuario) {
     return null;
   }
 
@@ -72,7 +72,7 @@ export const AuthStatus = () => {
 
   return (
     <>
-      <p>Conectado como {sesion.username}</p>
+      <p>Conectado como {sesion.nombre}</p>
       <button onClick={() => logout(() => navigate("/"))}>Salir</button>
     </>
   );

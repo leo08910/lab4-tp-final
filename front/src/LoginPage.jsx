@@ -12,11 +12,11 @@ export const LoginPage = () => {
 
   const onSubmit = (event) => {
     const formData = new FormData(event.currentTarget);
-    const usuario = formData.get("usuario");
+    const nombre = formData.get("nombre");
     const password = formData.get("password");
 
     login(
-      usuario,
+      nombre,
       password,
       () => navigate(from, { replace: true }), // OK
       () => setError(true) // Error
@@ -28,8 +28,8 @@ export const LoginPage = () => {
   return (
     <>
       <form onSubmit={onSubmit}>
-        <label htmlFor="usuario">Usuario:</label>
-        <input name="usuario" type="text" />
+        <label htmlFor="nombre">Usuario:</label>
+        <input name="nombre" type="text" />
         <label htmlFor="password">Contraseña:</label>
         <input name="password" type="password" />
         <button type="submit">Ingresar</button>
