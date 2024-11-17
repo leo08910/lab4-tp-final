@@ -10,7 +10,7 @@ const simulationSpeed = 1000;
 function updateClock() {
     currentDate.setSeconds(currentDate.getSeconds() + 1);
     const mysqlDateTime = currentDate.toISOString().slice(0, 19).replace('T', ' ');
-    console.log(mysqlDateTime);
+    // console.log(mysqlDateTime);
 }
 
 setInterval(updateClock, simulationSpeed);
