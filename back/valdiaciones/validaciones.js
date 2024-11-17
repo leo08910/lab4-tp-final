@@ -13,14 +13,13 @@ export const verificarValidaciones = (req, res, next) => {
 
 export const validarId = param("id").isInt({ min: 1 });
 
-export function validarJwt(){
-    passport.authenticate("jwt", { session: false })
-}
-  
-export function validarSuperUsuario(req,res,next){
+export const validarJwt = passport.authenticate("jwt", {
+  session: false,
+});
+
+export const validarSuperUsuario = (req,res,next) =>{
 if (req.user.superusuario != 1) {
-    return res.status(401).send({mensaje: "No autorizado"})
-  }
- next();
+  return res.status(401).send({mensaje: "No autorizado"})
 }
-  
+next();
+}
