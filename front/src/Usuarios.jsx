@@ -12,7 +12,6 @@ export const ListadoUsuarios = () => {
       .then((response) => response.json())
       .then(( usuarios ) => setUsuarios(usuarios));
   }, [sesion.token]);
-  console.log(usuarios);
   return (
     <>
       <h3>Listado</h3>

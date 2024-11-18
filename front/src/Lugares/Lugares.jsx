@@ -21,8 +21,8 @@ function Lugares() {
     },[lugares])
 
     return (
-        <>  
-            <h1 className="titulo_estacionamiento">Estacionamiento</h1>
+        <>
+            <h1>Estacionamiento</h1>
             <div className="estacionamiento">
                 {lugares.map((lugar) => (
                     <button
