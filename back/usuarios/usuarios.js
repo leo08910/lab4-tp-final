@@ -2,7 +2,7 @@ import express from "express";
 import {db} from "../db.js"
 import { body, validationResult } from "express-validator";
 import bcrypt from "bcrypt";
-import { validarSuperUsuario,validarJwt } from "../valdiaciones/validaciones.js";
+import { validarSuperUsuario,validarJwt } from "../validaciones/validaciones.js";
 
 const usuarios = express.Router()
 

@@ -2,5 +2,47 @@
     color: rgb(28, 29, 29);
     position: relative;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+}
+.superusuario{
+    width: 30vw;
+    height: 40vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius:  7vw 7vh 7vw 7vh;
+    background-color: #a5a5a5;
+}
+.tarifa_select{
+    border-radius: 70vw;
+    background-color: #d4d4d4;
+    border: none;
+}
+.tarifa_option{
+    border-radius: 70vw;
+    border: none;
+}
+.tarifas_input{
+    border-radius: 70vw;
+    background-color: #d4d4d4;
+    border: none;
+}
+.tarifas_button_ok{
+    position: relative;
+    width: 0vw;
+    border-radius: 70vw;
+    background-color: #d4d4d4;
+    border: none;
+}
+.tarifas_button_cancel{
+    border-radius: 70vw;
+    background-color: #d4d4d4;
+    border: none;
+}
+.tarifas_table{
+    border: solid 1px black;
+}
+th, td{
+    border: solid 1px black;
 }

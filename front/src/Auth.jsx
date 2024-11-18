@@ -53,7 +53,7 @@ export const AuthPage = ({ children }) => {
 // Autorizar superusuario
 export const AuthRol = ({ superusuario, children }) => {
   const { sesion } = useAuth();
-  console.log(sesion);
+  //console.log(sesion);
   if (!sesion || sesion.superusuario !== superusuario) {
     return null;
   }
@@ -62,18 +62,18 @@ export const AuthRol = ({ superusuario, children }) => {
 };
 
 // Estado de autorizacion
-export const AuthStatus = () => {
-  const { sesion, logout } = useAuth();
-  const navigate = useNavigate();
+// export const AuthStatus = () => {
+//   const { sesion, logout } = useAuth();
+//   const navigate = useNavigate();
 
-  if (!sesion) {
-    return <p>No esta conectado</p>;
-  }
+//   if (!sesion) {
+//     return <p>No esta conectado</p>;
+//   }
 
-  return (
-    <>
-      <p>Conectado como {sesion.nombre}</p>
-      <button onClick={() => logout(() => navigate("/"))}>Salir</button>
-    </>
-  );
-};
+//   return (
+//     <>
+//       {/* <p>{sesion.nombre}</p>
+//       <button onClick={() => logout(() => navigate("/"))}>Salir</button> */}
+//     </>
+//   );
+// };

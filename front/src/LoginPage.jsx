@@ -29,9 +29,9 @@ export const LoginPage = () => {
     <>
       <form onSubmit={onSubmit}>
         <label htmlFor="nombre">Usuario:</label>
-        <input name="nombre" type="text" />
+        <input name="nombre" type="text" required/>
         <label htmlFor="password">Contraseña:</label>
-        <input name="password" type="password" />
+        <input name="password" type="password" required/>
         <button type="submit">Ingresar</button>
       </form>
       {error && <p>Usuario o contraseña inválido</p>}

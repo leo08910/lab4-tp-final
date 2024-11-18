@@ -30,7 +30,7 @@ CREATE TABLE `clientes` (
   PRIMARY KEY (`id_cliente`),
   UNIQUE KEY `id_cliente_UNIQUE` (`id_cliente`),
   UNIQUE KEY `nombre_UNIQUE` (`nombre`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,6 +39,7 @@ CREATE TABLE `clientes` (
 
 LOCK TABLES `clientes` WRITE;
 /*!40000 ALTER TABLE `clientes` DISABLE KEYS */;
+INSERT INTO `clientes` VALUES (1,'Gaspar Ahumada'),(3,'Homero Simpson'),(2,'Pedro Picapiedra');
 /*!40000 ALTER TABLE `clientes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -77,7 +78,6 @@ DROP TABLE IF EXISTS `registros`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `registros` (
   `id_registro` int NOT NULL AUTO_INCREMENT,
-  `id_usuario` int NOT NULL,
   `id_lugar` int NOT NULL,
   `id_vehiculo` int NOT NULL,
   `inicio` datetime NOT NULL,
@@ -89,12 +89,10 @@ CREATE TABLE `registros` (
   KEY `registros_ibfk_1` (`id_lugar`),
   KEY `registros_ibfk_2` (`id_vehiculo`),
   KEY `registros_ibfk_3` (`id_tarifa`),
-  KEY `registros_ibdk_4_idx` (`id_usuario`),
-  CONSTRAINT `registros_ibdk_4` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`),
   CONSTRAINT `registros_ibfk_1` FOREIGN KEY (`id_lugar`) REFERENCES `lugares` (`id_lugar`),
-  CONSTRAINT `registros_ibfk_2` FOREIGN KEY (`id_vehiculo`) REFERENCES `vehiculos` (`id_vehiculo`) ON DELETE CASCADE,
+  CONSTRAINT `registros_ibfk_2` FOREIGN KEY (`id_vehiculo`) REFERENCES `vehiculos` (`id_vehiculo`),
   CONSTRAINT `registros_ibfk_3` FOREIGN KEY (`id_tarifa`) REFERENCES `tarifas` (`id_tarifa`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -103,6 +101,7 @@ CREATE TABLE `registros` (
 
 LOCK TABLES `registros` WRITE;
 /*!40000 ALTER TABLE `registros` DISABLE KEYS */;
+INSERT INTO `registros` VALUES (20,1,5,'2024-11-17 08:00:00','2024-11-17 12:00:00',2,500);
 /*!40000 ALTER TABLE `registros` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -179,7 +178,7 @@ CREATE TABLE `usuarios` (
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `id_usuario_UNIQUE` (`id_usuario`),
   UNIQUE KEY `telefono_UNIQUE` (`telefono`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -188,7 +187,7 @@ CREATE TABLE `usuarios` (
 
 LOCK TABLES `usuarios` WRITE;
 /*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
-INSERT INTO `usuarios` VALUES (1,'Juan','Pérez','juan.perez@email.com','123456789','password123',0),(2,'María','González','maria.gonzalez@email.com','987654321','password456',1),(3,'Carlos','López','carlos.lopez@email.com','1122334455','password789',0);
+INSERT INTO `usuarios` VALUES (1,'Juan','Pérez','juan.perez@email.com','123456789','password123',0),(2,'María','González','maria.gonzalez@email.com','987654321','password456',1),(3,'Carlos','López','carlos.lopez@email.com','1122334455','password789',0),(4,'Alejandro','Gómez','gmz248alejandro@gmail.com','3804442366','$2b$10$vTyd9vyYl.JCVIq39uxYxe9B9b3akRjDWjbdtDDj0fZ8v2Xt82876',1);
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -211,7 +210,7 @@ CREATE TABLE `vehiculos` (
   KEY `vehiculos_ibfk_3_idx` (`id_cliente`),
   CONSTRAINT `vehiculos_ibfk_2` FOREIGN KEY (`id_tipo_vehiculo`) REFERENCES `tipos_vehiculo` (`id_tipo_vehiculo`),
   CONSTRAINT `vehiculos_ibfk_3` FOREIGN KEY (`id_cliente`) REFERENCES `clientes` (`id_cliente`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -220,6 +219,7 @@ CREATE TABLE `vehiculos` (
 
 LOCK TABLES `vehiculos` WRITE;
 /*!40000 ALTER TABLE `vehiculos` DISABLE KEYS */;
+INSERT INTO `vehiculos` VALUES (5,'ABC 123',2,1,0),(6,'ZXY 321',3,1,0);
 /*!40000 ALTER TABLE `vehiculos` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -232,4 +232,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-16 20:01:31
+-- Dump completed on 2024-11-17 23:52:17
