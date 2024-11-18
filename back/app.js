@@ -26,10 +26,10 @@ app.use("/", registros);
 
 app.use("/lugares",LugaresRouter)
 
-app.get("/usuarios", async (req, res) => {
-  const [usuarios] = await db.execute("select * from usuarios");
-  res.send({ usuarios });
-  });
+// app.get("/usuarios", async (req, res) => {
+//   const [usuarios] = await db.execute("select * from usuarios");
+//   res.send({ usuarios });
+//   });
 
 app.listen(port, () => {
   console.log(`La aplicacion esta funcionando en: ${port}`);

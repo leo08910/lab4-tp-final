@@ -10,16 +10,16 @@ export const ListadoUsuarios = () => {
       headers: { Authorization: `Bearer ${sesion.token}` },
     })
       .then((response) => response.json())
-      .then(({ usuarios }) => setUsuarios(usuarios));
+      .then(( usuarios ) => setUsuarios(usuarios));
   }, [sesion.token]);
-
+  console.log(usuarios);
   return (
     <>
       <h3>Listado</h3>
       <ul>
         {usuarios.map((usuario) => (
-          <li key={usuario.id}>
-            {usuario.username} {usuario.rol}
+          <li key={usuario.id_usuario}>
+            {usuario.nombre} {usuario.superusuario}
           </li>
         ))}
       </ul>

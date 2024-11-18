@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useAuth, AuthRol } from "../Auth"; // Asegúrate de importar AuthRol
 import "./Tarifas.css";
 
@@ -116,35 +116,44 @@ function Tarifas() {
   };
 
   return (
-    <div className="container">
       <div className="tarifas-container">
         <h1 className="titulo">Tarifas</h1>
 
         {tarifas.map((tarifa) => (
-          <div className="tarifas-tarjeta" key={tarifa.id_tarifa}>
-            <h3 className="tarifa-titulo">
-              {tarifa.tipo_tarifa} ({tarifa.tipo_vehiculo})
-            </h3>
-            <p className="tarifa-precio">Precio: ${tarifa.precio}</p>
-            {/* Solo mostrar botones si el usuario es superusuario */}
-            <AuthRol superusuario={1}>
+            <table className="tarifas_table" key={tarifa.id_tarifa}>
+            <thead>
+              <tr >
+                <th>tipo de tarifa</th>
+                <th>tipo de vehiculo</th>
+                <th>precio</th>
+                <th>acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{tarifa.tipo_tarifa}</td>
+                <td>{tarifa.tipo_vehiculo}</td>
+                <td>${tarifa.precio}</td>
+                <td><AuthRol superusuario={1}>
               <button onClick={() => handleEdit(tarifa)}>Modificar</button>
               <button onClick={() => deleteTarifa(tarifa.id_tarifa)}>Eliminar</button>
-            </AuthRol>
-          </div>
-        ))}
-      </div>
-      <AuthRol superusuario={1}>
+            </AuthRol></td>
+              </tr>
+            </tbody>
+          </table>
+        ))} <br />
+      <AuthRol superusuario={1} > 
         {/* Formulario para agregar o editar tarifas */}
-        <div>
-          <h2>{editMode ? "Modificar Tarifa" : "Agregar Tarifa"}</h2>
+        <div className="superusuario">
+          <h2>{editMode ? "Modificar Tarifa" : "Agregar Tarifa"}</h2><br />
           <select
+            className="tarifa_select"
             value={nuevaTarifa.tipo_tarifa}
             onChange={(e) =>
               setNuevaTarifa({ ...nuevaTarifa, tipo_tarifa: e.target.value })
             }
           >
-            <option value="">Selecciona el tipo de tarifa</option>
+            <option className="tarifa_option" value="">Selecciona el tipo de tarifa</option>
             {tarifas
               .filter(
                 (tarifa, index, self) =>
@@ -158,12 +167,13 @@ function Tarifas() {
           </select>
           <br />
           <select
+            className="tarifa_select"
             value={nuevaTarifa.id_tipo_vehiculo}
             onChange={(e) =>
               setNuevaTarifa({ ...nuevaTarifa, id_tipo_vehiculo: e.target.value })
             }
           >
-            <option value="">Selecciona el tipo de vehículo</option>
+            <option className="tarifa_option" value="">Selecciona el tipo de vehículo</option>
             {tiposVehiculo.map((tipo) => (
               <option key={tipo.id_tipo_vehiculo} value={tipo.id_tipo_vehiculo}>
                 {tipo.tipo_vehiculo}
@@ -171,7 +181,8 @@ function Tarifas() {
             ))}
           </select>
           <br />
-          <input
+          <input 
+            className="tarifas_input"
             type="text"
             placeholder="Precio"
             value={nuevaTarifa.precio}
@@ -180,10 +191,10 @@ function Tarifas() {
             }
           />
           <br />
-          <button onClick={editMode ? putTarifa : postTarifa}>
+          <button className="tarifas_button_ok" onClick={editMode ? putTarifa : postTarifa}>
             {editMode ? "Guardar Cambios" : "Agregar Tarifa"}
-          </button>
-          {editMode && <button onClick={handleCancelEdit}>Cancelar</button>}
+          </button><br />
+          {editMode && <button className="tarifas_button_cancel" onClick={handleCancelEdit}>Cancelar</button>}
         </div>
       </AuthRol>
     </div>

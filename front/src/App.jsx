@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import { HomePage } from "./HomePage";
 import { Layout } from "./Layout";
+import { PerfilPage } from "./PerfilPage";
 import { LoginPage } from "./LoginPage";
 import { SinRuta } from "./SinRuta";
 import { UsuariosPage } from "./UsuariosPage";
@@ -28,6 +29,14 @@ function App() {
             element={
               <AuthPage>
                 <UsuariosPage />
+              </AuthPage>
+            }
+          />
+          <Route
+            path="/perfil"
+            element={
+              <AuthPage>
+                <PerfilPage />
               </AuthPage>
             }
           />
