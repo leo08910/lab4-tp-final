@@ -60,6 +60,7 @@ const validacionesLugares = async (req, res, next) => {
             console.log('true' , estacionado)
             return res.status(400).send({mensaje : 'El vehiculo con ese id ya esta estacionado en un lugar'})
         }
+
         next();
     } catch (error) {
         console.error("Error en las validaciones de lugares:", error);
@@ -75,6 +76,9 @@ LugaresRouter.put('/:id_lugar/:id_vehiculo/ocupar', validarConsulta(), validacio
         // Ocupo el lugar especificado previamente 
         await db.query('UPDATE lugares SET ocupado = 1, descripcion = ? WHERE id_lugar = ?', [id_vehiculo, id_lugar]);
 
+        // Actualizo el estado del vehículo a estacionado
+        await db.query('UPDATE vehiculos SET estacionado = 1 WHERE id_vehiculo = ?', [id_vehiculo]);
+
         res.status(201).send({ mensaje: 'Lugar ocupado exitosamente.' });
     } catch (error) {
         console.error("Error en la API al querer ocupar un lugar:", error);
@@ -85,11 +89,21 @@ LugaresRouter.put('/:id_lugar/:id_vehiculo/ocupar', validarConsulta(), validacio
 
 
 // Liberar un lugar cuando el vehículo sale
-LugaresRouter.put('/:id_lugar/desocupar',validarConsulta(), async (req, res) => {
+LugaresRouter.put('/:id_lugar/:id_vehiculo/desocupar',validarConsulta(), async (req, res) => {
     const {id_lugar} = req.params
+    const {id_vehiculo} = req.params
     try{
+        // Verificar si el vehículo ocupa el lugar específicado
+        const [[lugarOcupado]] = await db.query('SELECT * FROM lugares WHERE id_lugar = ? AND ocupado = 1',[id_lugar, id_vehiculo]);
+        if (!lugarOcupado) {
+            return res.status(400).send({ mensaje: 'El vehículo no está estacionado en este lugar.' });
+        }
+
         //Desocupo el lugar pasado x la ruta
         await db.query('UPDATE lugares set ocupado = 0 where id_lugar = ?',[id_lugar])
+
+        // Actualizo el estado del vehículo a no estacionado
+        await db.query('UPDATE vehiculos SET estacionado = 0 WHERE id_vehiculo = ?', [id_vehiculo]);
 
         res.status(201).send({mensaje : 'Se desocupo el lugar exitosamente'})
     }catch(error){
