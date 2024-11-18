@@ -7,6 +7,7 @@ import { UsuariosPage } from "./UsuariosPage";
 import { AuthPage } from "./Auth";
 import Tarifas from "../src/Tarifas/Tarifas";
 import Registros from "../src/Registros/Registros";
+ import AgregarVehiculos from "./components/Vehiculos/AgregarVehiculos"
 import "./App.css";
 
 function App() {
@@ -49,9 +50,19 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="*" element={<SinRuta />} />
         </Route>
+        <Route
+            path="/agregarVehiculos"
+            element={
+              <AuthPage>
+                <AgregarVehiculos/>
+              </AuthPage>
+            }
+          />
+    
       </Routes>
     </>
   );
+
 }
 
 export default App;
