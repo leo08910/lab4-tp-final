@@ -50,6 +50,7 @@ function Lugares() {
         }
     };
 
+
     return (
         <>  
             <h1 className="titulo_estacionamiento">Estacionamiento</h1>
