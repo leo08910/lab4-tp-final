@@ -19,7 +19,7 @@ LugaresRouter.get('/', async (req, res) => {
 // Registrar un vehículo en un lugar si hay espacio disponible
 
 const validarConsulta = () => [
-    param("id_vehiculo").isInt({ min: 1 }).withMessage("El ID del vehículo debe ser un número entero positivo."),
+    // body("id_vehiculo").isInt({ min: 1 }).withMessage("El ID del vehículo debe ser un número entero positivo."),
     param("id_lugar").isInt({ min: 1 }).notEmpty().withMessage("El ID del lugar debe ser un número entero positivo."),
     (req, res, next) => {
         //Pide ponerlo aca para encapsular el manejo de validaciones asegura q se procese antes de llegar a otras capas
@@ -34,7 +34,7 @@ const validarConsulta = () => [
 const validacionesLugares = async (req, res, next) => {
     try {
         const { id_lugar } = req.params;
-        const { id_vehiculo } = req.params;
+        const { id_vehiculo } = req.body;
 
         // Consulta para verificar si los lugares están llenos
         const [[{ ocupados }]] = await db.query('SELECT COUNT(*) AS ocupados FROM lugares WHERE ocupado = 1');
@@ -68,10 +68,10 @@ const validacionesLugares = async (req, res, next) => {
     }
 };
 
-LugaresRouter.put('/:id_lugar/:id_vehiculo/ocupar', validarConsulta(), validacionesLugares, async (req, res) => {
+LugaresRouter.put('/:id_lugar/ocupar', validarConsulta(), validacionesLugares, async (req, res) => {
     try {
         const { id_lugar } = req.params;
-        const { id_vehiculo } = req.params;
+        const { id_vehiculo } = req.body;
 
         // Ocupo el lugar especificado previamente 
         await db.query('UPDATE lugares SET ocupado = 1, descripcion = ? WHERE id_lugar = ?', [id_vehiculo, id_lugar]);
@@ -89,9 +89,9 @@ LugaresRouter.put('/:id_lugar/:id_vehiculo/ocupar', validarConsulta(), validacio
 
 
 // Liberar un lugar cuando el vehículo sale
-LugaresRouter.put('/:id_lugar/:id_vehiculo/desocupar',validarConsulta(), async (req, res) => {
+LugaresRouter.put('/:id_lugar/desocupar',validarConsulta(), async (req, res) => {
     const {id_lugar} = req.params
-    const {id_vehiculo} = req.params
+    const {id_vehiculo} = req.body
     try{
         // Verificar si el vehículo ocupa el lugar específicado
         const [[lugarOcupado]] = await db.query('SELECT * FROM lugares WHERE id_lugar = ? AND ocupado = 1',[id_lugar, id_vehiculo]);

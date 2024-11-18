@@ -53,7 +53,7 @@ export const AuthPage = ({ children }) => {
 // Autorizar superusuario
 export const AuthRol = ({ superusuario, children }) => {
   const { sesion } = useAuth();
-  console.log(sesion);
+  //console.log(sesion);
   if (!sesion || sesion.superusuario !== superusuario) {
     return null;
   }
