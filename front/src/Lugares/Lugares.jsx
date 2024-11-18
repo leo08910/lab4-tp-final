@@ -18,7 +18,7 @@ function Lugares() {
            }
         }
     getLugares()
-    },[lugares])
+    },[])
 
     return (
         <>  
