@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors";
 import { conectarDB } from "./db.js";
-//import reloj from "./registros/reloj.js";
 import usuarios from "./usuarios/usuarios.js";
 import router,{ authConfig } from "./usuarios/auth.js";
 import { vehiculosRouter } from "./vehiculos/vehiculos.js";
@@ -23,7 +22,7 @@ app.use("/", router);
 app.use("/vehiculos", vehiculosRouter);
 app.use("/", tarifas);
 
-//app.use(reloj)
+// app.use(reloj)
 app.use("/", registros);
 
 app.use("/lugares",LugaresRouter)
