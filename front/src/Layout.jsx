@@ -13,7 +13,7 @@ export const Layout = () => {
             </Link>
           </li>
           <li>
-            <Link to="/usuarios" className="nav-button">
+            <Link to="/lugares" className="nav-button">
             <img src="./assets/estacionamiento.svg" alt="Estacionamiento" />
             </Link>
           </li>

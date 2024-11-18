@@ -7,6 +7,7 @@ import { UsuariosPage } from "./UsuariosPage";
 import { AuthPage } from "./Auth";
 import Tarifas from "../src/Tarifas/Tarifas";
 import Registros from "../src/Registros/Registros";
+import Lugares from "../src/Lugares/Lugares"
 import "./App.css";
 
 function App() {
@@ -43,6 +44,14 @@ function App() {
             element={
               <AuthPage>
                 <Registros/>
+              </AuthPage>
+            }
+          />
+          <Route 
+            path="/lugares"
+            element={
+              <AuthPage>
+                <Lugares />
               </AuthPage>
             }
           />
