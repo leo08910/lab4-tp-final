@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useEffect } from "react";
-import { useAuth, AuthRol } from "../Auth"; 
+import { useAuth } from "../Auth"; 
 import "./lugares.css";
 
 function Lugares() {
@@ -24,30 +24,35 @@ function Lugares() {
     }
 
     const formulario = async (id_lugar) => {
-        const id_vehiculo = 6; // ID de prueba
-        try {
-            const response = await fetch(`http://localhost:3000/lugares/${id_lugar}/ocupar`, {
-                method: "PUT",
-                headers: {
-                    Authorization: `Bearer ${sesion.token}`,
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ id_vehiculo }),
-            });
+        // const id_vehiculo = 1; // ID de prueba
+        // try {
+        //     const response = await fetch(`http://localhost:3000/lugares/${id_lugar}/ocupar`, {
+        //         method: "PUT",
+        //         headers: {
+        //             Authorization: `Bearer ${sesion.token}`,
+        //             "Content-Type": "application/json",
+        //         },
+        //         body: JSON.stringify({ id_vehiculo }),
+        //     });
     
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error("Error al ocupar el lugar:", errorData);
-                return;
-            }else{
-                getLugares()
-            }
+        //     if (!response.ok) {
+        //         const errorData = await response.json();
+        //         console.error("Error al ocupar el lugar:", errorData);
+        //         return;
+        //     }else{
+        //         getLugares()
+        //     }
     
-            const data = await response.json();
-            console.log("Lugar ocupado exitosamente:", data);
-        } catch (error) {
-            console.error("Error en la solicitud:", error);
-        }
+        //     const data = await response.json();
+        //     console.log("Lugar ocupado exitosamente:", data);
+        // } catch (error) {
+        //     console.error("Error en la solicitud:", error);
+        // }
+        return (
+            <>
+                <h3>Ingreso de vehiculo</h3>
+            </>
+        );
     };
 
 
