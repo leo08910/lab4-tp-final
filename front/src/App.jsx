@@ -1,9 +1,9 @@
-import Lugares from "./components/Lugares/Lugares"
+import AgregarVehiculos from "./components/Vehiculos/AgregarVehiculos"
 
 function App() {
   return(
-    <div id="lugaresContenedor">
-      <Lugares/>
+    <div id="vehiculosContenedor">
+      <AgregarVehiculos/>
     </div>
   )
 }
