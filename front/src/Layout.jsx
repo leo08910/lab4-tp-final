@@ -1,5 +1,5 @@
 import { Link, Outlet } from "react-router-dom";
-import { AuthStatus } from "./Auth";
+// import { AuthStatus } from "./Auth";
 import "./Layout.css";
 
 export const Layout = () => {
@@ -30,7 +30,7 @@ export const Layout = () => {
         </ul>
       </nav>
       <div className="content">
-        <AuthStatus />
+        {/* <AuthStatus /> */}
         <Outlet />
       </div>
     </>

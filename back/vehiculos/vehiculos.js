@@ -8,9 +8,9 @@ const validarAuto=()=>[
     .isLength({min:5,max:5}).withMessage('La matricula debe tener 5 caracteres')
     .notEmpty().withMessage('La matricula es obligatoria'),
 
-    body('id_usuario').isNumeric()
-    .withMessage('La id de usuario debe ser un numero')
-    .notEmpty().withMessage('La id de usuario es obligatoria'),
+    body('id_cliente').isNumeric()
+    .withMessage('La id del cliente debe ser un numero')
+    .notEmpty().withMessage('La id del cliente es obligatoria'),
 
     body('id_tipo_vehiculo').isNumeric()
     .withMessage('El tipo de vehiculo se indica con un numero')
@@ -27,13 +27,13 @@ vehiculosRouter.post("/", validarAuto(),async (req,res)=>{
     if (!validacion.isEmpty()){
        return res.status(400).send({errores:validacion.array()})
     }
-    const { matricula, id_usuario, id_tipo_vehiculo } = req.body
+    const { matricula, id_cliente, id_tipo_vehiculo } = req.body
 
-    const [usuarioExiste] = await db.execute(
-        'select id_usuario from usuarios where id_usuario=?',[id_usuario]
+    const [clienteExiste] = await db.execute(
+        'select id_cliente from clientes where id_cliente=?',[id_cliente]
     )
-    if (usuarioExiste.length==0){
-        return res.status(404).send("Este usuario no existe")
+    if (clienteExiste.length==0){
+        return res.status(404).send("Este cliente no existe")
     }
 
     const [matriculaRepetida]= await db.execute(
@@ -51,16 +51,16 @@ vehiculosRouter.post("/", validarAuto(),async (req,res)=>{
     }
 
     const sql = await db.execute(
-        "insert into vehiculos (matricula,id_usuario,id_tipo_vehiculo,estacionado) values(?,?,?,1)",
-        [matricula,id_usuario,id_tipo_vehiculo]
+        "insert into vehiculos (matricula,id_cliente,id_tipo_vehiculo,estacionado) values(?,?,?,1)",
+        [matricula,id_cliente,id_tipo_vehiculo]
     )
 
     res
     .status(201)
-    .send({vehiculo:{id_vehiculo:sql.insertId,matricula,id_usuario,id_tipo_vehiculo}})
+    .send({vehiculo:{id_vehiculo:sql.insertId,matricula,id_cliente,id_tipo_vehiculo}})
 })
 
-vehiculosRouter.put('/:id_vehiculo/inhabilitar', async (req,res)=>{
+vehiculosRouter.put('/:id_vehiculo/retirar', async (req,res)=>{
     const {id_vehiculo}=req.params
 
     const [existe]= await db.execute(
@@ -73,7 +73,7 @@ vehiculosRouter.put('/:id_vehiculo/inhabilitar', async (req,res)=>{
     res.status(200).send('Vehiculo retirado')
 })
 
-vehiculosRouter.put('/:id_vehiculo/habilitar', async (req,res)=>{
+vehiculosRouter.put('/:id_vehiculo/estacionar', async (req,res)=>{
     const {id_vehiculo}= req.params
 
     const [existe]= await db.execute(

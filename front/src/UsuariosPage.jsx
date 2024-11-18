@@ -5,10 +5,10 @@ export const UsuariosPage = () => {
   return (
     <>
       <h2>Usuarios</h2>
-      <AuthRol rol="user">
+      <AuthRol superusuario={0}>
         <p>No tiene permitido ver este listado</p>
       </AuthRol>
-      <AuthRol rol="admin">
+      <AuthRol superusuario={1}>
         <ListadoUsuarios />
       </AuthRol>
     </>
