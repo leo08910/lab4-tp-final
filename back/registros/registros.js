@@ -1,6 +1,8 @@
 import express from "express";
 import { db } from "../db.js";
 import { body, validationResult } from "express-validator";
+import { validarJwt } from "../validaciones/validaciones.js";
+
 const registros = express.Router();
 
 // GET /registros
@@ -8,6 +10,7 @@ registros.get("/registros", async (req, res) => {
   try {
     const [result] = await db.query(`SELECT * FROM registros`);
     res.status(200).send({ result });
+    
   } catch (error) {
     console.log(error);
     res.status(500).send("Error en el servidor");
@@ -17,6 +20,7 @@ registros.get("/registros", async (req, res) => {
 // POST /registros
 registros.post(
   "/registros",
+  validarJwt,
   body("id_lugar").isInt().notEmpty(),
   body("id_vehiculo").isInt().notEmpty(),
   body("inicio").isISO8601(),
@@ -35,7 +39,6 @@ registros.post(
       req.body;
 
     try {
-
       //Para verificar si un lugar ya está ocupado
       const [lugar] = await db.query(
         "SELECT ocupado FROM lugares WHERE id_lugar = ?",

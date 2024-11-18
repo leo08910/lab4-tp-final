@@ -1,33 +1,38 @@
 import { Link, Outlet } from "react-router-dom";
 import { AuthStatus } from "./Auth";
+import "./Layout.css";
 
 export const Layout = () => {
   return (
     <>
-      <AuthStatus />
       <nav>
         <ul>
           <li>
-            <Link to="/">Home</Link>
+            <Link to="/perfil" className="nav-button">
+            <img src="./assets/perfil.svg" alt="Perfil" />
+            </Link>
           </li>
           <li>
-            <Link to="/acerca-de">Acerca de...</Link>
+            <Link to="/usuarios" className="nav-button">
+            <img src="./assets/estacionamiento.svg" alt="Estacionamiento" />
+            </Link>
           </li>
           <li>
-            <Link to="/perfil">Perfil</Link>
+            <Link to="/tarifas" className="nav-button">
+            <img src="./assets/tarifas.svg" alt="Tarifas" />
+            </Link>
           </li>
           <li>
-            <Link to="/tareas">Tareas</Link>
-          </li>
-          <li>
-            <Link to="/usuarios">Usuarios</Link>
-          </li>
-          <li>
-            <Link to="/tarifas">Tarifas</Link>
+            <Link to="/registros" className="nav-button">
+            <img src="./assets/registro.svg" alt="Registro" />
+            </Link>
           </li>
         </ul>
       </nav>
-      <Outlet />
+      <div className="content">
+        <AuthStatus />
+        <Outlet />
+      </div>
     </>
   );
 };
