@@ -84,12 +84,7 @@ function App() {
                 <Usuarios/>
               </AuthPage>
             }
-          />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="*" element={<SinRuta />} />
-        </Route>
-        
-    
+          />    
       </Routes>
     </>
   );
