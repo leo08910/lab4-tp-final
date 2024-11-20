@@ -1,11 +1,10 @@
 import { Route, Routes } from "react-router-dom";
-import { HomePage } from "./HomePage";
 import { Layout } from "./Layout";
 import { PerfilPage } from "./PerfilPage";
 import { LoginPage } from "./LoginPage";
 import { SinRuta } from "./SinRuta";
-import { UsuariosPage } from "./UsuariosPage";
 import { AuthPage } from "./Auth";
+import Usuarios from "../src/Usuarios/Usuarios";
 import Tarifas from "../src/Tarifas/Tarifas";
 import Registros from "../src/Registros/Registros";
 import Lugares from "../src/Lugares/Lugares"
@@ -23,15 +22,7 @@ function App() {
             index
             element={
               <AuthPage>
-                <HomePage />
-              </AuthPage>
-            }
-          />
-          <Route
-            path="/usuarios"
-            element={
-              <AuthPage>
-                <UsuariosPage />
+                <PerfilPage/>
               </AuthPage>
             }
           />
@@ -86,6 +77,18 @@ function App() {
               </AuthPage>
             }
           />
+          <Route
+            path="/usuarios"
+            element={
+              <AuthPage>
+                <Usuarios/>
+              </AuthPage>
+            }
+          />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="*" element={<SinRuta />} />
+        </Route>
+        
     
       </Routes>
     </>
