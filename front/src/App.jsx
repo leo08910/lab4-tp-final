@@ -9,6 +9,7 @@ import Tarifas from "../src/Tarifas/Tarifas";
 import Registros from "../src/Registros/Registros";
 import Lugares from "../src/Lugares/Lugares"
 import AgregarVehiculos from "./components/Vehiculos/AgregarVehiculos"
+import RegistroUsuarios  from "../src/RegistroUsuarios/RegistroUsuarios";
 
 import "./App.css";
 
@@ -57,7 +58,18 @@ function App() {
               </AuthPage>
             }
           />
-          <Route
+          <Route 
+            path="/registro"
+            element={
+              <AuthPage>
+                <RegistroUsuarios />
+              </AuthPage>
+            }
+          />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="*" element={<SinRuta />} />
+        </Route>
+        <Route
             path="/agregarVehiculos"
             element={
               <AuthPage>

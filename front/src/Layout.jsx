@@ -27,7 +27,9 @@ export const Layout = () => {
             <img src="./assets/registro.svg" alt="Registro" />
             </Link>
           </li>
-        
+          <li>
+            <Link to="/registro" className="nav-button">
+            <p>Registrar usuario</p>
         <li>
           <Link to='/AgregarVehiculos' className="nav-button">
             <img src="./assets/auto.svg" alt="AgregarVehiculos" />
