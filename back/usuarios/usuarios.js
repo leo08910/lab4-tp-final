@@ -36,7 +36,7 @@ usuarios.post("/usuarios",
 
     const passwordHashed = await bcrypt.hash(password, 10);
     try {
-    const [result] = await db.query(`insert into usuarios(nombre, apellido, email, telefono, password) values(?, ?, ?, ?, ?)`, [
+    const [result] = await db.query(`insert into usuarios(nombre, apellido, email, telefono, password, superusuario) values(?, ?, ?, ?, ?, ?)`, [
     nombre,
     apellido,
     email,
