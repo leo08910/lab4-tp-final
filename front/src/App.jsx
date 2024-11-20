@@ -10,7 +10,7 @@ import Tarifas from "../src/Tarifas/Tarifas";
 import Registros from "../src/Registros/Registros";
 import Lugares from "../src/Lugares/Lugares"
 import AgregarVehiculos from "./components/Vehiculos/AgregarVehiculos"
-import RegistroUsuarios  from "./RegistroUsuarios/RegistroUsuarios";
+import RegistroUsuarios  from "../src/RegistroUsuarios/RegistroUsuarios";
 
 import "./App.css";
 

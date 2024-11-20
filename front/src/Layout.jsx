@@ -27,6 +27,11 @@ export const Layout = () => {
             <img src="./assets/registro.svg" alt="Registro" />
             </Link>
           </li>
+          <li>
+            <Link to="/registro" className="nav-button">
+            <p>Registrar usuario</p>
+            </Link>
+          </li>
         </ul>
       </nav>
       <div className="content">
