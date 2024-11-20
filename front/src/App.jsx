@@ -1,5 +1,4 @@
 import { Route, Routes } from "react-router-dom";
-import { HomePage } from "./HomePage";
 import { Layout } from "./Layout";
 import { PerfilPage } from "./PerfilPage";
 import { LoginPage } from "./LoginPage";
@@ -22,7 +21,7 @@ function App() {
             index
             element={
               <AuthPage>
-                <HomePage />
+                <PerfilPage/>
               </AuthPage>
             }
           />
