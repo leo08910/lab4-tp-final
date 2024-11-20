@@ -1,7 +1,6 @@
 .login-form {
   height: 40vh;
   width: 20vw;
-
   display: flex;
   flex-direction: column;
   padding: 1rem;
