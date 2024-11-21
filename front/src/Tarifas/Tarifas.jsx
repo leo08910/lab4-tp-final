@@ -119,8 +119,8 @@ function Tarifas() {
       <div className="tarifas-container">
         <h1 className="titulo">Tarifas</h1>
 
-        {tarifas.map((tarifa) => (
-            <table className="tarifas_table" key={tarifa.id_tarifa}>
+        
+            <table >
             <thead>
               <tr >
                 <th>tipo de tarifa</th>
@@ -129,7 +129,8 @@ function Tarifas() {
                 <th>acciones</th>
               </tr>
             </thead>
-            <tbody>
+            {tarifas.map((tarifa) => (
+            <tbody className="tarifas_table" key={tarifa.id_tarifa}>
               <tr>
                 <td>{tarifa.tipo_tarifa}</td>
                 <td>{tarifa.tipo_vehiculo}</td>
@@ -139,9 +140,9 @@ function Tarifas() {
               <button onClick={() => deleteTarifa(tarifa.id_tarifa)}>Eliminar</button>
             </AuthRol></td>
               </tr>
-            </tbody>
+            </tbody>))}
           </table>
-        ))} <br />
+         <br />
       <AuthRol superusuario={1} > 
         {/* Formulario para agregar o editar tarifas */}
         <div className="superusuario">
@@ -154,16 +155,11 @@ function Tarifas() {
             }
           >
             <option className="tarifa_option" value="">Selecciona el tipo de tarifa</option>
-            {tarifas
-              .filter(
-                (tarifa, index, self) =>
-                  self.findIndex((t) => t.tipo_tarifa === tarifa.tipo_tarifa) === index
-              )
-              .map((tarifa) => (
-                <option key={tarifa.id_tarifa} value={tarifa.tipo_tarifa}>
-                  {tarifa.tipo_tarifa}
-                </option>
-              ))}
+                <option value="p/turno">p/turno</option>
+                <option value="p/hora">p/hora</option>
+                <option value="p/día">p/día</option>
+                <option value="p/mes">p/mes</option>
+                  
           </select>
           <br />
           <select
