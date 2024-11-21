@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useEffect } from "react";
-import { useAuth, AuthRol } from "../Auth"; 
+import { useAuth } from "../Auth"; 
 import "./lugares.css";
 
 function Lugares() {
@@ -23,8 +23,8 @@ function Lugares() {
        }
     }
 
-    const formulario = async (id_lugar) => {
-        const id_vehiculo = 6; // ID de prueba
+    const formularioOcupar = async (id_lugar) => {
+        const id_vehiculo = 5; // ID de prueba
         try {
             const response = await fetch(`http://localhost:3000/lugares/${id_lugar}/ocupar`, {
                 method: "PUT",
@@ -37,8 +37,7 @@ function Lugares() {
     
             if (!response.ok) {
                 const errorData = await response.json();
-                console.error("Error al ocupar el lugar:", errorData);
-                return;
+                return console.error("Error al ocupar el lugar:", errorData);
             }else{
                 getLugares()
             }
@@ -48,19 +47,48 @@ function Lugares() {
         } catch (error) {
             console.error("Error en la solicitud:", error);
         }
+        return (
+            <>
+                <h3>Ingreso de vehiculo</h3>
+            </>
+        );
     };
 
+    const formularioLiberar = async (id_lugar) => {
+        const id_vehiculo = 5; // ID de prueba
+        try{
+            const response = await fetch(`http://localhost:3000/lugares/${id_lugar}/desocupar`,{
+                method: "PUT",
+                headers: {
+                    Authorization: `Bearer ${sesion.token}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ id_vehiculo }),
+            })
+            
+            if(!response.ok){
+                const errorData = await response.json()
+                return console.error('Error al ocupar el lugar:', errorData )
+            }else{
+                getLugares()
+            }
+
+            const data = await response.json()
+            console.log("lugar liberado existosamente:",data)
+        }catch (error){
+            console.error("Error en la solicitud", error)
+        }
+    }
 
     return (
-        <>  
-            <h1 className="titulo_estacionamiento">Estacionamiento</h1>
+        <>
+            <h1>Estacionamiento</h1>
             <div className="estacionamiento">
                 {lugares.map((lugar) => (
                     <button
-                        disabled = {lugar.ocupado}
                         key={lugar.id_lugar}
                         className={`lugar ${lugar.ocupado ? "ocupado" : "libre"}`}
-                        onClick={() => formulario(lugar.id_lugar)}
+                        onClick={() => lugar.ocupado ? formularioLiberar(lugar.id_lugar) : formularioOcupar(lugar.id_lugar)}
                     >
                         {lugar.ocupado ? "ocupado" : "libre"}
                     </button>

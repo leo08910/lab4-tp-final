@@ -20,7 +20,7 @@ export function authConfig() {
   passport.use(
     new Strategy(jwtOptions, async (payload, next) => {
 
-      console.log("en strategy", payload);
+      // console.log("en strategy", payload);
 
       const [usuarios] = await db.execute(
       "SELECT nombre, superusuario FROM usuarios WHERE nombre = ?",
@@ -29,7 +29,7 @@ export function authConfig() {
 
         // Si hay al menos un usuario reenviarlo
         if (usuarios.length > 0) {
-          console.log(usuarios[0])
+          // console.log(usuarios[0])
           next(null, usuarios[0]);
         } else {
           next(null, false);
