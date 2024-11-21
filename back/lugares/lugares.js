@@ -94,7 +94,7 @@ LugaresRouter.put('/:id_lugar/desocupar',validarConsulta(), async (req, res) => 
     const {id_vehiculo} = req.body
     try{
         // Verificar si el vehículo ocupa el lugar específicado
-        const [[lugarOcupado]] = await db.query('SELECT * FROM lugares WHERE id_lugar = ? AND ocupado = 1',[id_lugar, id_vehiculo]);
+        const [[lugarOcupado]] = await db.query('SELECT * FROM lugares WHERE id_lugar = ? AND ocupado = 1',[id_lugar]);
         if (!lugarOcupado) {
             return res.status(400).send({ mensaje: 'El vehículo no está estacionado en este lugar.' });
         }
