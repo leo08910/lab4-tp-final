@@ -193,7 +193,7 @@ function Tarifas() {
           <br />
           <button className="tarifas_button_ok" onClick={editMode ? putTarifa : postTarifa}>
             {editMode ? "Guardar Cambios" : "Agregar Tarifa"}
-          </button><br />
+          </button>
           {editMode && <button className="tarifas_button_cancel" onClick={handleCancelEdit}>Cancelar</button>}
         </div>
       </AuthRol>
