@@ -10,7 +10,10 @@ export const useAuth = () => {
 
 // Componente principal
 export const AuthProvider = ({ children }) => {
-  const [sesion, setSesion] = useState(null);
+  const [sesion, setSesion] = useState(() => {
+    const tokenGuardado = sessionStorage.getItem("token");
+    return tokenGuardado ? JSON.parse(tokenGuardado) : null;
+  });
 
   const login = async (nombre, password, ok, error) => {
     const response = await fetch("http://localhost:3000/login", {
@@ -18,20 +21,25 @@ export const AuthProvider = ({ children }) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ nombre, password }),
     });
+
     if (!response.ok) {
       error();
       return;
     }
+
     const sesion = await response.json();
-    //console.log(sesion);
-    // localStorage.setItem("token",sesion.token);
-    // localStorage.getItem("token")
     setSesion(sesion);
+
+    sessionStorage.setItem("token", JSON.stringify(sesion));
+
     ok();
   };
 
   const logout = (ok) => {
     setSesion(null);
+
+    sessionStorage.removeItem("token");
+
     ok();
   };
 
@@ -39,6 +47,7 @@ export const AuthProvider = ({ children }) => {
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
+
 
 // Autorizar pagina
 export const AuthPage = ({ children }) => {
@@ -55,7 +64,6 @@ export const AuthPage = ({ children }) => {
 // Autorizar superusuario
 export const AuthRol = ({ superusuario, children }) => {
   const { sesion } = useAuth();
-  //console.log(sesion);
   if (!sesion || sesion.superusuario !== superusuario) {
     return null;
   }

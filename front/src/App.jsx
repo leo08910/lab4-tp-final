@@ -1,15 +1,14 @@
 import { Route, Routes } from "react-router-dom";
-import { HomePage } from "./HomePage";
 import { Layout } from "./Layout";
 import { PerfilPage } from "./PerfilPage";
 import { LoginPage } from "./LoginPage";
 import { SinRuta } from "./SinRuta";
 import { AuthPage } from "./Auth";
-import Usuarios from "../src/Usuarios/Usuarios";
 import Tarifas from "../src/Tarifas/Tarifas";
 import Registros from "../src/Registros/Registros";
 import Lugares from "../src/Lugares/Lugares"
 import AgregarVehiculos from "./components/Vehiculos/AgregarVehiculos"
+import RegistroUsuarios  from "../src/RegistroUsuarios/RegistroUsuarios";
 
 import "./App.css";
 
@@ -22,7 +21,7 @@ function App() {
             index
             element={
               <AuthPage>
-                <HomePage />
+                <PerfilPage/>
               </AuthPage>
             }
           />
@@ -70,15 +69,14 @@ function App() {
             path="/usuarios"
             element={
               <AuthPage>
-                <Usuarios/>
+                <RegistroUsuarios/>
               </AuthPage>
             }
-          />
+          />  
           <Route path="/login" element={<LoginPage />} />
           <Route path="*" element={<SinRuta />} />
         </Route>
-        
-    
+          
       </Routes>
     </>
   );
