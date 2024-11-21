@@ -24,6 +24,8 @@ export const AuthProvider = ({ children }) => {
     }
     const sesion = await response.json();
     //console.log(sesion);
+    // localStorage.setItem("token",sesion.token);
+    // localStorage.getItem("token")
     setSesion(sesion);
     ok();
   };
