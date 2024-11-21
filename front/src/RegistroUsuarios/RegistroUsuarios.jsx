@@ -13,9 +13,21 @@ const RegistroUsuarios = () => {
     });
     const [mensaje, setMensaje] = useState("")
     
+    const validarPassword = (password) => {
+        const tieneMinuscula = /[a-z]/.test(password);
+        const tieneMayuscula = /[A-Z]/.test(password);
+        const tieneNumero = /\d/.test(password);
+        const longitudSuficiente = password.length >= 8
+        return tieneMinuscula && tieneMayuscula && tieneNumero && longitudSuficiente;
+    }; 
      
     const onSubmit = async (e)=>{
         e.preventDefault()
+
+        if (!validarPassword(registro.password)) {
+            setMensaje("El password debe contener al menos 1 mayuscula, 1 minuscula y un numero.")
+            return
+        }
         
         try {
             const response = await fetch("http://localhost:3000/usuarios", {
