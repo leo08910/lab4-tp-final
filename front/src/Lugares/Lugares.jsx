@@ -9,6 +9,7 @@ function Lugares() {
   const [formData, setFormData] = useState({});
   const [selectedLugar, setSelectedLugar] = useState(null);
   const [tarifas, setTarifas] = useState([]);
+  const [unidadTiempo, setUnidadTiempo] = useState("");
 
   useEffect(() => {
     getLugares();
@@ -28,10 +29,35 @@ function Lugares() {
     const response = await fetch("http://localhost:3000/lugares");
     try {
       const ApiLugares = await response.json();
-      console.log("Los datos de la Api son", ApiLugares);
       setLugares(ApiLugares);
     } catch (error) {
       console.log("Error al cargar los lugares de la Api", error);
+    }
+  };
+  
+  const formularioLiberar = async (id_lugar) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/lugares/${id_lugar}/desocupar`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${sesion.token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        return console.error("Error al liberar el lugar:", errorData);
+      }
+
+      const data = await response.json();
+      console.log("Lugar liberado exitosamente:", data);
+      getLugares();
+    } catch (error) {
+      console.error("Error en la solicitud para liberar el lugar:", error);
     }
   };
 
@@ -41,9 +67,8 @@ function Lugares() {
       id_lugar: lugar.id_lugar,
       matricula: "",
       cliente: "",
-      inicio: "",
-      fin: "",
       id_tarifa: "",
+      duracion: "",
     });
     setModalVisible(true);
     getTarifas();
@@ -59,21 +84,40 @@ function Lugares() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  useEffect(() => {
+    const tarifaSeleccionada = tarifas.find(
+      (tarifa) => tarifa.id_tarifa.toString() === formData.id_tarifa
+    );
+    if (tarifaSeleccionada) {
+      const tipo = tarifaSeleccionada.tipo_tarifa.toLowerCase();
+      if (tipo.includes("día")) {
+        setUnidadTiempo("días");
+      } else if (tipo.includes("semana")) {
+        setUnidadTiempo("semanas");
+      } else if (tipo.includes("turno")) {
+        setUnidadTiempo("turnos");
+      } else if (tipo.includes("mes")) {
+        setUnidadTiempo("meses");
+      } else {
+        setUnidadTiempo("");
+      }
+    } else {
+      setUnidadTiempo("");
+    }
+  }, [formData.id_tarifa, tarifas]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const id_vehiculo = 5; // ID de prueba
-    const { id_lugar /*, matricula, dueño, tipoTarifa*/ } = formData;
     try {
       const response = await fetch(
-        `http://localhost:3000/lugares/${id_lugar}/ocupar`,
+        `http://localhost:3000/lugares/${formData.id_lugar}/ocupar`,
         {
           method: "PUT",
           headers: {
             Authorization: `Bearer ${sesion.token}`,
             "Content-Type": "application/json",
           },
-          //body: JSON.stringify({ matricula, dueño, tipoTarifa }),
-          body: JSON.stringify({ id_vehiculo }),
+          body: JSON.stringify(formData),
         }
       );
       if (!response.ok) {
@@ -86,33 +130,6 @@ function Lugares() {
       handleCloseModal();
     } catch (error) {
       console.error("Error en la solicitud:", error);
-    }
-  };
-
-  const formularioLiberar = async (id_lugar) => {
-    try {
-      const response = await fetch(
-        `http://localhost:3000/lugares/${id_lugar}/desocupar`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${sesion.token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ id_vehiculo }),
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        return console.error("Error al liberar el lugar:", errorData);
-      }
-
-      const data = await response.json();
-      console.log("Lugar liberado exitosamente:", data);
-      getLugares();
-    } catch (error) {
-      console.error("Error en la solicitud para liberar el lugar:", error);
     }
   };
 
@@ -157,7 +174,7 @@ function Lugares() {
                 <label>Dueño del vehículo:</label>
                 <input
                   type="text"
-                  name="dueño"
+                  name="cliente"
                   value={formData.cliente}
                   onChange={handleChange}
                   required
@@ -166,8 +183,8 @@ function Lugares() {
               <div>
                 <label>Tipo de tarifa:</label>
                 <select
-                  name="tipoTarifa"
-                  value={formData.tipoTarifa}
+                  name="id_tarifa"
+                  value={formData.id_tarifa}
                   onChange={handleChange}
                   required
                 >
@@ -179,6 +196,19 @@ function Lugares() {
                   ))}
                 </select>
               </div>
+              {unidadTiempo && (
+                <div>
+                  <label>Duración en {unidadTiempo}:</label>
+                  <input
+                    type="number"
+                    name="duracion"
+                    value={formData.duracion}
+                    onChange={handleChange}
+                    min="1"
+                    required
+                  />
+                </div>
+              )}
               <button type="submit">Confirmar</button>
             </form>
           </div>
