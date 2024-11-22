@@ -7,6 +7,7 @@ import { vehiculosRouter } from "./vehiculos/vehiculos.js";
 import { LugaresRouter } from "./lugares/lugares.js"
 import tarifas from "./tarifas/tarifas.js";
 import registros from "./registros/registros.js";
+import clientes from "./clientes/clientes.js";
 
 const app = express();
 const port = 3000;
@@ -21,7 +22,7 @@ app.use("/", usuarios);
 app.use("/", router);
 app.use("/vehiculos", vehiculosRouter);
 app.use("/", tarifas);
-
+app.use("/",clientes)
 app.use("/", registros);
 
 app.use("/lugares",LugaresRouter)
