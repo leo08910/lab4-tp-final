@@ -38,9 +38,9 @@ function Lugares() {
             if (!response.ok) {
                 const errorData = await response.json();
                 return console.error("Error al ocupar el lugar:", errorData);
-            }else{
-                getLugares()
             }
+            
+            getLugares()
     
             const data = await response.json();
             console.log("Lugar ocupado exitosamente:", data);
@@ -69,9 +69,9 @@ function Lugares() {
             if(!response.ok){
                 const errorData = await response.json()
                 return console.error('Error al ocupar el lugar:', errorData )
-            }else{
-                getLugares()
             }
+
+            getLugares()
 
             const data = await response.json()
             console.log("lugar liberado existosamente:",data)
