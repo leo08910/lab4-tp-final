@@ -1,7 +1,6 @@
 import express from "express";
 import {db} from "../db.js"
 import { body,param, validationResult } from "express-validator";
-import passport from "passport";
 import { validarId,validarSuperUsuario,validarJwt } from "../validaciones/validaciones.js"
 
 const tarifas = express.Router()

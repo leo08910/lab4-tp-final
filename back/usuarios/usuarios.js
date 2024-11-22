@@ -2,7 +2,7 @@ import express from "express";
 import {db} from "../db.js"
 import { body, validationResult } from "express-validator";
 import bcrypt from "bcrypt";
-import { validarSuperUsuario,validarJwt } from "../validaciones/validaciones.js";
+import { validarSuperUsuario,validarJwt, verificarValidaciones, validarId } from "../validaciones/validaciones.js";
 
 const usuarios = express.Router()
 
@@ -19,6 +19,8 @@ usuarios.get("/usuarios",
 });
 
 usuarios.post("/usuarios",
+  validarJwt,
+  validarSuperUsuario,
   body("nombre").isAlphanumeric().notEmpty().isLength({ max: 25 }),
   body("password").isStrongPassword({
     minLength: 8, // Minino de 8 caracteres (letras y numeros)
@@ -27,23 +29,20 @@ usuarios.post("/usuarios",
     minNumbers: 1, // Al menos un numero
     minSymbols: 0, // Sin simbolos
   }),
+  verificarValidaciones,
   async (req, res) => {
     
-    const validacion = validationResult(req);
-    if (!validacion.isEmpty()) {
-      res.status(400).send({ errores: validacion.array() });
-      return;
-    }
-    const { nombre, apellido, email, telefono, password } = req.body;
+    const { nombre, apellido, email, telefono, password, superusuario } = req.body;
 
     const passwordHashed = await bcrypt.hash(password, 10);
     try {
-    const [result] = await db.query(`insert into usuarios(nombre, apellido, email, telefono, password) values(?, ?, ?, ?, ?)`, [
+    const [result] = await db.query(`insert into usuarios(nombre, apellido, email, telefono, password, superusuario) values(?, ?, ?, ?, ?, ?)`, [
     nombre,
     apellido,
     email,
     telefono,
     passwordHashed,
+    superusuario
     ]);
 
     res.status(201).send({result});
@@ -67,6 +66,22 @@ usuarios.put("/usuarios", async (req, res) => {
 
   } catch (error) {
       res.status(500).send("Error en el servidor");
+  }
+})
+
+usuarios.delete("/usuarios/:id",
+  validarJwt,
+  validarSuperUsuario,
+  validarId,
+   async(req,res)=> {
+  const id = req.params.id
+  try {
+    const result = await db.query(`DELETE from usuarios WHERE id_usuario = ?`, [id]);
+    res.status(200).send(result);
+
+  } catch (error) {
+      res.status(500).send("Error en el servidor");
+      console.log(error)
   }
 })
 

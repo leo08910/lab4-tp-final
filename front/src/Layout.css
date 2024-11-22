@@ -22,7 +22,7 @@ nav {
 }
 
 nav ul {
-    height: 70%;
+    height: 80%;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -65,9 +65,19 @@ nav ul li a img {
     box-shadow: inset 20px -20px 60px #bebebe,
         inset -20px 20px 60px #ffffff;
     cursor: pointer;
-    transition: all 0.15s ease-out;
+    transition: all 0.2s ease-out;
+}
+
+.nav-button {
+    transition: all 0.3s;
+    box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
+}
+
+.nav-button:active {
+    color: #666;
+    box-shadow: inset 4px 4px 12px #c5c5c5, inset -4px -4px 12px #ffffff;
 }
 
 .nav-button:hover {
-    transform: translateY(-3px);
+    transform: translateX(-6px);
 }

@@ -1,4 +1,6 @@
 import { useState } from "react";
+import './AgregarVehiculos.css'
+
 export default function AgregarVehiculos() {
     const [matricula,setMatricula]=useState("")
     const [id_cliente,setId_cliente]=useState("")
@@ -17,21 +19,26 @@ export default function AgregarVehiculos() {
     }
     return (
         <>
+
         <form onSubmit={handleSubmit}>
-            <div style={{display:"flex",flexDirection:"column",alignItems:"center"}}>
-                <label>Matricula del vehiculo</label>
+            <div className="contenedorVehiculos" >
+
+                <label className="Textos">Matricula del vehiculo</label>
                 <input type="text" onChange={(e)=>setMatricula(e.target.value)} />
-
-                <label>Id del cliente</label>
+               
+                <label className="Textos">Id del cliente</label>
                 <input type="number" onChange={(e)=>setId_cliente(parseInt(e.target.value))}/>
-
-                <label>Tipo de vehiculo</label>
+                
+                <label className="Textos">Tipo de vehiculo</label>
                 <select onChange={(e)=>setId_tipo_vehiculo(Number(e.target.value))} value={id_tipo_vehiculo}>
                     <option value="1">Auto</option>
                     <option value="2">Moto</option>
                     <option value="3">Camioneta</option>
                 </select>
+
                 <button type="submit">Registrar auto</button>
+
+                
             </div>
 
         </form>
