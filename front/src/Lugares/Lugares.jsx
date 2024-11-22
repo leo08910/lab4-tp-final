@@ -8,10 +8,21 @@ function Lugares() {
   const [modalVisible, setModalVisible] = useState(false);
   const [formData, setFormData] = useState({});
   const [selectedLugar, setSelectedLugar] = useState(null);
+  const [tarifas, setTarifas] = useState([]);
 
   useEffect(() => {
     getLugares();
   }, []);
+
+  const getTarifas = async () => {
+    const response = await fetch(`http://localhost:3000/tarifas`, {
+      headers: { Authorization: `Bearer ${sesion.token}` },
+    });
+    if (response.ok) {
+      const { result } = await response.json();
+      setTarifas(result);
+    }
+  };
 
   const getLugares = async () => {
     const response = await fetch("http://localhost:3000/lugares");
@@ -29,10 +40,13 @@ function Lugares() {
     setFormData({
       id_lugar: lugar.id_lugar,
       matricula: "",
-      dueño: "",
-      tipoTarifa: "",
+      cliente: "",
+      inicio: "",
+      fin: "",
+      id_tarifa: "",
     });
     setModalVisible(true);
+    getTarifas();
   };
 
   const handleCloseModal = () => {
@@ -76,7 +90,6 @@ function Lugares() {
   };
 
   const formularioLiberar = async (id_lugar) => {
-    const id_vehiculo = 5; // ID de prueba
     try {
       const response = await fetch(
         `http://localhost:3000/lugares/${id_lugar}/desocupar`,
@@ -111,11 +124,10 @@ function Lugares() {
           <button
             key={lugar.id_lugar}
             className={`lugar ${lugar.ocupado ? "ocupado" : "libre"}`}
-            onClick={
-              () =>
-                lugar.ocupado
-                  ? formularioLiberar(lugar.id_lugar)
-                  : handleClickLugar(lugar)
+            onClick={() =>
+              lugar.ocupado
+                ? formularioLiberar(lugar.id_lugar)
+                : handleClickLugar(lugar)
             }
           >
             {lugar.ocupado ? "Ocupado" : "Libre"}
@@ -146,7 +158,7 @@ function Lugares() {
                 <input
                   type="text"
                   name="dueño"
-                  value={formData.dueño}
+                  value={formData.cliente}
                   onChange={handleChange}
                   required
                 />
@@ -160,9 +172,11 @@ function Lugares() {
                   required
                 >
                   <option value="">Seleccione una tarifa</option>
-                  <option value="1">Tarifa 1</option>
-                  <option value="2">Tarifa 2</option>
-                  <option value="3">Tarifa 3</option>
+                  {tarifas.map((tarifa) => (
+                    <option key={tarifa.id_tarifa} value={tarifa.id_tarifa}>
+                      {tarifa.tipo_tarifa}
+                    </option>
+                  ))}
                 </select>
               </div>
               <button type="submit">Confirmar</button>

@@ -22,7 +22,7 @@ registros.post(
   "/registros",
   validarJwt,
   body("id_lugar").isInt().notEmpty(),
-  body("id_vehiculo").isInt().notEmpty(),
+  body("matricula").notEmpty().isAlphanumeric().isLength({max:10}),
   body("inicio").isISO8601(),
   body("fin").optional().isISO8601(),
   body("id_tarifa").isInt().notEmpty(),
@@ -35,7 +35,7 @@ registros.post(
       return res.status(400).send({ errores: validacion.array() });
     }
 
-    const { id_lugar, id_vehiculo, inicio, fin, id_tarifa, precio_final } =
+    const { id_lugar, matricula, inicio, fin, id_tarifa, precio_final } =
       req.body;
 
     try {
@@ -49,6 +49,7 @@ registros.post(
       }
 
       //Para verificar si un vehículo se encuentra ya estacionado
+      /*
       const [vehiculoEnUso] = await db.query(
         "SELECT * FROM registros WHERE id_vehiculo = ? AND (fin IS NULL OR fin > NOW())",
         [id_vehiculo]
@@ -56,19 +57,24 @@ registros.post(
       if (vehiculoEnUso.length > 0) {
         return res.status(400).send({mensaje: `El vehículo ${id_vehiculo} ya está estacionado en otro lugar`});
       }
+      */
 
       //Inserción de los datos al registro
       const [result] = await db.query(
-        `INSERT INTO registros(id_lugar, id_vehiculo, inicio, fin, id_tarifa, precio_final) VALUES(?, ?, ?, ?, ?, ?)`,
-        [id_lugar, id_vehiculo, inicio, fin, id_tarifa, precio_final]
+        `INSERT INTO registros(id_lugar, id_vehiculo, inicio, fin, id_tarifa, precio_final) VALUES(?, ?, ?, NOW(), ?, ?)`,
+        [id_lugar, matricula, inicio, fin, id_tarifa, precio_final]
       );
 
-      //Actualización 
+      //Actualización
+      /* 
       await db.query("UPDATE lugares SET ocupado = 1 WHERE id_lugar = ?", [
         id_lugar,
       ]);
+      */
+
       res.status(201).send({ result });
 
+      /*
       if (fin) {
         const tiempoRestante = new Date(fin).getTime() - new Date().getTime();
 
@@ -92,6 +98,7 @@ registros.post(
       } else {
         console.log(`Lugar ${id_lugar} reservado por tiempo indefinido.`);
       }
+      */
 
     } catch (error) {
       console.log(error);
