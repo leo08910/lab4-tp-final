@@ -5,6 +5,18 @@ import { validarSuperUsuario,validarJwt } from "../validaciones/validaciones.js"
 
 const clientes = express.Router()
 
+clientes.get('/clientes', async (req,res)=>{
+  const [lista]= await db.execute('select * from clientes')
+  res.send({lista})
+})
+
+clientes.get('/clientes/:id', async (req,res)=>{
+  const {id}= req.params
+
+  const [lista] = await db.execute('select * from clientes where id_cliente=?',[id])
+  res.send({lista})
+})
+
 //crear una cliente
 clientes.post("/clientes",
   validarJwt,
