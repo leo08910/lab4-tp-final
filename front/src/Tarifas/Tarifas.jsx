@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useAuth, AuthRol } from "../Auth"; // Asegúrate de importar AuthRol
+import { useAuth, AuthRol } from "../Auth"; //traigo AuthRol para verificar si es superusuario
 import "./Tarifas.css";
 
 function Tarifas() {
