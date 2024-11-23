@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useAuth, AuthRol } from "../Auth"; //traigo AuthRol para verificar si es superusuario
 import "./Tarifas.css";
+import getTarifas from "./GetTarifas";
+
 
 function Tarifas() {
   const { sesion } = useAuth();
@@ -13,22 +15,21 @@ function Tarifas() {
   const [tarifaIdToEdit, setTarifaIdToEdit] = useState(null);
 
   useEffect(() => {
-    getTarifas();
+    getTarifas(sesion,setTarifas);
   }, []);
 
-  const getTarifas = async () => {
-    const response = await fetch(`http://localhost:3000/tarifas`, {
-      headers: { Authorization: `Bearer ${sesion.token}` },
-    });
-    if (response.ok) {
-      const { result } = await response.json();
-      setTarifas(result);
-    }
-  };
 
   const postTarifa = async () => {
     const confirmacion = window.confirm("¿Seguro que deseas agregar tarifa?");
     if (!confirmacion) return;
+  // Verificar si el tipo de tarifa ya existe
+  const tarifaExistente = tarifas.find(
+    (tarifa) => tarifa.tipo_tarifa === nuevaTarifa.tipo_tarifa
+  );
+  if (tarifaExistente) {
+    alert("El tipo de tarifa ya existe. Por favor, elige otro.");
+    return;
+  }
 
     const response = await fetch("http://localhost:3000/tarifas", {
       method: "POST",
@@ -39,7 +40,7 @@ function Tarifas() {
       body: JSON.stringify(nuevaTarifa),
     });
     if (response.ok) {
-      getTarifas();
+      getTarifas(sesion,setTarifas);
       setNuevaTarifa({ tipo_tarifa: "", precio: "" });
     } else {
       const error = await response.json();
@@ -60,7 +61,7 @@ function Tarifas() {
       body: JSON.stringify(nuevaTarifa),
     });
     if (response.ok) {
-      getTarifas();
+      getTarifas(sesion,setTarifas);
       setNuevaTarifa({ tipo_tarifa: "", precio: "" });
       setEditMode(false);
       setTarifaIdToEdit(null);
@@ -79,7 +80,7 @@ function Tarifas() {
       headers: {Authorization: `Bearer ${sesion.token}`,},
     });
     if (response.ok) {
-      getTarifas();
+      getTarifas(sesion,setTarifas);
     } else {
       const error = await response.json();
       console.error("Error al eliminar tarifa:", error);

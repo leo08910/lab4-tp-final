@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../Auth";
 import "./lugares.css";
+import getTarifas from "../Tarifas/GetTarifas";
 
 function Lugares() {
   const { sesion } = useAuth();
@@ -15,15 +16,6 @@ function Lugares() {
     getLugares();
   }, []);
 
-  const getTarifas = async () => {
-    const response = await fetch(`http://localhost:3000/tarifas`, {
-      headers: { Authorization: `Bearer ${sesion.token}` },
-    });
-    if (response.ok) {
-      const { result } = await response.json();
-      setTarifas(result);
-    }
-  };
 
   const getLugares = async () => {
     const response = await fetch("http://localhost:3000/lugares");
@@ -72,7 +64,7 @@ function Lugares() {
       inicioFecha: new Date().toISOString().slice(0, 19).replace("T", " "),
     });
     setModalVisible(true);
-    getTarifas();
+    getTarifas(sesion,setTarifas);
   };
 
   const handleCloseModal = () => {
