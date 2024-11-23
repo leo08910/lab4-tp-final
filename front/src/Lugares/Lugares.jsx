@@ -91,7 +91,9 @@ function Lugares() {
     );
     if (tarifaSeleccionada) {
       const tipo = tarifaSeleccionada.tipo_tarifa.toLowerCase();
-      if (tipo.includes("día")) {
+      if (tipo.includes("hora")) {
+        setUnidadTiempo("horas");
+      }else if (tipo.includes("dia")) {
         setUnidadTiempo("días");
       } else if (tipo.includes("semana")) {
         setUnidadTiempo("semanas");

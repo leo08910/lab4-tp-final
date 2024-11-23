@@ -52,28 +52,30 @@ registros.post(
 
       // Cálculo del las fechasy el precio
       let fin;
-
+      console.log(tipo_tarifa);
       if (tipo_tarifa.toLowerCase().includes("hora")) {
         fin = new Date(inicioFecha);
-        fin.setHours(fin.getHours() + duracion);
+        fin.setHours(fin.getHours() + parseInt(duracion)); // Suma el número de horas.
       } else if (tipo_tarifa.toLowerCase().includes("turno")) {
         fin = new Date(inicioFecha);
-        fin.setHours(fin.getHours() + duracion * 12);
+        fin.setHours(fin.getHours() + parseInt(duracion) * 12); // Multiplica por 12 horas para cada "turno".
       } else if (tipo_tarifa.toLowerCase().includes("día")) {
         fin = new Date(inicioFecha);
-        fin.setDate(fin.getDate() + duracion);
+        console.log(fin.getDate());
+        fin.setDate(fin.getDate() + parseInt(duracion)); // Suma los días sin ningún valor adicional.
       } else if (tipo_tarifa.toLowerCase().includes("semana")) {
         fin = new Date(inicioFecha);
-        fin.setDate(fin.getDate() + duracion * 7);
+        fin.setDate(fin.getDate() + parseInt(duracion) * 7); // Suma semanas (7 días por semana).
       } else if (tipo_tarifa.toLowerCase().includes("mes")) {
         fin = new Date(inicioFecha);
-        fin.setMonth(fin.getMonth() + duracion);
+        fin.setMonth(fin.getMonth() + parseInt(duracion)); // Suma el número de meses.
       } else {
         return res
           .status(400)
           .send({ mensaje: "Tipo de tarifa no soportado para cálculo" });
       }
-      const precioFinal = precio * duracion;
+      
+      const precioFinal = parseInt(duracion) * parseInt(duracion);
 
       const [result] = await db.query(
         `INSERT INTO registros(id_lugar, matricula, cliente, inicio, fin, id_tarifa, precio_final) VALUES(?, ?, ?, ?, ?, ?, ?)`,
