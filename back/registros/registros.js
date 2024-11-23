@@ -35,7 +35,7 @@ registros.post(
       return res.status(400).send({ errores: validacion.array() });
     }
 
-    const { id_lugar, matricula, cliente, inicioFecha, id_tarifa, duracion } = req.body;
+    const { id_lugar, matricula, cliente, inicioFecha, id_tarifa, duracion} = req.body;
 
     try {
 
@@ -76,7 +76,7 @@ registros.post(
       const precioFinal = precio * duracion;
 
       const [result] = await db.query(
-        `INSERT INTO registros(id_lugar, matricula, cliente, inicio, fin, id_tarifa, precio_final) VALUES(?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO registros(id_lugar, matricula, cliente, inicio, fin, id_tarifa, precio_final) VALUES(?, ?, ?, ?, ?, ?, ?)`,
         [id_lugar, matricula, cliente, inicioFecha, fin, id_tarifa, precioFinal]
       );
 
