@@ -37,7 +37,7 @@ const Registros = () => {
       setTarifas(result);
     }
   };
-    getTarifas();
+  getTarifas(sesion,setTarifas);
   }, []);
 
   // Función para obtener tipo_tarifa
