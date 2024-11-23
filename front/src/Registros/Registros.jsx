@@ -32,7 +32,7 @@ const Registros = () => {
             <tr>
               <th>ID</th>
               <th>ID Lugar</th>
-              <th>ID Vehículo</th>
+              <th>Matricula</th>
               <th>Inicio</th>
               <th>Fin</th>
               <th>ID Tarifa</th>
@@ -44,7 +44,7 @@ const Registros = () => {
               <tr key={registro.id_registro}>
                 <td>{registro.id_registro}</td>
                 <td>{registro.id_lugar}</td>
-                <td>{registro.id_vehiculo}</td>
+                <td>{registro.matricula}</td>
                 <td>{new Date(registro.inicio).toLocaleString()}</td>
                 <td>{registro.fin ? new Date(registro.fin).toLocaleString() : "Indefinido"}</td>
                 <td>{registro.id_tarifa}</td>
