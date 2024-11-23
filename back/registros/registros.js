@@ -80,7 +80,7 @@ registros.post(
         [id_lugar, matricula, cliente, inicioFecha, fin, id_tarifa, precioFinal]
       );
 
-      res.status(201).send({ result, precioFinal, inicio, fin });
+      res.status(201).send({ result, precioFinal, inicioFecha, fin });
 
     } catch (error) {
       console.log(error);
