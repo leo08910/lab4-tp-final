@@ -22,9 +22,9 @@ registros.post(
   "/registros",
   validarJwt,
   body("id_lugar").isInt().notEmpty(),
-  body("matricula").notEmpty().isAlphanumeric().isLength({ max: 10 }),
+  body("matricula").matches(/^[A-Za-z0-9\s]+$/),
   body("cliente").notEmpty().isAlpha().isLength({ max: 50 }),
-  body("inicio").isISO8601(),
+  body("inicioFecha").isISO8601(),
   body("duracion").isInt({ min: 1 }).notEmpty(),
   body("id_tarifa").isInt().notEmpty(),
 
@@ -35,20 +35,9 @@ registros.post(
       return res.status(400).send({ errores: validacion.array() });
     }
 
-    const { id_lugar, matricula, cliente, duracion, id_tarifa } = req.body;
+    const { id_lugar, matricula, cliente, inicioFecha, id_tarifa, duracion } = req.body;
 
     try {
-
-      // Verificación de si el lugar ya está ocupado
-      const [lugar] = await db.query(
-        "SELECT ocupado FROM lugares WHERE id_lugar = ?",
-        [id_lugar]
-      );
-      if (lugar[0]?.ocupado === 1) {
-        return res
-          .status(400)
-          .send({ mensaje: `El lugar ${id_lugar} ya está ocupado` });
-      }
 
       // Comprobación de la tarifa
       const [tarifa] = await db.query(
@@ -62,7 +51,6 @@ registros.post(
       const { tipo_tarifa, precio } = tarifa[0];
 
       // Cálculo del las fechasy el precio
-      const inicioFecha = new Date(inicio);
       let fin;
 
       if (tipo_tarifa.toLowerCase().includes("hora")) {

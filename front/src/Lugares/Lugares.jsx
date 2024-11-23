@@ -69,6 +69,7 @@ function Lugares() {
       cliente: "",
       id_tarifa: "",
       duracion: "",
+      inicioFecha: new Date().toISOString().slice(0, 19).replace("T", " "),
     });
     setModalVisible(true);
     getTarifas();
@@ -108,6 +109,7 @@ function Lugares() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // Post para lugares
     try {
       const response = await fetch(
         `http://localhost:3000/lugares/${formData.id_lugar}/ocupar`,
@@ -131,6 +133,31 @@ function Lugares() {
     } catch (error) {
       console.error("Error en la solicitud:", error);
     }
+    // POST para registros
+    try {
+      const response = await fetch(
+        `http://localhost:3000/registros`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${sesion.token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+      if (!response.ok) {
+        const errorData = await response.json();
+        return console.error("Error al cargar el registro:", errorData);
+      }
+      const data = await response.json();
+      console.log("Registro cargado exitosamente:", data);
+      handleCloseModal();
+    } catch (error) {
+      console.error("Error en la solicitud:", error);
+    }
+
+
   };
 
   return (
@@ -191,7 +218,7 @@ function Lugares() {
                   <option value="">Seleccione una tarifa</option>
                   {tarifas.map((tarifa) => (
                     <option key={tarifa.id_tarifa} value={tarifa.id_tarifa}>
-                      {tarifa.tipo_tarifa}
+                      {tarifa.tipo_tarifa} (${tarifa.precio})
                     </option>
                   ))}
                 </select>
