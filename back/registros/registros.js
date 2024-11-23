@@ -75,7 +75,7 @@ registros.post(
           .send({ mensaje: "Tipo de tarifa no soportado para cálculo" });
       }
       
-      const precioFinal = parseInt(duracion) * parseInt(duracion);
+      const precioFinal = parseInt(precio) * parseInt(duracion);
 
       const [result] = await db.query(
         `INSERT INTO registros(id_lugar, matricula, cliente, inicio, fin, id_tarifa, precio_final) VALUES(?, ?, ?, ?, ?, ?, ?)`,
