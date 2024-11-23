@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
+import { useAuth } from "../Auth";
 
 const Registros = () => {
   const [registros, setRegistros] = useState([]);
+  const [tarifas, setTarifas] = useState([]);
   const [error, setError] = useState(null);
+  const { sesion } = useAuth();
 
+  // Obtener registros
   useEffect(() => {
     const fetchRegistros = async () => {
       try {
@@ -22,6 +26,26 @@ const Registros = () => {
     fetchRegistros();
   }, []);
 
+  // Obtener tarifas
+  useEffect(() => {
+      const getTarifas = async () => {
+    const response = await fetch(`http://localhost:3000/tarifas`, {
+      headers: { Authorization: `Bearer ${sesion.token}` },
+    });
+    if (response.ok) {
+      const { result } = await response.json();
+      setTarifas(result);
+    }
+  };
+    getTarifas();
+  }, []);
+
+  // Función para obtener tipo_tarifa
+  const obtenerTipoTarifa = (idTarifa) => {
+    const tarifa = tarifas.find((tarifa) => tarifa.id_tarifa === idTarifa);
+    return tarifa ? tarifa.tipo_tarifa : "Desconocida";
+  };
+
   return (
     <div>
       <h2>Registros</h2>
@@ -32,10 +56,10 @@ const Registros = () => {
             <tr>
               <th>ID</th>
               <th>ID Lugar</th>
-              <th>Matricula</th>
+              <th>Matrícula</th>
               <th>Inicio</th>
               <th>Fin</th>
-              <th>ID Tarifa</th>
+              <th>Tipo de Tarifa</th>
               <th>Precio Final</th>
             </tr>
           </thead>
@@ -47,7 +71,7 @@ const Registros = () => {
                 <td>{registro.matricula}</td>
                 <td>{new Date(registro.inicio).toLocaleString()}</td>
                 <td>{registro.fin ? new Date(registro.fin).toLocaleString() : "Indefinido"}</td>
-                <td>{registro.id_tarifa}</td>
+                <td>{obtenerTipoTarifa(registro.id_tarifa)}</td>
                 <td>{registro.precio_final}</td>
               </tr>
             ))}

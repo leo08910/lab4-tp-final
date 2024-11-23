@@ -93,7 +93,7 @@ function Lugares() {
       const tipo = tarifaSeleccionada.tipo_tarifa.toLowerCase();
       if (tipo.includes("hora")) {
         setUnidadTiempo("horas");
-      }else if (tipo.includes("dia")) {
+      } else if (tipo.includes("día")) {
         setUnidadTiempo("días");
       } else if (tipo.includes("semana")) {
         setUnidadTiempo("semanas");
