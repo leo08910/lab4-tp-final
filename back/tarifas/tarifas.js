@@ -14,9 +14,7 @@ tarifas.get(
   async (req, res) => {
   try {
     const [result] = await db.query(`
-      SELECT t.id_tarifa, t.tipo_tarifa, t.id_tipo_vehiculo, t.precio, tv.tipo_vehiculo
-      FROM tarifas t
-      JOIN tipos_vehiculo tv ON t.id_tipo_vehiculo = tv.id_tipo_vehiculo
+      SELECT * FROM tarifas
     `);
     res.status(200).send({result});
   } catch (error) {
@@ -76,20 +74,18 @@ tarifas.get(
 tarifas.post("/tarifas",
   validarJwt,
   validarSuperUsuario,
-  body("tipo_tarifa").isAlpha().notEmpty().isLength({ max: 25 }),
-  body("id_tipo_vehiculo").isInt().notEmpty(),
+  body("tipo_tarifa").isAlpha().notEmpty().isLength({ max: 50 }),
   body("precio").isDecimal().notEmpty(),
   async (req, res) => {
     const validacion = validationResult(req);
     if (req.user.superusuario != 1) {
       res.status(401).send({mensaje: "No tiene permisos para crear una nueva tarifa"})
     }else{
-          const { tipo_tarifa, id_tipo_vehiculo, precio } = req.body;
+          const { tipo_tarifa, precio } = req.body;
     try {
-    const [result] = await db.query(`insert into tarifas(tipo_tarifa, id_tipo_vehiculo, precio) values(?, ?, ?)`,
+    const [result] = await db.query(`insert into tarifas(tipo_tarifa, precio) values(?, ?)`,
     [
     tipo_tarifa,
-    id_tipo_vehiculo,
     precio
     ]);
     return res.status(201).send({result: "se creo la tarifa correctamente"});
@@ -113,8 +109,7 @@ tarifas.post("/tarifas",
     validarId,
     validarJwt,
     validarSuperUsuario,
-    body("tipo_tarifa").isAlpha().notEmpty().isLength({ max: 25 }),
-    body("id_tipo_vehiculo").isInt().notEmpty(),
+    body("tipo_tarifa").isString().notEmpty().isLength({ max: 50 }),
     body("precio").isDecimal().notEmpty(),
     
     async (req, res) => {
@@ -126,11 +121,11 @@ tarifas.post("/tarifas",
         return res.status(400).send({ errores: validacion.array() });
       }
       const id = Number(req.params.id);
-      const { tipo_tarifa, id_tipo_vehiculo, precio } = req.body;
+      const { tipo_tarifa, precio } = req.body;
   
       await db.execute(
-        "update tarifas set tipo_tarifa=?, id_tipo_vehiculo=?, precio=? where id_tarifa=? order by id_tarifa",
-        [tipo_tarifa, id_tipo_vehiculo, precio, id]
+        "UPDATE tarifas SET tipo_tarifa=?, precio=? WHERE id_tarifa=? ORDER BY id_tarifa",
+        [tipo_tarifa, precio, id]
       );
       res.status(200).send(`tarifa modificada`);
       }

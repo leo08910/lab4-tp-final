@@ -5,10 +5,8 @@ import "./Tarifas.css";
 function Tarifas() {
   const { sesion } = useAuth();
   const [tarifas, setTarifas] = useState([]);
-  const [tiposVehiculo, setTiposVehiculo] = useState([]);
   const [nuevaTarifa, setNuevaTarifa] = useState({
     tipo_tarifa: "",
-    id_tipo_vehiculo: "",
     precio: "",
   });
   const [editMode, setEditMode] = useState(false);
@@ -16,7 +14,6 @@ function Tarifas() {
 
   useEffect(() => {
     getTarifas();
-    getTiposVehiculo();
   }, []);
 
   const getTarifas = async () => {
@@ -26,16 +23,6 @@ function Tarifas() {
     if (response.ok) {
       const { result } = await response.json();
       setTarifas(result);
-    }
-  };
-
-  const getTiposVehiculo = async () => {
-    const response = await fetch(`http://localhost:3000/tipos_vehiculo`, {
-      headers: { Authorization: `Bearer ${sesion.token}` },
-    });
-    if (response.ok) {
-      const { tipos_vehiculo } = await response.json();
-      setTiposVehiculo(tipos_vehiculo || []);
     }
   };
 
@@ -53,7 +40,7 @@ function Tarifas() {
     });
     if (response.ok) {
       getTarifas();
-      setNuevaTarifa({ tipo_tarifa: "", id_tipo_vehiculo: "", precio: "" });
+      setNuevaTarifa({ tipo_tarifa: "", precio: "" });
     } else {
       const error = await response.json();
       console.error("Error al agregar tarifa:", error);
@@ -74,7 +61,7 @@ function Tarifas() {
     });
     if (response.ok) {
       getTarifas();
-      setNuevaTarifa({ tipo_tarifa: "", id_tipo_vehiculo: "", precio: "" });
+      setNuevaTarifa({ tipo_tarifa: "", precio: "" });
       setEditMode(false);
       setTarifaIdToEdit(null);
     } else {
@@ -104,7 +91,6 @@ function Tarifas() {
     setTarifaIdToEdit(tarifa.id_tarifa);
     setNuevaTarifa({
       tipo_tarifa: tarifa.tipo_tarifa,
-      id_tipo_vehiculo: tarifa.id_tipo_vehiculo,
       precio: tarifa.precio,
     });
   };
@@ -124,7 +110,6 @@ function Tarifas() {
             <thead>
               <tr >
                 <th>tipo de tarifa</th>
-                <th>tipo de vehiculo</th>
                 <th>precio</th>
                 <th>acciones</th>
               </tr>
@@ -133,7 +118,6 @@ function Tarifas() {
             <tbody className="tarifas_table" key={tarifa.id_tarifa}>
               <tr>
                 <td>{tarifa.tipo_tarifa}</td>
-                <td>{tarifa.tipo_vehiculo}</td>
                 <td>${tarifa.precio}</td>
                 <td><AuthRol superusuario={1}>
               <button onClick={() => handleEdit(tarifa)}>Modificar</button>
@@ -155,27 +139,19 @@ function Tarifas() {
             }
           >
             <option className="tarifa_option" value="">Selecciona el tipo de tarifa</option>
-                <option value="p/turno">p/turno</option>
-                <option value="p/hora">p/hora</option>
-                <option value="p/día">p/día</option>
-                <option value="p/mes">p/mes</option>
+                <option value="Auto p/turno">Auto p/turno</option>
+                <option value="Auto p/hora">Auto p/hora</option>
+                <option value="Auto p/día">Auto p/día</option>
+                <option value="Auto p/día">Auto p/semana</option>
+                <option value="Auto p/mes">Auto p/mes</option>
+                <option value="Moto p/turno">Moto p/turno</option>
+                <option value="Moto p/hora">Moto p/hora</option>
+                <option value="Moto p/día">Moto p/día</option>
+                <option value="Moto p/semana">Moto p/semana</option>
+                <option value="Moto p/mes">Moto p/mes</option>
                   
           </select>
           <br />
-          <select
-            className="tarifa_select"
-            value={nuevaTarifa.id_tipo_vehiculo}
-            onChange={(e) =>
-              setNuevaTarifa({ ...nuevaTarifa, id_tipo_vehiculo: e.target.value })
-            }
-          >
-            <option className="tarifa_option" value="">Selecciona el tipo de vehículo</option>
-            {tiposVehiculo.map((tipo) => (
-              <option key={tipo.id_tipo_vehiculo} value={tipo.id_tipo_vehiculo}>
-                {tipo.tipo_vehiculo}
-              </option>
-            ))}
-          </select>
           <br />
           <input 
             className="tarifas_input"
