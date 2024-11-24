@@ -38,7 +38,6 @@ registros.post(
       req.body;
 
     try {
-
       // Comprobación de la tarifa
       const [tarifa] = await db.query(
         "SELECT * FROM tarifas WHERE id_tarifa = ?",
@@ -57,7 +56,6 @@ registros.post(
         // Para los registros con tarifa indefinida
         fin = null;
         precioFinal = 0;
-
       } else {
         // Cálculo del las fechasy el precio para las tarifas con fecha fin
         console.log(tipo_tarifa);
@@ -123,9 +121,9 @@ registros.put(
         [id_tarifa]
       );
 
-      const {precioPorHora} = tarifa[0]
+      const { precio } = tarifa[0];
 
-      if (tarifa.length === 0 || tarifa[0].tipo_tarifa.toLowerCase() !== "indefinida") {
+      if (tarifa.length === 0) {
         return res.status(400).send({
           mensaje: "Solo se pueden liberar registros con tarifa indefinida",
         });
@@ -133,13 +131,15 @@ registros.put(
 
       // Calcular horas transcurridas
       const fechaActual = new Date();
+      fechaActual.setHours(fechaActual.getHours() + 3);
+
       const inicioFecha = new Date(inicio);
       const horasTranscurridas = Math.ceil(
         (fechaActual - inicioFecha) / (1000 * 60 * 60)
       );
 
       // Calcular precio final
-      const precioFinal = horasTranscurridas * precioPorHora;
+      const precioFinal = horasTranscurridas * precio;
 
       // Actualizar registro
       await db.query(
@@ -158,6 +158,5 @@ registros.put(
     }
   }
 );
-
 
 export default registros;
