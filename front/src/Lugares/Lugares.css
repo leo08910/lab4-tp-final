@@ -23,6 +23,14 @@
     justify-content: center;
 }
 
+.estacionamiento button {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: small;
+}
+
 /* Estilo de cada lugar */
 .lugar {
     display: flex;

@@ -8,7 +8,7 @@ const registros = express.Router();
 // GET /registros
 registros.get("/registros", async (req, res) => {
   try {
-    const [result] = await db.query(`SELECT * FROM registros`);
+    const [result] = await db.query(`SELECT * FROM registros ORDER BY id_registro DESC`);
     res.status(200).send({ result });
   } catch (error) {
     console.log(error);
@@ -115,7 +115,7 @@ registros.put(
 
       const { inicio, id_tarifa } = registro[0];
 
-      // Validar que sea una tarifa indefinida
+      // Validación de tarifa indefinida
       const [tarifa] = await db.query(
         "SELECT * FROM tarifas WHERE id_tarifa = ?",
         [id_tarifa]
@@ -129,7 +129,7 @@ registros.put(
         });
       }
 
-      // Calcular horas transcurridas
+      // Cálculo de las horas pasadas desde la fecha inicio
       const fechaActual = new Date();
       fechaActual.setHours(fechaActual.getHours() + 3);
 
@@ -138,10 +138,9 @@ registros.put(
         (fechaActual - inicioFecha) / (1000 * 60 * 60)
       );
 
-      // Calcular precio final
       const precioFinal = horasTranscurridas * precio;
 
-      // Actualizar registro
+      // Actualización del registro
       await db.query(
         `UPDATE registros SET fin = ?, precio_final = ? WHERE id_registro = ?`,
         [fechaActual, precioFinal, id_registro]

@@ -12,10 +12,22 @@ function Lugares() {
   const [tarifas, setTarifas] = useState([]);
   const [unidadTiempo, setUnidadTiempo] = useState("");
 
+  const [registros, setRegistros] = useState([]);
+
   useEffect(() => {
     getLugares();
+    getRegistros();
   }, []);
 
+  const getRegistros = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/registros");
+      const data = await response.json();
+      setRegistros(data.result);
+    } catch (error) {
+      console.error("Error al cargar los registros de la API:", error);
+    }
+  };
 
   const getLugares = async () => {
     const response = await fetch("http://localhost:3000/lugares");
@@ -26,8 +38,8 @@ function Lugares() {
       console.log("Error al cargar los lugares de la Api", error);
     }
   };
-  
-  const formularioLiberar = async (id_lugar) => {
+
+  const formularioLiberar = async (id_lugar, id_registro) => {
     try {
       const response = await fetch(
         `http://localhost:3000/lugares/${id_lugar}/desocupar`,
@@ -51,6 +63,35 @@ function Lugares() {
     } catch (error) {
       console.error("Error en la solicitud para liberar el lugar:", error);
     }
+    try {
+      const response = await fetch(
+        `http://localhost:3000/registros/${id_registro}/liberar`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${sesion.token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        return console.error(
+          "Error al liberar el lugar en el registro:",
+          errorData
+        );
+      }
+
+      const data = await response.json();
+      console.log("Lugar liberado en el registro exitosamente:", data);
+      getLugares();
+    } catch (error) {
+      console.error(
+        "Error en la solicitud para liberar el lugar en el registro:",
+        error
+      );
+    }
   };
 
   const handleClickLugar = (lugar) => {
@@ -64,7 +105,7 @@ function Lugares() {
       inicioFecha: new Date().toISOString().slice(0, 19).replace("T", " "),
     });
     setModalVisible(true);
-    getTarifas(sesion,setTarifas);
+    getTarifas(sesion, setTarifas);
   };
 
   const handleCloseModal = () => {
@@ -129,17 +170,14 @@ function Lugares() {
     }
     // POST para registros
     try {
-      const response = await fetch(
-        `http://localhost:3000/registros`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${sesion.token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        }
-      );
+      const response = await fetch(`http://localhost:3000/registros`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${sesion.token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
       if (!response.ok) {
         const errorData = await response.json();
         return console.error("Error al cargar el registro:", errorData);
@@ -150,27 +188,46 @@ function Lugares() {
     } catch (error) {
       console.error("Error en la solicitud:", error);
     }
-
-
+    getRegistros();
   };
 
   return (
     <>
       <h1>Estacionamiento</h1>
       <div className="estacionamiento">
-        {lugares.map((lugar) => (
-          <button
-            key={lugar.id_lugar}
-            className={`lugar ${lugar.ocupado ? "ocupado" : "libre"}`}
-            onClick={() =>
-              lugar.ocupado
-                ? formularioLiberar(lugar.id_lugar)
-                : handleClickLugar(lugar)
-            }
-          >
-            {lugar.ocupado ? "Ocupado" : "Libre"}
-          </button>
-        ))}
+        {lugares.map((lugar) => {
+          const registroAsociado = registros.find(
+            (registro) => registro.id_lugar === lugar.id_lugar
+          );
+
+          return (
+            <button
+              key={lugar.id_lugar}
+              className={`lugar ${lugar.ocupado ? "ocupado" : "libre"}`}
+              onClick={() =>
+                lugar.ocupado
+                  ? formularioLiberar(
+                      lugar.id_lugar,
+                      registroAsociado?.id_registro
+                    )
+                  : handleClickLugar(lugar)
+              }
+            >
+              {lugar.ocupado ? (
+                <>
+                  <span>
+                    Matrícula: {registroAsociado?.matricula || "Sin datos"}
+                  </span>
+                  <br />
+                  <span>Cliente: {registroAsociado?.cliente || "N/A"}</span>
+                  <br />
+                </>
+              ) : (
+                "Libre"
+              )}
+            </button>
+          );
+        })}
       </div>
 
       {modalVisible && (
