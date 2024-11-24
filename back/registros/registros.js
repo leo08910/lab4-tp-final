@@ -22,7 +22,7 @@ registros.post(
   validarJwt,
   body("id_lugar").isInt().notEmpty(),
   body("matricula").matches(/^[A-Za-z0-9\s]+$/),
-  body("cliente").notEmpty().isAlpha().isLength({ max: 50 }),
+  body("cliente").notEmpty().matches(/^[A-Za-zÁÉÍÓÚáéíóúÜüÑñ\s]+$/).isLength({ max: 50 }),
   body("inicioFecha").isISO8601(),
   body("duracion").optional(),
   body("id_tarifa").isInt().notEmpty(),
@@ -131,7 +131,7 @@ registros.put(
 
       // Cálculo de las horas pasadas desde la fecha inicio
       const fechaActual = new Date();
-      fechaActual.setHours(fechaActual.getHours() + 3);
+      fechaActual.setHours(fechaActual.getHours());
 
       const inicioFecha = new Date(inicio);
       const horasTranscurridas = Math.ceil(

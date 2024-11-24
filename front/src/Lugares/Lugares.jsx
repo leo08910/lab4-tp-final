@@ -144,17 +144,23 @@ function Lugares() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    const fecha = new Date(formData.inicioFecha);
+    fecha.setHours(fecha.getHours() - 6);
+    const fechaAjustada = fecha.toISOString().slice(0, 19).replace("T", " ");
+    const formDataAjustado = { ...formData, inicioFecha: fechaAjustada };
+  
     // Post para lugares
     try {
       const response = await fetch(
-        `http://localhost:3000/lugares/${formData.id_lugar}/ocupar`,
+        `http://localhost:3000/lugares/${formDataAjustado.id_lugar}/ocupar`,
         {
           method: "PUT",
           headers: {
             Authorization: `Bearer ${sesion.token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(formDataAjustado),
         }
       );
       if (!response.ok) {
@@ -168,6 +174,7 @@ function Lugares() {
     } catch (error) {
       console.error("Error en la solicitud:", error);
     }
+  
     // POST para registros
     try {
       const response = await fetch(`http://localhost:3000/registros`, {
@@ -176,7 +183,7 @@ function Lugares() {
           Authorization: `Bearer ${sesion.token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(formDataAjustado),
       });
       if (!response.ok) {
         const errorData = await response.json();
@@ -190,6 +197,7 @@ function Lugares() {
     }
     getRegistros();
   };
+  
 
   return (
     <>
