@@ -140,6 +140,7 @@ function Tarifas() {
             }
           >
             <option className="tarifa_option" value="">Selecciona el tipo de tarifa</option>
+                <option value="Tiempo indefinido">Tiempo indefinido</option>
                 <option value="Auto p/turno">Auto p/turno</option>
                 <option value="Auto p/hora">Auto p/hora</option>
                 <option value="Auto p/día">Auto p/día</option>

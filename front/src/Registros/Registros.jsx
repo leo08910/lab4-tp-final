@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../Auth";
+import getTarifas from "../Tarifas/GetTarifas"
 
 const Registros = () => {
   const [registros, setRegistros] = useState([]);
@@ -28,15 +29,6 @@ const Registros = () => {
 
   // Obtener tarifas
   useEffect(() => {
-      const getTarifas = async () => {
-    const response = await fetch(`http://localhost:3000/tarifas`, {
-      headers: { Authorization: `Bearer ${sesion.token}` },
-    });
-    if (response.ok) {
-      const { result } = await response.json();
-      setTarifas(result);
-    }
-  };
   getTarifas(sesion,setTarifas);
   }, []);
 
