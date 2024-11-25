@@ -96,7 +96,7 @@ registros.post(
   }
 );
 
-// PUT /registros
+// PUT /registros/:id_registro/liberar
 registros.put(
   "/registros/:id_registro/liberar",
   validarJwt,
@@ -123,11 +123,11 @@ registros.put(
 
       const { precio } = tarifa[0];
 
-      if (tarifa.length === 0) {
+      if (!tarifa[0].tipo_tarifa.toLowerCase().includes("indefinido")) {
         return res.status(400).send({
-          mensaje: "Solo se pueden liberar registros con tarifa indefinida",
+            mensaje: "Solo se pueden liberar registros con tarifa indefinida",
         });
-      }
+    }
 
       // Cálculo de las horas pasadas desde la fecha inicio
       const fechaActual = new Date();
