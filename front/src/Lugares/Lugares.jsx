@@ -145,17 +145,6 @@ function Lugares() {
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    const vehiculoEstacionado = registros.find(
-      (registro) =>
-        registro.matricula === formData.matricula && !registro.fecha_fin
-    );
-  
-    if (vehiculoEstacionado) {
-      return alert(
-        `El vehículo con matrícula ${formData.matricula} ya está estacionado en el lugar ${vehiculoEstacionado.id_lugar}.`
-      );
-    }
-  
     const fecha = new Date(formData.inicioFecha);
     fecha.setHours(fecha.getHours() - 6);
     const fechaAjustada = fecha.toISOString().slice(0, 19).replace("T", " ");

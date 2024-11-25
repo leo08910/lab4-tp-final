@@ -8,7 +8,9 @@ const registros = express.Router();
 // GET /registros
 registros.get("/registros", async (req, res) => {
   try {
-    const [result] = await db.query(`SELECT * FROM registros ORDER BY id_registro DESC`);
+    const [result] = await db.query(
+      `SELECT * FROM registros ORDER BY id_registro DESC`
+    );
     res.status(200).send({ result });
   } catch (error) {
     console.log(error);
@@ -22,7 +24,10 @@ registros.post(
   validarJwt,
   body("id_lugar").isInt().notEmpty(),
   body("matricula").matches(/^[A-Za-z0-9\s]+$/),
-  body("cliente").notEmpty().matches(/^[A-Za-zÁÉÍÓÚáéíóúÜüÑñ\s]+$/).isLength({ max: 50 }),
+  body("cliente")
+    .notEmpty()
+    .matches(/^[A-Za-zÁÉÍÓÚáéíóúÜüÑñ\s]+$/)
+    .isLength({ max: 50 }),
   body("inicioFecha").isISO8601(),
   body("duracion").optional(),
   body("id_tarifa").isInt().notEmpty(),
@@ -113,9 +118,12 @@ registros.put(
         return res.status(404).send({ mensaje: "Registro no encontrado" });
       }
 
-      const { inicio, id_tarifa } = registro[0];
+      const { inicio, fin, id_tarifa } = registro[0];
 
-      // Validación de tarifa indefinida
+      let fechaActual;
+      let precioFinal;
+      let horasTranscurridas;
+
       const [tarifa] = await db.query(
         "SELECT * FROM tarifas WHERE id_tarifa = ?",
         [id_tarifa]
@@ -123,22 +131,29 @@ registros.put(
 
       const { precio } = tarifa[0];
 
-      if (!tarifa[0].tipo_tarifa.toLowerCase().includes("indefinido")) {
-        return res.status(400).send({
+      if (fin === null) { // Para las tarifas con tiempo indefinido
+
+        // Validación de tarifa indefinida
+        if (!tarifa[0].tipo_tarifa.toLowerCase().includes("indefinido")) {
+          return res.status(400).send({
             mensaje: "Solo se pueden liberar registros con tarifa indefinida",
-        });
-    }
+          });
+        }
 
-      // Cálculo de las horas pasadas desde la fecha inicio
-      const fechaActual = new Date();
-      fechaActual.setHours(fechaActual.getHours());
+        // Cálculo de las horas pasadas desde la fecha inicio
+        fechaActual = new Date();
+        fechaActual.setHours(fechaActual.getHours());
 
-      const inicioFecha = new Date(inicio);
-      const horasTranscurridas = Math.ceil(
-        (fechaActual - inicioFecha) / (1000 * 60 * 60)
-      );
+        let inicioFecha = new Date(inicio);
+        horasTranscurridas = Math.ceil(
+          (fechaActual - inicioFecha) / (1000 * 60 * 60)
+        );
 
-      const precioFinal = horasTranscurridas * precio;
+        precioFinal = horasTranscurridas * precio;
+        
+      } else { // Para las tarifas con tiempo definido
+        console.log(tarifa[0].tipo_tarifa)
+      }
 
       // Actualización del registro
       await db.query(
