@@ -64,7 +64,10 @@ registros.post(
       } else {
         // Cálculo del las fechasy el precio para las tarifas con fecha fin
         console.log(tipo_tarifa);
-        if (tipo_tarifa.toLowerCase().includes("hora")) {
+        if (tipo_tarifa.toLowerCase().includes("minuto")) {
+          fin = new Date(inicioFecha);
+          fin.setMinutes(fin.getMinutes() + parseInt(duracion));
+        }else if (tipo_tarifa.toLowerCase().includes("hora")) {
           fin = new Date(inicioFecha);
           fin.setHours(fin.getHours() + parseInt(duracion));
         } else if (tipo_tarifa.toLowerCase().includes("turno")) {
@@ -130,7 +133,6 @@ registros.put(
       );
 
       const { precio } = tarifa[0];
-
       if (fin === null) { // Para las tarifas con tiempo indefinido
 
         // Validación de tarifa indefinida
@@ -139,17 +141,54 @@ registros.put(
             mensaje: "Solo se pueden liberar registros con tarifa indefinida",
           });
         }
-
-        // Cálculo de las horas pasadas desde la fecha inicio
+      
+        // Cálculo de los minutos pasados desde la fecha inicio
         fechaActual = new Date();
         fechaActual.setHours(fechaActual.getHours());
-
-        let inicioFecha = new Date(inicio);
-        horasTranscurridas = Math.ceil(
-          (fechaActual - inicioFecha) / (1000 * 60 * 60)
+        const inicioFecha = new Date(inicio);
+        const minutosTranscurridos = Math.ceil(
+          (fechaActual - inicioFecha) / (1000 * 60) // Convertir milisegundos a minutos
         );
+      
+        precioFinal = minutosTranscurridos * precio;
+      
+      } else { // Para las tarifas con tiempo definido
+        console.log(tarifa[0].tipo_tarifa);
+      }
 
-        precioFinal = horasTranscurridas * precio;
+      // if (fin === null) { // Para las tarifas con tiempo indefinido
+
+      //   // Validación de tarifa indefinida
+      //   if (!tarifa[0].tipo_tarifa.toLowerCase().includes("indefinido")) {
+      //     return res.status(400).send({
+      //       mensaje: "Solo se pueden liberar registros con tarifa indefinida",
+      //     });
+      //   }
+
+      //   // Cálculo de las horas pasadas desde la fecha inicio
+      //   fechaActual = new Date();
+      //   fechaActual.setMinutes(fechaActual.getMinutes());
+
+      //   let inicioFecha = new Date(inicio);
+      //   horasTranscurridas = Math.ceil(
+      //     (fechaActual - inicioFecha) / (1000 * 60 * 60)
+      //   );
+
+      //   precioFinal = horasTranscurridas * precio;
+        
+      // } else { // Para las tarifas con tiempo definido
+      //   console.log(tarifa[0].tipo_tarifa)
+      // }
+
+      // Actualización del registro
+      await db.query(
+        `UPDATE registros SET fin = ?, precio_final = ? WHERE id_registro = ?`,
+        [fechaActual, precioFinal, id_registro]
+      );
+
+      //Usando horas
+    
+      /*  precioFinal = horasTranscurridas * precio;
 
         await db.query(
           `UPDATE registros SET fin = ?, precio_final = ? WHERE id_registro = ?`,
@@ -181,7 +220,7 @@ registros.put(
             [precioFinal, id_registro]
           );
         }
-      }
+      }*/
 
       res.status(200).send({
         mensaje: "Lugar liberado",

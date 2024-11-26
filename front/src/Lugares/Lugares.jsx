@@ -124,7 +124,9 @@ function Lugares() {
     );
     if (tarifaSeleccionada) {
       const tipo = tarifaSeleccionada.tipo_tarifa.toLowerCase();
-      if (tipo.includes("hora")) {
+      if (tipo.includes("minuto")) {
+        setUnidadTiempo("minutos");
+      }else if (tipo.includes("hora")) {
         setUnidadTiempo("horas");
       } else if (tipo.includes("día")) {
         setUnidadTiempo("días");
@@ -144,12 +146,26 @@ function Lugares() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
     const fecha = new Date(formData.inicioFecha);
     fecha.setHours(fecha.getHours() - 6);
     const fechaAjustada = fecha.toISOString().slice(0, 19).replace("T", " ");
     const formDataAjustado = { ...formData, inicioFecha: fechaAjustada };
-  
+    const regExistentedef = registros.find((registro) => 
+      registro.matricula === formDataAjustado.matricula && new Date() < new Date(registro.fin)
+    );
+    console.log(regExistentedef);
+    if (regExistentedef) {
+       return alert("El registro ya existe el fin no ah llegado");
+    }
+        
+    const regExistenteind = registros.find((registro) => 
+      registro.matricula === formDataAjustado.matricula && registro.fin === null);
+    if (regExistenteind) {
+      alert("El registro ya existe");
+      return;
+    }
+
+
     // Post para lugares
     try {
       const response = await fetch(
@@ -177,6 +193,7 @@ function Lugares() {
   
     // POST para registros
     try {
+
       const response = await fetch(`http://localhost:3000/registros`, {
         method: "POST",
         headers: {
