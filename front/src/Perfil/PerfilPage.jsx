@@ -1,5 +1,6 @@
-import { AuthRol, useAuth } from "./Auth";
+import { AuthRol, useAuth } from "../Auth";
 import { useNavigate } from "react-router-dom";
+import "./PerfilPage.css"
 
 export const PerfilPage = () => {
   const { sesion, logout } = useAuth();
@@ -10,15 +11,15 @@ export const PerfilPage = () => {
   };
   return (
     <>
-    <div>
-      <h1>Perfil de Usuario</h1>
-      <p>Nombre: {sesion?.nombre}</p>
-      <button onClick={handleLogout}>Salir</button>
+    <div className="Contenedor-Perfil">
+      <h1 className="Perfil-Usuario">Perfil de Usuario</h1>
+      <p className="Perfil-Nombre">Nombre: {sesion?.nombre}</p>
+      <button onClick={handleLogout} className="Boton-Salir">Salir</button>
       <AuthRol superusuario={1}>
-        <p>Soy admin!</p>
+        <p className="Admin">Soy admin!</p>
       </AuthRol>
       <AuthRol superusuario={0} >
-        <p>Soy usuario!</p>
+        <p className="Usuario">Soy usuario!</p>
       </AuthRol>
     </div>
     </>
