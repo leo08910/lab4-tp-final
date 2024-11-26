@@ -22,14 +22,26 @@ function Tarifas() {
   const postTarifa = async () => {
     const confirmacion = window.confirm("¿Seguro que deseas agregar tarifa?");
     if (!confirmacion) return;
+    if (nuevaTarifa.tipo_tarifa===""){
+      alert("seleccione un tipo de tarifa");
+      return;
+    }
+    if (nuevaTarifa.precio===""){
+      alert("precio no puede ser vacio");
+      return;
+    }    
+    if (nuevaTarifa.precio < 0){
+      alert("precio no puede ser menor a cero");
+      return;
+    }
   // Verificar si el tipo de tarifa ya existe
   const tarifaExistente = tarifas.find(
     (tarifa) => tarifa.tipo_tarifa === nuevaTarifa.tipo_tarifa
   );
-  if (tarifaExistente) {
-    alert("El tipo de tarifa ya existe. Por favor, elige otro.");
-    return;
-  }
+    if (tarifaExistente) {
+      alert("El tipo de tarifa ya existe. Por favor, elige otro.");
+      return;
+    }
 
     const response = await fetch("http://localhost:3000/tarifas", {
       method: "POST",
@@ -104,34 +116,33 @@ function Tarifas() {
 
   return (
       <div className="tarifas-container">
-        <h1 className="titulo">Tarifas</h1>
+        <h1 className="tarifas_titulo">Tarifas</h1>
 
         
-            <table >
+            <table  className="tarifas_table">
             <thead>
               <tr >
-                <th>tipo de tarifa</th>
-                <th>precio</th>
-                <th>acciones</th>
+                <th className="tarifas_th">tipo de tarifa</th>
+                <th className="tarifas_th">precio</th>
+                <th className="tarifas_th">acciones</th>
               </tr>
             </thead>
             {tarifas.map((tarifa) => (
-            <tbody className="tarifas_table" key={tarifa.id_tarifa}>
+            <tbody  key={tarifa.id_tarifa}>
               <tr>
-                <td>{tarifa.tipo_tarifa}</td>
-                <td>${tarifa.precio}</td>
-                <td><AuthRol superusuario={1}>
-              <button onClick={() => handleEdit(tarifa)}>Modificar</button>
-              <button onClick={() => deleteTarifa(tarifa.id_tarifa)}>Eliminar</button>
+                <td className="tarifas_td">{tarifa.tipo_tarifa}</td>
+                <td className="tarifas_td">${tarifa.precio}</td>
+                <td className="tarifas_td"><AuthRol superusuario={1}>
+              <button className="tarifas_button_edit" onClick={() => handleEdit(tarifa)}><img style={{width:"2vw"}} src="../public/assets/edit.svg" alt="" /></button>
+              <button className="tarifas_button_deletet" onClick={() => deleteTarifa(tarifa.id_tarifa)}><img style={{width:"2vw"}} src="../public/assets/delete.svg" alt="" /></button>
             </AuthRol></td>
               </tr>
             </tbody>))}
           </table>
-         <br />
       <AuthRol superusuario={1} > 
         {/* Formulario para agregar o editar tarifas */}
         <div className="superusuario">
-          <h2>{editMode ? "Modificar Tarifa" : "Agregar Tarifa"}</h2><br />
+          <h2>{editMode ? "Modificar Tarifa" : "Agregar Tarifa"}</h2>
           <select
             className="tarifa_select"
             value={nuevaTarifa.tipo_tarifa}
@@ -153,22 +164,20 @@ function Tarifas() {
                 <option value="Moto p/mes">Moto p/mes</option>
                   
           </select>
-          <br />
-          <br />
           <input 
             className="tarifas_input"
-            type="text"
+            type="number"
             placeholder="Precio"
             value={nuevaTarifa.precio}
             onChange={(e) =>
               setNuevaTarifa({ ...nuevaTarifa, precio: e.target.value })
             }
           />
-          <br />
           <button className="tarifas_button_ok" onClick={editMode ? putTarifa : postTarifa}>
-            {editMode ? "Guardar Cambios" : "Agregar Tarifa"}
+            {editMode ? <><span>Aceptar Cambios</span> <img style={{width:"2vw"}} src="../public/assets/ok.svg" alt="" /></> :
+            <><span>Agregar Nueva</span><img style={{width:"2vw"}} src="../public/assets/add.svg" alt="" /></> }
           </button>
-          {editMode && <button className="tarifas_button_cancel" onClick={handleCancelEdit}>Cancelar</button>}
+          {editMode && <button className="tarifas_button_cancel" onClick={handleCancelEdit}>{<><span>Cancelar</span><img style={{width:"2vw"}} src="../public/assets/cancel.svg" alt="" /></>}</button>}
         </div>
       </AuthRol>
     </div>

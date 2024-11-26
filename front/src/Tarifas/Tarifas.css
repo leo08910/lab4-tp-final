@@ -1,8 +1,12 @@
-.container{
+.tarifas-container{
     color: rgb(28, 29, 29);
     position: relative;
     display: flex;
     flex-direction: column;
+}
+.tarifas_titulo{
+    text-align: center;
+
 }
 .superusuario{
     width: 30vw;
@@ -13,11 +17,13 @@
     align-items: center;
     border-radius:  7vw 7vh 7vw 7vh;
     background-color: #a5a5a5;
+    margin-top: 2vh;
 }
 .tarifa_select{
     border-radius: 70vw;
     background-color: #d4d4d4;
     border: none;
+    margin-top: 2vh;
 }
 .tarifa_option{
     border-radius: 70vw;
@@ -27,22 +33,43 @@
     border-radius: 70vw;
     background-color: #d4d4d4;
     border: none;
+    margin-top: 2vh;
 }
 .tarifas_button_ok{
     position: relative;
-    width: 20vw;
+    width: 15vw;
     border-radius: 70vw;
     background-color: #d4d4d4;
     border: none;
+    margin-top: 3vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .tarifas_button_cancel{
     border-radius: 70vw;
     background-color: #d4d4d4;
     border: none;
+    margin-top: 3vh;
+    width: 15vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
 }
 .tarifas_table{
+    font-size: 4vh;
     border: solid 1px black;
+    border-radius: 5%;
 }
-th, td{
-    border: solid 1px black;
+.tarifas_th, .tarifas_td{
+    border-bottom: solid 1px black;
+    font-size: 4vh;
+    border-radius: 8%;
+    justify-content: space-around;
+    justify-items: auto;
+}
+.tarifas_button_edit{
+    margin-left: 1vw;
+ margin-right: 2vw;
 }
