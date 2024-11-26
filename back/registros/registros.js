@@ -121,7 +121,7 @@ registros.put(
         return res.status(404).send({ mensaje: "Registro no encontrado" });
       }
 
-      const { inicio, fin, id_tarifa } = registro[0];
+      const { inicio, fin, id_tarifa, precio_final } = registro[0];
 
       let fechaActual;
       let precioFinal;
@@ -185,6 +185,42 @@ registros.put(
         `UPDATE registros SET fin = ?, precio_final = ? WHERE id_registro = ?`,
         [fechaActual, precioFinal, id_registro]
       );
+
+      //Usando horas
+    
+      /*  precioFinal = horasTranscurridas * precio;
+
+        await db.query(
+          `UPDATE registros SET fin = ?, precio_final = ? WHERE id_registro = ?`,
+          [fechaActual, precioFinal, id_registro]
+        );
+        
+      } else { // Para las tarifas con tiempo definido
+        fechaActual = new Date();
+        fechaActual.setHours(fechaActual.getHours());
+        const finFecha = new Date(fin);
+
+        if (fechaActual > finFecha) {
+          const horasExtras = Math.ceil(
+            (fechaActual - finFecha) / (1000 * 60 * 60)
+          );
+
+          precioFinal += horasExtras * precio;
+
+          await db.query(
+            `UPDATE registros SET fin = ?, precio_final = ? WHERE id_registro = ?`,
+            [fechaActual, precioFinal, id_registro]
+          );
+
+        } else {
+          precioFinal = precio_final;
+
+          await db.query(
+            `UPDATE registros SET precio_final = ? WHERE id_registro = ?`,
+            [precioFinal, id_registro]
+          );
+        }
+      }*/
 
       res.status(200).send({
         mensaje: "Lugar liberado",

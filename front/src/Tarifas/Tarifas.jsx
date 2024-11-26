@@ -121,8 +121,8 @@ function Tarifas() {
                 <td className="tarifas_td">{tarifa.tipo_tarifa}</td>
                 <td className="tarifas_td">${tarifa.precio}</td>
                 <td className="tarifas_td"><AuthRol superusuario={1}>
-              <button className="tarifas_button_edit" onClick={() => handleEdit(tarifa)}><img style={{width:"2vw"}} src="../public/assets/edit.svg" alt="" /></button>
-              <button className="tarifas_button_deletet" onClick={() => deleteTarifa(tarifa.id_tarifa)}><img style={{width:"2vw"}} src="../public/assets/delete.svg" alt="" /></button>
+              <button className="tarifas_button_edit" onClick={() => handleEdit(tarifa)}><img style={{width:"2vw"}} src="/assets/edit.svg" alt="" /></button>
+              <button className="tarifas_button_deletet" onClick={() => deleteTarifa(tarifa.id_tarifa)}><img style={{width:"2vw"}} src="/assets/delete.svg" alt="" /></button>
             </AuthRol></td>
               </tr>
             </tbody>))}
@@ -163,10 +163,12 @@ function Tarifas() {
             }
           />
           <button className="tarifas_button_ok" onClick={editMode ? putTarifa : postTarifa}>
+
             {editMode ? <> <img style={{width:"2vw"}} src="../public/assets/ok.svg" alt="" /><span>Aceptar Cambios</span></> :
             <><span>Agregar Nueva</span><img style={{width:"2vw"}} src="../public/assets/add.svg" alt="" /></> }
+
           </button>
-          {editMode && <button className="tarifas_button_cancel" onClick={handleCancelEdit}>{<><span>Cancelar</span><img style={{width:"2vw"}} src="../public/assets/cancel.svg" alt="" /></>}</button>}
+          {editMode && <button className="tarifas_button_cancel" onClick={handleCancelEdit}>{<><span>Cancelar</span><img style={{width:"2vw"}} src="/assets/cancel.svg" alt="" /></>}</button>}
         </div>
       </AuthRol>
     </div>
