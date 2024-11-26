@@ -1,5 +1,5 @@
 import { useAuth } from "../Auth";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./RegistroUsuarios.css";
 
 const RegistroUsuarios = () => {
@@ -14,7 +14,66 @@ const RegistroUsuarios = () => {
         superusuario:0
     });
     const [mensaje, setMensaje] = useState("")
+    const [modoEdicion, setModoEdicion] = useState(false)
+    const [usuarios, setUsuarios] = useState([])
 
+  
+    useEffect(() => {
+      traerUsuarios();
+    },[]);
+
+    const obtenerUsuarios = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/usuarios", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${sesion.token}`
+          },
+        });
+  
+        if (!response.ok) {
+          throw new Error("Error al obtener los usuarios");
+        }
+  
+        const data = await response.json();
+        setUsuarios(data); 
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const eliminarUsuario = async (id) => {
+      try {
+        const response = await fetch(`http://localhost:3000/usuarios/${id}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${sesion.token}`
+          },
+        });
+  
+        if (!response.ok) {
+          throw new Error("Error al eliminar el usuario");
+        }
+  
+        const data = await response.json();
+        console.log(data); 
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+
+    const traerUsuarios = async ()=>{
+      await obtenerUsuarios()
+    }
+
+    const handleEliminarUsuario = async (id)=>{
+      const confirmacion = window.confirm("¿Esta seguro de eliminar el usuario?")
+      if (confirmacion){
+        await eliminarUsuario(id)
+      }
+    }
 
     const validarEmail = (email) => {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -93,7 +152,7 @@ const RegistroUsuarios = () => {
 
     return (
         <>
-          {sesion.superusuario === 1 && (
+          {sesion.superusuario === 1 && !modoEdicion && (
             <>
               <form onSubmit={onSubmit} className="registro-usuarios">
                 <div className="inputs-nombre">
@@ -166,14 +225,30 @@ const RegistroUsuarios = () => {
                   name="superusuario"
                   type="checkbox"
                 />
-    
                 <button type="submit">Registrar usuario</button>
               </form>
+              <button onClick={()=> setModoEdicion(true)} >Ver usuarios</button>
               <p>{mensaje}</p>
             </>
           )}
           {sesion.superusuario != 1 && (
             <h2>Debe ser superusario para poder registrar otros usuarios</h2>
+          )}
+          {sesion.superusuario == 1 && modoEdicion &&  (
+            <>
+            <h1>Usuarios</h1>
+            <div className="registro-usuarios">
+            <ul>
+                {usuarios.map((usuario, i) => (
+                  <li key={i}>
+                    {usuario.nombre} {usuario.apellido} - {usuario.email} - id: {usuario.id_usuario}
+                    <button style={{color:"red"}} onClick={()=>{handleEliminarUsuario(usuario.id_usuario)}}>Eliminar</button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <button onClick={()=>setModoEdicion(false)}>Volver al registro</button>
+            </>
           )}
         </>
       );
