@@ -4,19 +4,47 @@ import './AgregarVehiculos.css'
 export default function ListadoVehiculos() {
     const [lista,setLista]=useState([])
 
+    const TraerRegistros = async ()=>{
+        try{
+            const response = await fetch('http://localhost:3000/vehiculos')
+            if (!response.ok){
+                throw new Error('Error al obtener los datos')
+            }
+            const data = await response.json()
+            console.log(data)
+            setLista(data)
+        }
+        catch (err){
+            console.error('Error al obtener los registros:',err)
+        }
+    }
+
+    useEffect(()=>{
+        TraerRegistros()
+    },[])
+
     return (
         <>
         <div className="contenedorVehiculos" >
-        <table border="1" style={{width:"100%",textAlign:"left"}}>
+        {lista.length>0 ? (<table border="1" style={{width:"100%",textAlign:"left"}}>
             <thead>
                 <th>ID Vehiculo</th>
                 <th>Matricula</th>
                 <th>Tipo de vehiculo</th>
             </thead>
             <tbody>
-
+                {lista.map((vehiculo)=>(
+                    <tr key={vehiculo.id_vehiculo}>
+                    <td>{vehiculo.id_vehiculo}</td>
+                    <td>{vehiculo.matricula}</td>
+                    <td>{vehiculo.id_tipo_vehiculo}</td>
+                    </tr>
+                ))}
             </tbody>
-        </table>        
+        </table>        ) 
+        : (<p>No hay vehiculos registrados</p>)}
+        
+        
         </div>
         </>
     )
