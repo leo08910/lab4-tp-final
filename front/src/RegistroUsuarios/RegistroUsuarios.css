@@ -1,5 +1,5 @@
 .registro-usuarios {
-    height: 50vh;
+    height: 60vh;
     width: 20vw;
     display: flex;
     flex-direction: column;
@@ -46,6 +46,7 @@
     font-weight: 500;
 }
 
+
 .registro-usuarios button:hover {
     background-color: #3b82f6;
     box-shadow: 0 0 0 5px #3b83f65f;
@@ -54,4 +55,49 @@
 
 .registro-usuarios p {
     margin: 20px 0 0 0;
+}
+
+.button-container {
+    display: flex; 
+    justify-content: space-between; 
+    gap: 10px; 
+    margin-top: 15px; 
+  }
+
+.btn-volver-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 80px;
+}
+
+.lista-usuarios {
+    max-height: 60vh;
+    width: 20vw;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    border-radius: 1rem;
+    overflow-y: auto;
+
+    background: #e0e0e0;
+    box-shadow: 20px 20px 60px #bebebe,
+        -20px -20px 60px #ffffff;
+}
+
+.lista-usuarios button {
+    background-color: #f3f7fe;
+    color: #3b82f6;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    width: 100px;
+    height: 45px;
+    transition: 0.3s;
+    font-weight: 500;
+}
+
+.lista-usuarios button:hover {
+    background-color: #3b82f6;
+    box-shadow: 0 0 0 5px #3b83f65f;
+    color: #fff;
 }

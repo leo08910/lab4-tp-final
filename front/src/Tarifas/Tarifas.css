@@ -56,16 +56,20 @@
     align-items: center;
     justify-content: center;
 
+
+}
+span{
+    margin: 1vw;
 }
 .tarifas_table{
     font-size: 4vh;
-    border: solid 1px black;
+    border: solid 4px black;
     border-radius: 5%;
 }
 .tarifas_th, .tarifas_td{
     border-bottom: solid 1px black;
     font-size: 4vh;
-    border-radius: 8%;
+    border-radius: 10%;
     justify-content: space-around;
     justify-items: auto;
 }

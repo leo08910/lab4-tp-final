@@ -64,7 +64,10 @@ registros.post(
       } else {
         // Cálculo del las fechasy el precio para las tarifas con fecha fin
         console.log(tipo_tarifa);
-        if (tipo_tarifa.toLowerCase().includes("hora")) {
+        if (tipo_tarifa.toLowerCase().includes("minuto")) {
+          fin = new Date(inicioFecha);
+          fin.setMinutes(fin.getMinutes() + parseInt(duracion));
+        }else if (tipo_tarifa.toLowerCase().includes("hora")) {
           fin = new Date(inicioFecha);
           fin.setHours(fin.getHours() + parseInt(duracion));
         } else if (tipo_tarifa.toLowerCase().includes("turno")) {
@@ -121,7 +124,7 @@ registros.put(
       const { inicio, fin, id_tarifa, precio_final } = registro[0];
 
       let fechaActual;
-      let precioFinal;
+      let precioFinal = precio_final;
       let horasTranscurridas;
 
       const [tarifa] = await db.query(
@@ -133,25 +136,88 @@ registros.put(
 
       if (fin === null) { // Para las tarifas con tiempo indefinido
 
-        // Validación de tarifa indefinida
         if (!tarifa[0].tipo_tarifa.toLowerCase().includes("indefinido")) {
           return res.status(400).send({
             mensaje: "Solo se pueden liberar registros con tarifa indefinida",
           });
         }
-
-        // Cálculo de las horas pasadas desde la fecha inicio
+      
         fechaActual = new Date();
-        fechaActual.setHours(fechaActual.getHours());
-
-        let inicioFecha = new Date(inicio);
-        horasTranscurridas = Math.ceil(
-          (fechaActual - inicioFecha) / (1000 * 60 * 60)
+        fechaActual.setMinutes(fechaActual.getMinutes());
+        const inicioFecha = new Date(inicio);
+        const minutosTranscurridos = Math.ceil(
+          (fechaActual - inicioFecha) / (1000 * 60)
         );
+      
+        precioFinal = minutosTranscurridos * precio;
+        
+        await db.query(
+          `UPDATE registros SET fin = ?, precio_final = ? WHERE id_registro = ?`,
+          [fechaActual, precioFinal, id_registro]
+        );
+      
+      } else { // Para las tarifas con tiempo definido
 
-        precioFinal = horasTranscurridas * precio;
+        fechaActual = new Date();
+        fechaActual.setMinutes(fechaActual.getMinutes());
+        const inicioFecha = new Date(inicio);
+        const finFecha = new Date(fin);
+
+        if (fechaActual > finFecha) {
+          const minutosTranscurridos = Math.ceil(
+            (fechaActual - inicioFecha) / (1000 * 60)
+          );
+
+          precioFinal += minutosTranscurridos * precio;
+
+        } else {
+          precioFinal = precio_final;
+
+        }
+
+        await db.query(
+          `UPDATE registros SET fin = ?, precio_final = ? WHERE id_registro = ?`,
+          [fechaActual, precioFinal, id_registro]
+        );
+      }
+
+
+      // Del commit anterior, para manejar los registros en horas⌛
+
+      // if (fin === null) { // Para las tarifas con tiempo indefinido
+
+      //   // Validación de tarifa indefinida
+      //   if (!tarifa[0].tipo_tarifa.toLowerCase().includes("indefinido")) {
+      //     return res.status(400).send({
+      //       mensaje: "Solo se pueden liberar registros con tarifa indefinida",
+      //     });
+      //   }
+
+      //   // Cálculo de las horas pasadas desde la fecha inicio
+      //   fechaActual = new Date();
+      //   fechaActual.setMinutes(fechaActual.getMinutes());
+
+      //   let inicioFecha = new Date(inicio);
+      //   horasTranscurridas = Math.ceil(
+      //     (fechaActual - inicioFecha) / (1000 * 60 * 60)
+      //   );
+
+      //   precioFinal = horasTranscurridas * precio;
+        
+      // Actualización del registro
+      
+      //Usando horas
+    
+      /*  precioFinal = horasTranscurridas * precio;
+
+        await db.query(
+          `UPDATE registros SET fin = ?, precio_final = ? WHERE id_registro = ?`,
+          [fechaActual, precioFinal, id_registro]
+        );
         
       } else { // Para las tarifas con tiempo definido
+        fechaActual = new Date();
+        fechaActual.setHours(fechaActual.getHours());
         const finFecha = new Date(fin);
 
         if (fechaActual > finFecha) {
@@ -161,22 +227,27 @@ registros.put(
 
           precioFinal += horasExtras * precio;
 
+          await db.query(
+            `UPDATE registros SET fin = ?, precio_final = ? WHERE id_registro = ?`,
+            [fechaActual, precioFinal, id_registro]
+          );
+
         } else {
           precioFinal = precio_final;
-        }
-      }
 
-      // Actualización en el registro
-      await db.query(
-        `UPDATE registros SET fin = ?, precio_final = ? WHERE id_registro = ?`,
-        [fechaActual, precioFinal, id_registro]
-      );
+          await db.query(
+            `UPDATE registros SET precio_final = ? WHERE id_registro = ?`,
+            [precioFinal, id_registro]
+          );
+        }
+      }*/
 
       res.status(200).send({
         mensaje: "Lugar liberado",
         precioFinal,
         horasTranscurridas,
       });
+
     } catch (error) {
       console.log(error);
       res.status(500).send("Error en el servidor");

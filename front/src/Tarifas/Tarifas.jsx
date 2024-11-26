@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth, AuthRol } from "../Auth"; //traigo AuthRol para verificar si es superusuario
 import "./Tarifas.css";
 import getTarifas from "./GetTarifas";
+import { validacionesTarifa } from "./GetTarifas";
 
 
 function Tarifas() {
@@ -22,27 +23,14 @@ function Tarifas() {
   const postTarifa = async () => {
     const confirmacion = window.confirm("¿Seguro que deseas agregar tarifa?");
     if (!confirmacion) return;
-    if (nuevaTarifa.tipo_tarifa===""){
-      alert("seleccione un tipo de tarifa");
-      return;
-    }
-    if (nuevaTarifa.precio===""){
-      alert("precio no puede ser vacio");
-      return;
-    }    
-    if (nuevaTarifa.precio < 0){
-      alert("precio no puede ser menor a cero");
-      return;
-    }
-  // Verificar si el tipo de tarifa ya existe
-  const tarifaExistente = tarifas.find(
-    (tarifa) => tarifa.tipo_tarifa === nuevaTarifa.tipo_tarifa
-  );
-    if (tarifaExistente) {
-      alert("El tipo de tarifa ya existe. Por favor, elige otro.");
-      return;
-    }
-
+    const tarifaExistente = tarifas.find(
+      (tarifa) => tarifa.tipo_tarifa === nuevaTarifa.tipo_tarifa
+    );
+      if (tarifaExistente) {
+        alert("El tipo de tarifa ya existe. Por favor, elige otro.");
+        return;
+      }
+    validacionesTarifa(nuevaTarifa,tarifas)
     const response = await fetch("http://localhost:3000/tarifas", {
       method: "POST",
       headers: {
@@ -63,7 +51,7 @@ function Tarifas() {
   const putTarifa = async () => {
     const confirmacion = window.confirm("¿Seguro que deseas guardar los cambios?");
     if (!confirmacion) return;
-
+    validacionesTarifa(nuevaTarifa,tarifas)
     const response = await fetch(`http://localhost:3000/tarifas/${tarifaIdToEdit}`, {
       method: "PUT",
       headers: {
@@ -152,6 +140,7 @@ function Tarifas() {
           >
             <option className="tarifa_option" value="">Selecciona el tipo de tarifa</option>
                 <option value="Tiempo indefinido">Tiempo indefinido</option>
+                <option value="Auto p/minuto">Auto p/minuto</option>
                 <option value="Auto p/turno">Auto p/turno</option>
                 <option value="Auto p/hora">Auto p/hora</option>
                 <option value="Auto p/día">Auto p/día</option>
@@ -174,8 +163,10 @@ function Tarifas() {
             }
           />
           <button className="tarifas_button_ok" onClick={editMode ? putTarifa : postTarifa}>
-            {editMode ? <><span>Aceptar Cambios</span> <img style={{width:"2vw"}} src="/assets/ok.svg" alt="" /></> :
-            <><span>Agregar Nueva</span><img style={{width:"2vw"}} src="/assets/add.svg" alt="" /></> }
+
+            {editMode ? <> <img style={{width:"2vw"}} src="../public/assets/ok.svg" alt="" /><span>Aceptar Cambios</span></> :
+            <><span>Agregar Nueva</span><img style={{width:"2vw"}} src="../public/assets/add.svg" alt="" /></> }
+
           </button>
           {editMode && <button className="tarifas_button_cancel" onClick={handleCancelEdit}>{<><span>Cancelar</span><img style={{width:"2vw"}} src="/assets/cancel.svg" alt="" /></>}</button>}
         </div>
