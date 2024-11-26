@@ -1,0 +1,24 @@
+.contenedorVehiculos{
+    width: 40vw;
+    height: 50vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #a5a5a5;
+    border-radius: 7vw 7vh 7vw 7vh;
+    
+}
+
+.Textos{
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+}
+
+.divVehiculos{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}

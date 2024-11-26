@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react";
+import { useAuth } from "../Auth";
+import getTarifas from "../Tarifas/GetTarifas"
 
 const Registros = () => {
   const [registros, setRegistros] = useState([]);
+  const [tarifas, setTarifas] = useState([]);
   const [error, setError] = useState(null);
+  const { sesion } = useAuth();
 
+  // Obtener registros
   useEffect(() => {
     const fetchRegistros = async () => {
       try {
@@ -22,6 +27,17 @@ const Registros = () => {
     fetchRegistros();
   }, []);
 
+  // Obtener tarifas
+  useEffect(() => {
+  getTarifas(sesion,setTarifas);
+  }, []);
+
+  // Función para obtener tipo_tarifa
+  const obtenerTipoTarifa = (idTarifa) => {
+    const tarifa = tarifas.find((tarifa) => tarifa.id_tarifa === idTarifa);
+    return tarifa ? tarifa.tipo_tarifa : "Desconocida";
+  };
+
   return (
     <div>
       <h2>Registros</h2>
@@ -32,10 +48,10 @@ const Registros = () => {
             <tr>
               <th>ID</th>
               <th>ID Lugar</th>
-              <th>ID Vehículo</th>
+              <th>Matrícula</th>
               <th>Inicio</th>
               <th>Fin</th>
-              <th>ID Tarifa</th>
+              <th>Tipo de Tarifa</th>
               <th>Precio Final</th>
             </tr>
           </thead>
@@ -44,10 +60,10 @@ const Registros = () => {
               <tr key={registro.id_registro}>
                 <td>{registro.id_registro}</td>
                 <td>{registro.id_lugar}</td>
-                <td>{registro.id_vehiculo}</td>
+                <td>{registro.matricula}</td>
                 <td>{new Date(registro.inicio).toLocaleString()}</td>
                 <td>{registro.fin ? new Date(registro.fin).toLocaleString() : "Indefinido"}</td>
-                <td>{registro.id_tarifa}</td>
+                <td>{obtenerTipoTarifa(registro.id_tarifa)}</td>
                 <td>{registro.precio_final}</td>
               </tr>
             ))}

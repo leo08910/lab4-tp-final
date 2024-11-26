@@ -8,9 +8,10 @@ const registros = express.Router();
 // GET /registros
 registros.get("/registros", async (req, res) => {
   try {
-    const [result] = await db.query(`SELECT * FROM registros`);
+    const [result] = await db.query(
+      `SELECT * FROM registros ORDER BY id_registro DESC`
+    );
     res.status(200).send({ result });
-    
   } catch (error) {
     console.log(error);
     res.status(500).send("Error en el servidor");
@@ -22,11 +23,14 @@ registros.post(
   "/registros",
   validarJwt,
   body("id_lugar").isInt().notEmpty(),
-  body("id_vehiculo").isInt().notEmpty(),
-  body("inicio").isISO8601(),
-  body("fin").optional().isISO8601(),
+  body("matricula").matches(/^[A-Za-z0-9\s]+$/),
+  body("cliente")
+    .notEmpty()
+    .matches(/^[A-Za-zÁÉÍÓÚáéíóúÜüÑñ\s]+$/)
+    .isLength({ max: 50 }),
+  body("inicioFecha").isISO8601(),
+  body("duracion").optional(),
   body("id_tarifa").isInt().notEmpty(),
-  body("precio_final").isDecimal(),
 
   async (req, res) => {
     const validacion = validationResult(req);
@@ -35,67 +39,147 @@ registros.post(
       return res.status(400).send({ errores: validacion.array() });
     }
 
-    const { id_lugar, id_vehiculo, inicio, fin, id_tarifa, precio_final } =
+    const { id_lugar, matricula, cliente, inicioFecha, id_tarifa, duracion } =
       req.body;
 
     try {
-      //Para verificar si un lugar ya está ocupado
-      const [lugar] = await db.query(
-        "SELECT ocupado FROM lugares WHERE id_lugar = ?",
-        [id_lugar]
+      // Comprobación de la tarifa
+      const [tarifa] = await db.query(
+        "SELECT * FROM tarifas WHERE id_tarifa = ?",
+        [id_tarifa]
       );
-      if (lugar[0]?.ocupado === 1) {
-        return res.status(400).send({ mensaje: `El lugar ${id_lugar} ya está ocupado` });
+      if (tarifa.length === 0) {
+        return res.status(404).send({ mensaje: "Tarifa no encontrada" });
       }
 
-      //Para verificar si un vehículo se encuentra ya estacionado
-      const [vehiculoEnUso] = await db.query(
-        "SELECT * FROM registros WHERE id_vehiculo = ? AND (fin IS NULL OR fin > NOW())",
-        [id_vehiculo]
-      );
-      if (vehiculoEnUso.length > 0) {
-        return res.status(400).send({mensaje: `El vehículo ${id_vehiculo} ya está estacionado en otro lugar`});
-      }
+      const { tipo_tarifa, precio } = tarifa[0];
 
-      //Inserción de los datos al registro
-      const [result] = await db.query(
-        `INSERT INTO registros(id_lugar, id_vehiculo, inicio, fin, id_tarifa, precio_final) VALUES(?, ?, ?, ?, ?, ?)`,
-        [id_lugar, id_vehiculo, inicio, fin, id_tarifa, precio_final]
-      );
+      let fin;
+      let precioFinal;
 
-      //Actualización 
-      await db.query("UPDATE lugares SET ocupado = 1 WHERE id_lugar = ?", [
-        id_lugar,
-      ]);
-      res.status(201).send({ result });
-
-      if (fin) {
-        const tiempoRestante = new Date(fin).getTime() - new Date().getTime();
-
-        if (tiempoRestante > 0) {
-
-          setTimeout(async () => {
-            try {
-              await db.query(
-                "UPDATE lugares SET ocupado = 0 WHERE id_lugar = ?",
-                [id_lugar]
-              );
-              console.log(`Lugar ${id_lugar} liberado`);
-
-            } catch (error) {
-              console.log(`Error al liberar el lugar ${id_lugar}:`, error);
-            }
-          }, tiempoRestante);
-
-        }
-
+      if (tipo_tarifa.toLowerCase().includes("indefinido")) {
+        // Para los registros con tarifa indefinida
+        fin = null;
+        precioFinal = 0;
       } else {
-        console.log(`Lugar ${id_lugar} reservado por tiempo indefinido.`);
+        // Cálculo del las fechasy el precio para las tarifas con fecha fin
+        console.log(tipo_tarifa);
+        if (tipo_tarifa.toLowerCase().includes("hora")) {
+          fin = new Date(inicioFecha);
+          fin.setHours(fin.getHours() + parseInt(duracion));
+        } else if (tipo_tarifa.toLowerCase().includes("turno")) {
+          fin = new Date(inicioFecha);
+          fin.setHours(fin.getHours() + parseInt(duracion) * 12);
+        } else if (tipo_tarifa.toLowerCase().includes("día")) {
+          fin = new Date(inicioFecha);
+          console.log(fin.getDate());
+          fin.setDate(fin.getDate() + parseInt(duracion));
+        } else if (tipo_tarifa.toLowerCase().includes("semana")) {
+          fin = new Date(inicioFecha);
+          fin.setDate(fin.getDate() + parseInt(duracion) * 7);
+        } else if (tipo_tarifa.toLowerCase().includes("mes")) {
+          fin = new Date(inicioFecha);
+          fin.setMonth(fin.getMonth() + parseInt(duracion));
+        } else {
+          return res
+            .status(400)
+            .send({ mensaje: "Tipo de tarifa no soportado para cálculo" });
+        }
+        precioFinal = parseInt(precio) * parseInt(duracion);
       }
 
+      const [result] = await db.query(
+        `INSERT INTO registros(id_lugar, matricula, cliente, inicio, fin, id_tarifa, precio_final) VALUES(?, ?, ?, ?, ?, ?, ?)`,
+        [id_lugar, matricula, cliente, inicioFecha, fin, id_tarifa, precioFinal]
+      );
+
+      res.status(201).send({ result, precioFinal, inicioFecha, fin });
     } catch (error) {
       console.log(error);
-      res.status(error.code === "ER_SIGNAL_EXCEPTION" ? 400 : 500).send("Error en el servidor");
+      res.status(500).send("Error en el servidor");
+    }
+  }
+);
+
+// PUT /registros/:id_registro/liberar
+registros.put(
+  "/registros/:id_registro/liberar",
+  validarJwt,
+  async (req, res) => {
+    const { id_registro } = req.params;
+
+    try {
+      const [registro] = await db.query(
+        "SELECT * FROM registros WHERE id_registro = ?",
+        [id_registro]
+      );
+
+      if (registro.length === 0) {
+        return res.status(404).send({ mensaje: "Registro no encontrado" });
+      }
+
+      const { inicio, fin, id_tarifa, precio_final } = registro[0];
+
+      let fechaActual;
+      let precioFinal;
+      let horasTranscurridas;
+
+      const [tarifa] = await db.query(
+        "SELECT * FROM tarifas WHERE id_tarifa = ?",
+        [id_tarifa]
+      );
+
+      const { precio } = tarifa[0];
+
+      if (fin === null) { // Para las tarifas con tiempo indefinido
+
+        // Validación de tarifa indefinida
+        if (!tarifa[0].tipo_tarifa.toLowerCase().includes("indefinido")) {
+          return res.status(400).send({
+            mensaje: "Solo se pueden liberar registros con tarifa indefinida",
+          });
+        }
+
+        // Cálculo de las horas pasadas desde la fecha inicio
+        fechaActual = new Date();
+        fechaActual.setHours(fechaActual.getHours());
+
+        let inicioFecha = new Date(inicio);
+        horasTranscurridas = Math.ceil(
+          (fechaActual - inicioFecha) / (1000 * 60 * 60)
+        );
+
+        precioFinal = horasTranscurridas * precio;
+        
+      } else { // Para las tarifas con tiempo definido
+        const finFecha = new Date(fin);
+
+        if (fechaActual > finFecha) {
+          const horasExtras = Math.ceil(
+            (fechaActual - finFecha) / (1000 * 60 * 60)
+          );
+
+          precioFinal += horasExtras * precio;
+
+        } else {
+          precioFinal = precio_final;
+        }
+      }
+
+      // Actualización en el registro
+      await db.query(
+        `UPDATE registros SET fin = ?, precio_final = ? WHERE id_registro = ?`,
+        [fechaActual, precioFinal, id_registro]
+      );
+
+      res.status(200).send({
+        mensaje: "Lugar liberado",
+        precioFinal,
+        horasTranscurridas,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).send("Error en el servidor");
     }
   }
 );

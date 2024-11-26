@@ -1,47 +1,47 @@
 import { useState, useEffect } from "react";
-import { useAuth, AuthRol } from "../Auth"; // Asegúrate de importar AuthRol
+import { useAuth, AuthRol } from "../Auth"; //traigo AuthRol para verificar si es superusuario
 import "./Tarifas.css";
+import getTarifas from "./GetTarifas";
+
 
 function Tarifas() {
   const { sesion } = useAuth();
   const [tarifas, setTarifas] = useState([]);
-  const [tiposVehiculo, setTiposVehiculo] = useState([]);
   const [nuevaTarifa, setNuevaTarifa] = useState({
     tipo_tarifa: "",
-    id_tipo_vehiculo: "",
     precio: "",
   });
   const [editMode, setEditMode] = useState(false);
   const [tarifaIdToEdit, setTarifaIdToEdit] = useState(null);
 
   useEffect(() => {
-    getTarifas();
-    getTiposVehiculo();
+    getTarifas(sesion,setTarifas);
   }, []);
 
-  const getTarifas = async () => {
-    const response = await fetch(`http://localhost:3000/tarifas`, {
-      headers: { Authorization: `Bearer ${sesion.token}` },
-    });
-    if (response.ok) {
-      const { result } = await response.json();
-      setTarifas(result);
-    }
-  };
-
-  const getTiposVehiculo = async () => {
-    const response = await fetch(`http://localhost:3000/tipos_vehiculo`, {
-      headers: { Authorization: `Bearer ${sesion.token}` },
-    });
-    if (response.ok) {
-      const { tipos_vehiculo } = await response.json();
-      setTiposVehiculo(tipos_vehiculo || []);
-    }
-  };
 
   const postTarifa = async () => {
     const confirmacion = window.confirm("¿Seguro que deseas agregar tarifa?");
     if (!confirmacion) return;
+    if (nuevaTarifa.tipo_tarifa===""){
+      alert("seleccione un tipo de tarifa");
+      return;
+    }
+    if (nuevaTarifa.precio===""){
+      alert("precio no puede ser vacio");
+      return;
+    }    
+    if (nuevaTarifa.precio < 0){
+      alert("precio no puede ser menor a cero");
+      return;
+    }
+  // Verificar si el tipo de tarifa ya existe
+  const tarifaExistente = tarifas.find(
+    (tarifa) => tarifa.tipo_tarifa === nuevaTarifa.tipo_tarifa
+  );
+    if (tarifaExistente) {
+      alert("El tipo de tarifa ya existe. Por favor, elige otro.");
+      return;
+    }
 
     const response = await fetch("http://localhost:3000/tarifas", {
       method: "POST",
@@ -52,8 +52,8 @@ function Tarifas() {
       body: JSON.stringify(nuevaTarifa),
     });
     if (response.ok) {
-      getTarifas();
-      setNuevaTarifa({ tipo_tarifa: "", id_tipo_vehiculo: "", precio: "" });
+      getTarifas(sesion,setTarifas);
+      setNuevaTarifa({ tipo_tarifa: "", precio: "" });
     } else {
       const error = await response.json();
       console.error("Error al agregar tarifa:", error);
@@ -73,8 +73,8 @@ function Tarifas() {
       body: JSON.stringify(nuevaTarifa),
     });
     if (response.ok) {
-      getTarifas();
-      setNuevaTarifa({ tipo_tarifa: "", id_tipo_vehiculo: "", precio: "" });
+      getTarifas(sesion,setTarifas);
+      setNuevaTarifa({ tipo_tarifa: "", precio: "" });
       setEditMode(false);
       setTarifaIdToEdit(null);
     } else {
@@ -92,7 +92,7 @@ function Tarifas() {
       headers: {Authorization: `Bearer ${sesion.token}`,},
     });
     if (response.ok) {
-      getTarifas();
+      getTarifas(sesion,setTarifas);
     } else {
       const error = await response.json();
       console.error("Error al eliminar tarifa:", error);
@@ -104,7 +104,6 @@ function Tarifas() {
     setTarifaIdToEdit(tarifa.id_tarifa);
     setNuevaTarifa({
       tipo_tarifa: tarifa.tipo_tarifa,
-      id_tipo_vehiculo: tarifa.id_tipo_vehiculo,
       precio: tarifa.precio,
     });
   };
@@ -117,35 +116,33 @@ function Tarifas() {
 
   return (
       <div className="tarifas-container">
-        <h1 className="titulo">Tarifas</h1>
+        <h1 className="tarifas_titulo">Tarifas</h1>
 
-        {tarifas.map((tarifa) => (
-            <table className="tarifas_table" key={tarifa.id_tarifa}>
+        
+            <table  className="tarifas_table">
             <thead>
               <tr >
-                <th>tipo de tarifa</th>
-                <th>tipo de vehiculo</th>
-                <th>precio</th>
-                <th>acciones</th>
+                <th className="tarifas_th">tipo de tarifa</th>
+                <th className="tarifas_th">precio</th>
+                <th className="tarifas_th">acciones</th>
               </tr>
             </thead>
-            <tbody>
+            {tarifas.map((tarifa) => (
+            <tbody  key={tarifa.id_tarifa}>
               <tr>
-                <td>{tarifa.tipo_tarifa}</td>
-                <td>{tarifa.tipo_vehiculo}</td>
-                <td>${tarifa.precio}</td>
-                <td><AuthRol superusuario={1}>
-              <button onClick={() => handleEdit(tarifa)}>Modificar</button>
-              <button onClick={() => deleteTarifa(tarifa.id_tarifa)}>Eliminar</button>
+                <td className="tarifas_td">{tarifa.tipo_tarifa}</td>
+                <td className="tarifas_td">${tarifa.precio}</td>
+                <td className="tarifas_td"><AuthRol superusuario={1}>
+              <button className="tarifas_button_edit" onClick={() => handleEdit(tarifa)}><img style={{width:"2vw"}} src="/assets/edit.svg" alt="" /></button>
+              <button className="tarifas_button_deletet" onClick={() => deleteTarifa(tarifa.id_tarifa)}><img style={{width:"2vw"}} src="/assets/delete.svg" alt="" /></button>
             </AuthRol></td>
               </tr>
-            </tbody>
+            </tbody>))}
           </table>
-        ))} <br />
       <AuthRol superusuario={1} > 
         {/* Formulario para agregar o editar tarifas */}
         <div className="superusuario">
-          <h2>{editMode ? "Modificar Tarifa" : "Agregar Tarifa"}</h2><br />
+          <h2>{editMode ? "Modificar Tarifa" : "Agregar Tarifa"}</h2>
           <select
             className="tarifa_select"
             value={nuevaTarifa.tipo_tarifa}
@@ -154,47 +151,33 @@ function Tarifas() {
             }
           >
             <option className="tarifa_option" value="">Selecciona el tipo de tarifa</option>
-            {tarifas
-              .filter(
-                (tarifa, index, self) =>
-                  self.findIndex((t) => t.tipo_tarifa === tarifa.tipo_tarifa) === index
-              )
-              .map((tarifa) => (
-                <option key={tarifa.id_tarifa} value={tarifa.tipo_tarifa}>
-                  {tarifa.tipo_tarifa}
-                </option>
-              ))}
+                <option value="Tiempo indefinido">Tiempo indefinido</option>
+                <option value="Auto p/turno">Auto p/turno</option>
+                <option value="Auto p/hora">Auto p/hora</option>
+                <option value="Auto p/día">Auto p/día</option>
+                <option value="Auto p/día">Auto p/semana</option>
+                <option value="Auto p/mes">Auto p/mes</option>
+                <option value="Moto p/turno">Moto p/turno</option>
+                <option value="Moto p/hora">Moto p/hora</option>
+                <option value="Moto p/día">Moto p/día</option>
+                <option value="Moto p/semana">Moto p/semana</option>
+                <option value="Moto p/mes">Moto p/mes</option>
+                  
           </select>
-          <br />
-          <select
-            className="tarifa_select"
-            value={nuevaTarifa.id_tipo_vehiculo}
-            onChange={(e) =>
-              setNuevaTarifa({ ...nuevaTarifa, id_tipo_vehiculo: e.target.value })
-            }
-          >
-            <option className="tarifa_option" value="">Selecciona el tipo de vehículo</option>
-            {tiposVehiculo.map((tipo) => (
-              <option key={tipo.id_tipo_vehiculo} value={tipo.id_tipo_vehiculo}>
-                {tipo.tipo_vehiculo}
-              </option>
-            ))}
-          </select>
-          <br />
           <input 
             className="tarifas_input"
-            type="text"
+            type="number"
             placeholder="Precio"
             value={nuevaTarifa.precio}
             onChange={(e) =>
               setNuevaTarifa({ ...nuevaTarifa, precio: e.target.value })
             }
           />
-          <br />
           <button className="tarifas_button_ok" onClick={editMode ? putTarifa : postTarifa}>
-            {editMode ? "Guardar Cambios" : "Agregar Tarifa"}
+            {editMode ? <><span>Aceptar Cambios</span> <img style={{width:"2vw"}} src="/assets/ok.svg" alt="" /></> :
+            <><span>Agregar Nueva</span><img style={{width:"2vw"}} src="/assets/add.svg" alt="" /></> }
           </button>
-          {editMode && <button className="tarifas_button_cancel" onClick={handleCancelEdit}>Cancelar</button>}
+          {editMode && <button className="tarifas_button_cancel" onClick={handleCancelEdit}>{<><span>Cancelar</span><img style={{width:"2vw"}} src="/assets/cancel.svg" alt="" /></>}</button>}
         </div>
       </AuthRol>
     </div>
