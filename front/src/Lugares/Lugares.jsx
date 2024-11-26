@@ -124,7 +124,7 @@ function Lugares() {
     );
     if (tarifaSeleccionada) {
       const tipo = tarifaSeleccionada.tipo_tarifa.toLowerCase();
-      if (tipo.includes("minutos")) {
+      if (tipo.includes("minuto")) {
         setUnidadTiempo("minutos");
       }else if (tipo.includes("hora")) {
         setUnidadTiempo("horas");
@@ -150,20 +150,21 @@ function Lugares() {
     fecha.setHours(fecha.getHours() - 6);
     const fechaAjustada = fecha.toISOString().slice(0, 19).replace("T", " ");
     const formDataAjustado = { ...formData, inicioFecha: fechaAjustada };
-    const regExistenteind = registros.find(
-    (registro) => registro.matricula === formDataAjustado.matricula && registro.fin === null);
+    const regExistentedef = registros.find((registro) => 
+      registro.matricula === formDataAjustado.matricula && new Date() < new Date(registro.fin)
+    );
+    console.log(regExistentedef);
+    if (regExistentedef) {
+       return alert("El registro ya existe el fin no ah llegado");
+    }
+        
+    const regExistenteind = registros.find((registro) => 
+      registro.matricula === formDataAjustado.matricula && registro.fin === null);
     if (regExistenteind) {
       alert("El registro ya existe");
       return;
     }
-    const regExistentedef = registros.find((registro) => {
-      return new Date() < new Date(registro.fin);
-    });
-    
-    if (regExistentedef) {
-       return alert("El registro ya existe");
-    }
-    
+
 
     // Post para lugares
     try {
