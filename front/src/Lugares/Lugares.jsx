@@ -59,7 +59,7 @@ function Lugares() {
 
       const data = await response.json();
       console.log("Lugar liberado exitosamente:", data);
-      getLugares();
+      await getLugares();
     } catch (error) {
       console.error("Error en la solicitud para liberar el lugar:", error);
     }
@@ -85,7 +85,7 @@ function Lugares() {
 
       const data = await response.json();
       console.log("Lugar liberado en el registro exitosamente:", data);
-      getLugares();
+      await getRegistros();
     } catch (error) {
       console.error(
         "Error en la solicitud para liberar el lugar en el registro:",
@@ -156,7 +156,7 @@ function Lugares() {
     
     console.log(regExistentedef);
     if (regExistentedef) {
-       return alert("El registro ya existe el fin no ah llegado");
+       return alert(`El vehículo con la matrícula ${formDataAjustado.matricula} ya esttá estacionado`);
     }
         
     const regExistenteind = registros.find((registro) => 
