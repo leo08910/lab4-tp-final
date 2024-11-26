@@ -72,6 +72,7 @@ const RegistroUsuarios = () => {
       const confirmacion = window.confirm("¿Esta seguro de eliminar el usuario?")
       if (confirmacion){
         await eliminarUsuario(id)
+        traerUsuarios()
       }
     }
 
@@ -139,6 +140,7 @@ const RegistroUsuarios = () => {
                     password: "",
                     superusuario: 0,
                 });
+                traerUsuarios()
             } else {
                 const errorData = await response.json();
                 setMensaje(`Error: ${errorData.message || "No se pudo registrar el usuario."}`);
@@ -225,9 +227,11 @@ const RegistroUsuarios = () => {
                   name="superusuario"
                   type="checkbox"
                 />
-                <button type="submit">Registrar usuario</button>
+                <div className="button-container">
+                  <button type="submit">Registrar usuario</button>
+                  <button type="button" onClick={()=> setModoEdicion(true)} >Ver usuarios</button>
+                </div>
               </form>
-              <button onClick={()=> setModoEdicion(true)} >Ver usuarios</button>
               <p>{mensaje}</p>
             </>
           )}
@@ -237,17 +241,23 @@ const RegistroUsuarios = () => {
           {sesion.superusuario == 1 && modoEdicion &&  (
             <>
             <h1>Usuarios</h1>
-            <div className="registro-usuarios">
+            <div className="lista-usuarios">
             <ul>
                 {usuarios.map((usuario, i) => (
                   <li key={i}>
-                    {usuario.nombre} {usuario.apellido} - {usuario.email} - id: {usuario.id_usuario}
-                    <button style={{color:"red"}} onClick={()=>{handleEliminarUsuario(usuario.id_usuario)}}>Eliminar</button>
+                    {usuario.nombre} {usuario.apellido} - {usuario.email} -{usuario.superusuario == 1 ? "Es superusuario" : "Usuario comun"} - id: {usuario.id_usuario}
+                    <div>
+                      <button style={{color:"red"}} onClick={()=>{handleEliminarUsuario(usuario.id_usuario)}}>Eliminar</button>
+                      <button>Modificar</button>
+                    </div>
                   </li>
                 ))}
               </ul>
+              <div className="btn-volver-container">
+                <button  onClick={()=>setModoEdicion(false)}>Volver al registro</button>
+              </div>
+              
             </div>
-            <button onClick={()=>setModoEdicion(false)}>Volver al registro</button>
             </>
           )}
         </>
