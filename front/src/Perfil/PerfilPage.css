@@ -1,0 +1,46 @@
+.Contenedor-Perfil{
+   width: 40%;
+   height: 25%;
+   margin: 50px auto;
+   padding: 20px;
+   background-color: #f0f0f0;
+   border-radius: 10px;
+   border:solid;
+   box-shadow: 0 0 15px rgb(0, 0, 0);
+   text-align: center;
+}
+
+.Perfil-Usuario{
+    font-size: 45px;
+    margin-bottom: 15px;
+    color: #333;
+    
+}
+
+.Perfil-Nombre{
+    color:#555;
+    font-size: 25px;
+    margin-bottom: 20px;
+}
+
+.Boton-Salir{
+    padding: 10px 20px;
+    background-color:#0077ff;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.Admin {
+    color: goldenrod;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.Usuario {
+    color: #264653;
+    font-weight: bold;
+    margin-top: 20px;
+}

@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import { Layout } from "./Layout";
-import { PerfilPage } from "./PerfilPage";
+import { PerfilPage } from "../src/Perfil/PerfilPage";
 import { LoginPage } from "./LoginPage";
 import { SinRuta } from "./SinRuta";
 import { AuthPage } from "./Auth";
