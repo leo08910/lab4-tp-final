@@ -153,6 +153,7 @@ function Lugares() {
     const regExistentedef = registros.find((registro) => 
       registro.matricula === formDataAjustado.matricula && new Date() < new Date(registro.fin)
     );
+    
     console.log(regExistentedef);
     if (regExistentedef) {
        return alert("El registro ya existe el fin no ah llegado");
