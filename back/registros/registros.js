@@ -118,7 +118,7 @@ registros.put(
         return res.status(404).send({ mensaje: "Registro no encontrado" });
       }
 
-      const { inicio, fin, id_tarifa } = registro[0];
+      const { inicio, fin, id_tarifa, precio_final } = registro[0];
 
       let fechaActual;
       let precioFinal;
@@ -152,10 +152,21 @@ registros.put(
         precioFinal = horasTranscurridas * precio;
         
       } else { // Para las tarifas con tiempo definido
-        console.log(tarifa[0].tipo_tarifa)
+        const finFecha = new Date(fin);
+
+        if (fechaActual > finFecha) {
+          const horasExtras = Math.ceil(
+            (fechaActual - finFecha) / (1000 * 60 * 60)
+          );
+
+          precioFinal += horasExtras * precio;
+
+        } else {
+          precioFinal = precio_final;
+        }
       }
 
-      // Actualización del registro
+      // Actualización en el registro
       await db.query(
         `UPDATE registros SET fin = ?, precio_final = ? WHERE id_registro = ?`,
         [fechaActual, precioFinal, id_registro]
