@@ -40,6 +40,8 @@ function Lugares() {
   };
 
   const formularioLiberar = async (id_lugar, id_registro) => {
+    const confirmar = window.confirm(`¿Está seguro de liberar el lugar ${id_lugar}`);
+    if (!confirmar) return;
     try {
       const response = await fetch(
         `http://localhost:3000/lugares/${id_lugar}/desocupar`,
