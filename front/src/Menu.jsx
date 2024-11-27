@@ -29,8 +29,8 @@ export const Menu =()=>{
           </li>
         
         <li>
-          <Link to='/AgregarVehiculos' className="nav-button">
-            <img src="./assets/auto.svg" alt="AgregarVehiculos" />
+          <Link to='/ListaVehiculos' className="nav-button">
+            <img src="./assets/auto.svg" alt="ListaVehiculos" />
           </Link>
         </li>
           <li>
