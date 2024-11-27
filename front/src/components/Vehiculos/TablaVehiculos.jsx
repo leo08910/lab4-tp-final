@@ -11,7 +11,6 @@ export default function ListadoVehiculos() {
                 throw new Error('Error al obtener los datos')
             }
             const data = await response.json()
-            console.log(data)
             setLista(data)
         }
         catch (err){
@@ -26,7 +25,8 @@ export default function ListadoVehiculos() {
     return (
         <>
         <div className="contenedorVehiculos" >
-        {lista.length>0 ? (<table border="1" style={{width:"100%",textAlign:"left"}}>
+        {lista.length>0 ? (
+            <table border="1" style={{width:"100%",textAlign:"left"}}>
             <thead>
                 <th>ID Vehiculo</th>
                 <th>Matricula</th>
@@ -41,10 +41,8 @@ export default function ListadoVehiculos() {
                     </tr>
                 ))}
             </tbody>
-        </table>        ) 
-        : (<p>No hay vehiculos registrados</p>)}
-        
-        
+        </table>
+        ) : (<p>No hay vehiculos registrados</p>)}
         </div>
         </>
     )
