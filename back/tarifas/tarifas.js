@@ -4,6 +4,7 @@ import { body,param, validationResult } from "express-validator";
 import { validarId,validarSuperUsuario,validarJwt } from "../validaciones/validaciones.js"
 
 const tarifas = express.Router()
+
 //middleware para validar datos
 const validarTarifa=()=>[
   body("tipo_tarifa").notEmpty(),
@@ -11,8 +12,9 @@ const validarTarifa=()=>[
 ]
 
 const validarParametroId = () => [
-  param("id_tarifa").isInt(), // Verifica que el id sea un número entero
+  param("id_tarifa").isInt(),
 ];
+
 // traer todas las tarifas.
 tarifas.get(
   "/tarifas",
@@ -27,6 +29,7 @@ tarifas.get(
     res.status(500).send("Error al obtener los tarifas");
   }
 });
+
 tarifas.get(
   "/tarifas/:id",
   validarId, 

@@ -29,11 +29,10 @@ export default function ListadoVehiculos() {
             <table border="1" style={{width:"100%",textAlign:"left"}}>
             <thead>
                 <tr>
-                    <th>ID Vehiculo</th>
-                    <th>Matricula</th>
-                    <th>Estacionado</th>    
+                <th>ID Vehiculo</th>
+                <th>Matricula</th>
+                <th>Estacionado</th>
                 </tr>
-                
             </thead>
             <tbody>
                 {lista.map((vehiculo)=>(
