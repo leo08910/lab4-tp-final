@@ -11,8 +11,8 @@ function Lugares() {
   const [selectedLugar, setSelectedLugar] = useState(null);
   const [tarifas, setTarifas] = useState([]);
   const [unidadTiempo, setUnidadTiempo] = useState("");
-
   const [registros, setRegistros] = useState([]);
+  const [tipoV, setTipoV] = useState("")
 
   useEffect(() => {
     getLugares();
@@ -36,6 +36,28 @@ function Lugares() {
       setLugares(data);
     } catch (error) {
       console.log("Error al cargar los lugares de la Api", error);
+    }
+  };
+  const postVehiculo = async () => {
+    console.log(tipoV)
+    const vehiculoData = { matricula: formData.matricula, tipo_vehiculo: tipoV, estacionado: 1 };
+    console.log(formData);
+    console.log(vehiculoData);
+  
+    const response = await fetch("http://localhost:3000/vehiculos", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${sesion.token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(vehiculoData),
+    });
+  
+    if (response.ok) {
+      alert("vehiculo creado")
+    } else {
+      const error = await response.json();
+      console.error("Error al agregar vehículo:", error);
     }
   };
 
@@ -124,8 +146,16 @@ function Lugares() {
     const tarifaSeleccionada = tarifas.find(
       (tarifa) => tarifa.id_tarifa.toString() === formData.id_tarifa
     );
+    console.log(tarifaSeleccionada);
     if (tarifaSeleccionada) {
       const tipo = tarifaSeleccionada.tipo_tarifa.toLowerCase();
+      const  tipoVehiculo = tipo;
+      if (tipoVehiculo.includes("auto")){
+        setTipoV("Auto")
+      }
+      if (tipoVehiculo.includes("moto")){
+        setTipoV("Moto")
+      }
       if (tipo.includes("minuto")) {
         setUnidadTiempo("minutos");
       }else if (tipo.includes("hora")) {
@@ -188,6 +218,7 @@ function Lugares() {
       }
       const data = await response.json();
       console.log("Lugar ocupado exitosamente:", data);
+      postVehiculo();
       getLugares();
       handleCloseModal();
     } catch (error) {

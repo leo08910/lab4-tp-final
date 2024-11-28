@@ -164,11 +164,12 @@ function Tarifas() {
           />
           <button className="tarifas_button_ok" onClick={editMode ? putTarifa : postTarifa}>
 
-            {editMode ? <> <img style={{width:"2vw"}} src="../public/assets/ok.svg" alt="" /><span>Aceptar Cambios</span></> :
-            <><span>Agregar Nueva</span><img style={{width:"2vw"}} src="../public/assets/add.svg" alt="" /></> }
+            {editMode ? <> <img style={{width:"2vw"}} src="../assets/ok.svg" alt="" /><span>Aceptar Cambios</span></> :
+            <><span>Agregar Nueva</span><img style={{width:"2vw"}} src="../assets/add.svg" alt="" /></> }
 
           </button>
-          {editMode && <button className="tarifas_button_cancel" onClick={handleCancelEdit}>{<><span>Cancelar</span><img style={{width:"2vw"}} src="/assets/cancel.svg" alt="" /></>}</button>}
+          {editMode && 
+          <button className="tarifas_button_cancel" onClick={handleCancelEdit}>{<><span>Cancelar</span><img style={{width:"2vw"}} src="/assets/cancel.svg" alt="" /></>}</button>}
         </div>
       </AuthRol>
     </div>

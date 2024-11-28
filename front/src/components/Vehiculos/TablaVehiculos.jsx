@@ -12,6 +12,7 @@ export default function ListadoVehiculos() {
             }
             const data = await response.json()
             setLista(data)
+            console.log(data);
         }
         catch (err){
             console.error('Error al obtener los registros:',err)
@@ -20,8 +21,9 @@ export default function ListadoVehiculos() {
 
     useEffect(()=>{
         TraerRegistros()
+        console.log("aca");
     },[])
-
+    console.log(lista);
     return (
         <>
         <div className="contenedorVehiculos" >
@@ -37,7 +39,7 @@ export default function ListadoVehiculos() {
                     <tr key={vehiculo.id_vehiculo}>
                     <td>{vehiculo.id_vehiculo}</td>
                     <td>{vehiculo.matricula}</td>
-                    <td>{vehiculo.id_tipo_vehiculo}</td>
+                    <td>{vehiculo.tipo_vehiculo}</td>
                     </tr>
                 ))}
             </tbody>
