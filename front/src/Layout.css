@@ -32,13 +32,8 @@ nav ul {
 
 nav ul li {
     list-style-type: none;
-    height: 100px;
-    width: 100px;
-    /*
-    Para ajustar los botones según el tamaño de pantalla
-    ⬇️⬇️⬇️⬇️⬇️
-    width: 65%;
-    */
+    height: 80px;
+    width: 80px;
     display: flex;
     justify-content: center;
     align-items: center;
