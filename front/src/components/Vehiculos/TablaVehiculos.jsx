@@ -12,7 +12,6 @@ export default function ListadoVehiculos() {
             }
             const data = await response.json()
             setLista(data)
-            console.log(data);
         }
         catch (err){
             console.error('Error al obtener los registros:',err)
@@ -21,29 +20,27 @@ export default function ListadoVehiculos() {
 
     useEffect(()=>{
         TraerRegistros()
-        console.log("aca");
     },[])
-    console.log(lista);
+
     return (
         <>
         <div className="contenedorVehiculos" >
         {lista.length>0 ? (
             <table border="1" style={{width:"100%",textAlign:"left"}}>
-            <thead
+            <thead>
                 <tr>
                     <th>ID Vehiculo</th>
                     <th>Matricula</th>
-                    <th>Tipo de vehiculo</th>
+                    <th>Estacionado</th>
                 </tr>
+
             </thead>
             <tbody>
                 {lista.map((vehiculo)=>(
                     <tr key={vehiculo.id_vehiculo}>
-
                         <td>{vehiculo.id_vehiculo}</td>
                         <td>{vehiculo.matricula}</td>
-                        <td>{vehiculo.tipo_vehiculo}</td>
-
+                        <td>{vehiculo.estacionado===1 ? 'Si' : 'No'}</td>
                     </tr>
                 ))}
             </tbody>

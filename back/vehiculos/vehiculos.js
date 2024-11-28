@@ -6,8 +6,6 @@ export const vehiculosRouter = express.Router()
 const validarAuto=()=>[
     body("matricula")
     .notEmpty().withMessage('La matricula es obligatoria'),
-
-
     body('tipo_vehiculo').isAlpha()
     .notEmpty().withMessage('El tipo de vehiculo es obligatorio')
 ]

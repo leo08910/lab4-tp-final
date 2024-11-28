@@ -11,9 +11,8 @@ function Lugares() {
   const [selectedLugar, setSelectedLugar] = useState(null);
   const [tarifas, setTarifas] = useState([]);
   const [unidadTiempo, setUnidadTiempo] = useState("");
-  const [tipoVehiculo, setTipoVehiculo] = useState({})
+  const [tipoVehiculo, setTipoVehiculo] = useState()
   const [registros, setRegistros] = useState([]);
-  const [tipoV, setTipoV] = useState("")
 
   useEffect(() => {
     getLugares();
@@ -39,29 +38,6 @@ function Lugares() {
       console.log("Error al cargar los lugares de la Api", error);
     }
   };
-  const postVehiculo = async () => {
-    console.log(tipoV)
-    const vehiculoData = { matricula: formData.matricula, tipo_vehiculo: tipoV, estacionado: 1 };
-    console.log(formData);
-    console.log(vehiculoData);
-  
-    const response = await fetch("http://localhost:3000/vehiculos", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${sesion.token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(vehiculoData),
-    });
-  
-    if (response.ok) {
-      alert("vehiculo creado")
-    } else {
-      const error = await response.json();
-      console.error("Error al agregar vehículo:", error);
-    }
-  };
-
   const formularioLiberar = async (id_lugar, id_registro) => {
     const confirmar = window.confirm(`¿Está seguro de liberar el lugar ${id_lugar}`);
     if (!confirmar) return;
@@ -156,13 +132,6 @@ function Lugares() {
     }}
     if (tarifaSeleccionada) {
       const tipo = tarifaSeleccionada.tipo_tarifa.toLowerCase();
-      const  tipoVehiculo = tipo;
-      if (tipoVehiculo.includes("auto")){
-        setTipoV("Auto")
-      }
-      if (tipoVehiculo.includes("moto")){
-        setTipoV("Moto")
-      }
       if (tipo.includes("minuto")) {
         setUnidadTiempo("minutos");
       }else if (tipo.includes("hora")) {
@@ -225,7 +194,6 @@ function Lugares() {
       }
       const data = await response.json();
       console.log("Lugar ocupado exitosamente:", data);
-      postVehiculo();
       getLugares();
       handleCloseModal();
     } catch (error) {
@@ -259,8 +227,7 @@ function Lugares() {
   };
   const postVehiculo = async () => {
     const vehiculoData = { matricula: formData.matricula, tipo_vehiculo: tipoVehiculo };
-    console.log(vehiculoData); // Asegúrate de que los datos sean correctos
-  
+    console.log(vehiculoData);
     const response = await fetch("http://localhost:3000/vehiculos", {
       method: "POST",
       headers: {
@@ -278,8 +245,6 @@ function Lugares() {
     }
   };
   
-  
-
   return (
     <>
       <h1>Estacionamiento</h1>
