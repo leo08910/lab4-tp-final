@@ -1,3 +1,4 @@
+//Funcion para traer las tarifas
 const getTarifas = async (sesion, setTarifas) => {
     const response = await fetch(`http://localhost:3000/tarifas`, {
       headers: { Authorization: `Bearer ${sesion.token}` },
@@ -9,7 +10,7 @@ const getTarifas = async (sesion, setTarifas) => {
   };
 
 export default getTarifas;
-
+//funcion para validaciones
 export const validacionesTarifa = (nuevaTarifa) => {
   if (nuevaTarifa.tipo_tarifa===""){
     alert("seleccione un tipo de tarifa");
