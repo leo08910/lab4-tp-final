@@ -1,104 +1,151 @@
-.tarifas_titulo{
-    text-align: center;
+.tarifas_titulo {
+  text-align: center;
+  margin: 0 0 10px 0;
 }
 
-.superusuario{
-    width: 30vw;
-    height: 40vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-radius:  7vw 7vh 7vw 7vh;
-    background-color: #a5a5a5;
-    margin-top: 2vh;
-}
-.tarifa_select{
-    border-radius: 70vw;
-    background-color: #d4d4d4;
-    border: none;
-    margin-top: 2vh;
-}
-.tarifa_option{
-    border-radius: 70vw;
-    border: none;
-}
-.tarifas_input{
-    border-radius: 70vw;
-    background-color: #d4d4d4;
-    border: none;
-    margin-top: 2vh;
-}
-.tarifas_button_ok{
-    position: relative;
-    width: 15vw;
-    border-radius: 70vw;
-    background-color: #d4d4d4;
-    border: none;
-    margin-top: 3vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.tarifas_button_cancel{
-    border-radius: 70vw;
-    background-color: #d4d4d4;
-    border: none;
-    margin-top: 3vh;
-    width: 15vw;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.superusuario {
+  height: 40%;
+  width: 20vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  border-radius: 1rem;
+  margin: 40px 0 0 0;
+
+  background: #e0e0e0;
+  box-shadow: 20px 20px 60px #bebebe,
+    -20px -20px 60px #ffffff;
 }
 
-.tarifas_button_ok span{
-    margin: 1vw;
+
+.tarifa_option {
+  border-radius: 70vw;
+  border: none;
 }
 
-.tarifas_th, .tarifas_td{
-    border-bottom: solid 1px black;
-    justify-content: space-around;
-    justify-items: auto;
-}
-.tarifas_button_edit{
-    margin-left: 1vw;
- margin-right: 2vw;
+.tarifas_input {
+  border-radius: 70vw;
+  background-color: #d4d4d4;
+  border: none;
+  margin-top: 2vh;
 }
 
-  .tarifas-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 90%;
-    width: 40%;
-  }
-  
-  .tarifas_table {
-    height: 50%;
-    width: 100%;
-    overflow-y: auto;
-    border-collapse: collapse;
-  }
+.tarifas_button_ok {
+  position: relative;
+  width: 15vw;
+  border-radius: 70vw;
+  background-color: #d4d4d4;
+  border: none;
+  margin-top: 3vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  .tarifas_table td,
-  .tarifas_table th {
-    border: 1px solid #949494;
-    text-align: left;
-    padding: 8px;
-  }
+.tarifas_button_cancel {
+  border-radius: 70vw;
+  background-color: #d4d4d4;
+  border: none;
+  margin-top: 3vh;
+  width: 15vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  .tarifas_table tr:nth-child(even) {
-    background-color: #dddddd;
-  }
+.tarifas_button_ok span {
+  margin: 1vw;
+}
 
-  .tarifas_table th:first-child,
-  .tarifas_table td:first-child {
-    width: 10%;
-    min-width: 80px;
-  }
+.tarifas_th,
+.tarifas_td {
+  border-bottom: solid 1px black;
+  justify-content: space-around;
+  justify-items: auto;
+}
 
-  .tarifas_table th,
-  .tarifas_table td {
-    word-wrap: break-word;
-  }
+.tarifas_td_edit {
+  justify-content: center;
+  align-items: center;
+}
+
+.tarifas_button_edit {
+  margin: 0 10px 0 25px;
+}
+
+.tarifas-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 90%;
+  width: 30%;
+}
+
+.tarifas_table {
+  height: 50%;
+  width: 100%;
+  overflow-y: auto;
+  border-collapse: collapse;
+}
+
+.tarifas_table td,
+.tarifas_table th {
+  border: 1px solid #949494;
+  text-align: left;
+  padding: 5px;
+}
+
+.tarifas_table tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+.tarifas_table th,
+.tarifas_table td {
+  word-wrap: break-word;
+}
+
+.tarifa_select {
+  outline: none;
+  border: none;
+  background-color: #ffffff;
+  padding: 0.6rem;
+  line-height: 1.25rem;
+  width: 80%;
+  border-radius: 8px;
+  box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.05);
+  margin: 20px 0 0 0;
+}
+
+
+.superusuario input {
+  outline: none;
+  border: none;
+  background-color: #ffffff;
+  padding: 0.6rem;
+  line-height: 1.25rem;
+  width: 60%;
+  border-radius: 8px;
+  box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.05);
+}
+
+.superusuario button {
+  background-color: #f3f7fe;
+  color: #3b82f6;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  width: 150px;
+  height: 45px;
+  transition: 0.3s;
+  font-weight: 500;
+}
+
+
+.superusuario button:hover {
+  background-color: #3b82f6;
+  box-shadow: 0 0 0 5px #3b83f65f;
+  color: #fff;
+}

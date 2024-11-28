@@ -22,3 +22,32 @@
     justify-content: center;
     margin-bottom: 20px;
 }
+
+.Vehiculos-tabla{
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    border-collapse: collapse;
+}
+
+.Vehiculos-tabla td,
+.Vehiculos-tabla th {
+  border: 1px solid #949494;
+  text-align: left;
+  padding: 8px;
+}
+
+.Vehiculos-tabla tr:nth-child(even) {
+    background-color: #dddddd;
+  }
+
+  .Vehiculos-tabla th:first-child,
+  .Vehiculos-tabla td:first-child {
+    width: 10%;
+    min-width: 80px;
+  }
+
+  .Vehiculos-tabla th,
+  .Vehiculos-tabla td {
+    word-wrap: break-word;
+  }
