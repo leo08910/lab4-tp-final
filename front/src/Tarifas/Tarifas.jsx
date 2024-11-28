@@ -164,8 +164,13 @@ function Tarifas() {
           />
           <button className="tarifas_button_ok" onClick={editMode ? putTarifa : postTarifa}>
 
+<<<<<<< HEAD
             {editMode ? <> <img style={{width:"2vw"}} src="../assets/ok.svg" alt="" /><span>Aceptar Cambios</span></> :
             <><span>Agregar Nueva</span><img style={{width:"2vw"}} src="../assets/add.svg" alt="" /></> }
+=======
+            {editMode ? <> <img style={{width:"2vw"}} src="/assets/ok.svg" alt="" /><span>Aceptar Cambios</span></> :
+            <><span>Agregar Nueva</span><img style={{width:"2vw"}} src="/assets/add.svg" alt="" /></> }
+>>>>>>> 587e1942d68838963de465243fd22bd09b326a2f
 
           </button>
           {editMode && 
