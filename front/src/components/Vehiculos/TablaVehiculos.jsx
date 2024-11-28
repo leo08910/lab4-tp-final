@@ -31,6 +31,7 @@ export default function ListadoVehiculos() {
                 <tr>
                     <th>ID Vehiculo</th>
                     <th>Matricula</th>
+                    <th>Tipo Vehicula</th>
                     <th>Estacionado</th>
                 </tr>
 
@@ -40,6 +41,7 @@ export default function ListadoVehiculos() {
                     <tr key={vehiculo.id_vehiculo}>
                         <td>{vehiculo.id_vehiculo}</td>
                         <td>{vehiculo.matricula}</td>
+                        <td>{vehiculo.tipo_vehiculo}</td>
                         <td>{vehiculo.estacionado===1 ? 'Si' : 'No'}</td>
                     </tr>
                 ))}
