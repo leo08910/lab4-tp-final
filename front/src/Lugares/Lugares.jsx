@@ -155,10 +155,18 @@ function Lugares() {
     const regExistentedef = registros.find((registro) => 
       registro.matricula === formDataAjustado.matricula && new Date() < new Date(registro.fin)
     );
-    
+
+    const tarifaSeleccionada = tarifas.find((tarifa)=>tarifa.id_tarifa==formData.id_tarifa)
+    const tipoVehiculo = tarifaSeleccionada.tipo_tarifa.includes('Auto') ? 1 : 2
+
+    const vehiculoData = {
+      "matricula": formData.matricula,
+      "id_tipo_vehiculo":tipoVehiculo
+    }
+
     console.log(regExistentedef);
     if (regExistentedef) {
-       return alert(`El vehículo con la matrícula ${formDataAjustado.matricula} ya esttá estacionado`);
+       return alert(`El vehículo con la matrícula ${formDataAjustado.matricula} ya está estacionado`);
     }
         
     const regExistenteind = registros.find((registro) => 
@@ -167,6 +175,28 @@ function Lugares() {
       alert("El registro ya existe");
       return;
     }
+
+    //post para vehiculos
+    try{
+      const response = await fetch('http://localhost:3000/vehiculos',{
+        method:'POST',
+        headers: {
+          Authorization: `Bearer ${sesion.token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(vehiculoData)
+      })
+      if (!response.ok){
+        const errorData = await response.json()
+        return console.log("Error al crear el vehiculo",errorData)
+      }
+    }
+    catch(error){
+      console.error("Error al crear el vehiculo",error)
+    }
+      
+    console.log(formData.matricula)
+    console.log(tipoVehiculo)
 
 
     // Post para lugares
@@ -196,7 +226,6 @@ function Lugares() {
   
     // POST para registros
     try {
-
       const response = await fetch(`http://localhost:3000/registros`, {
         method: "POST",
         headers: {

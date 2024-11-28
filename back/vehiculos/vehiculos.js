@@ -3,38 +3,18 @@ import { db } from '../db.js'
 import { ExpressValidator, body, validationResult } from 'express-validator'
 export const vehiculosRouter = express.Router()
 
-const validarAuto=()=>[
-    body("matricula")
-    .isLength({min:5,max:5}).withMessage('La matricula debe tener 5 caracteres')
-    .notEmpty().withMessage('La matricula es obligatoria'),
-
-    body('id_cliente').isNumeric()
-    .withMessage('La id del cliente debe ser un numero')
-    .notEmpty().withMessage('La id del cliente es obligatoria'),
-
-    body('id_tipo_vehiculo').isNumeric()
-    .withMessage('El tipo de vehiculo se indica con un numero')
-    .notEmpty().withMessage('El tipo de vehiculo es obligatorio')
-]
 
 vehiculosRouter.get('/vehiculos', async (req,res)=>{
     const [vehiculos] = await db.execute('select * from vehiculos')
     res.send(vehiculos)
 })
 
-vehiculosRouter.post("/vehiculos", validarAuto(),async (req,res)=>{
+vehiculosRouter.post("/vehiculos", async (req,res)=>{
     const validacion =validationResult(req);
     if (!validacion.isEmpty()){
        return res.status(400).send({errores:validacion.array()})
     }
-    const { matricula, id_cliente, id_tipo_vehiculo } = req.body
-
-    const [clienteExiste] = await db.execute(
-        'select id_cliente from clientes where id_cliente=?',[id_cliente]
-    )
-    if (clienteExiste.length==0){
-        return res.status(404).send("Este cliente no existe")
-    }
+    const { matricula, id_tipo_vehiculo} = req.body
 
     const [matriculaRepetida]= await db.execute(
         'select matricula from vehiculos where matricula=?',[matricula]
@@ -43,21 +23,14 @@ vehiculosRouter.post("/vehiculos", validarAuto(),async (req,res)=>{
         return res.status(400).send('Esta matricula ya esta registrada')
     }
 
-    const [vehiculoExiste]= await db.execute(
-        'select id_tipo_vehiculo from tipos_vehiculo where id_tipo_vehiculo=?',[id_tipo_vehiculo]
-    )
-    if (vehiculoExiste.length==0){
-        return res.status(400).send("Tipo de vehiculo invalido")
-    }
-
     const sql = await db.execute(
-        "insert into vehiculos (matricula,id_cliente,id_tipo_vehiculo,estacionado) values(?,?,?,1)",
-        [matricula,id_cliente,id_tipo_vehiculo]
+        "insert into vehiculos (matricula,id_tipo_vehiculo,estacionado) values(?,?,1)",
+        [matricula,id_tipo_vehiculo]
     )
 
     res
     .status(201)
-    .send({vehiculo:{id_vehiculo:sql.insertId,matricula,id_cliente,id_tipo_vehiculo}})
+    .send({vehiculo:{id_vehiculo:sql.insertId,matricula,id_tipo_vehiculo}})
 })
 
 /*vehiculosRouter.put('/vehiculos/:id_vehiculo/retirar', async (req,res)=>{
