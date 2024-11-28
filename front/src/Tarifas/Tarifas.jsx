@@ -75,7 +75,7 @@ function Tarifas() {
     const confirmacion = window.confirm("¿Seguro que deseas eliminar esta tarifa?");
     if (!confirmacion) return;
 
-    const response = await fetch(`http://localhost:3000/tarifas/${id}`, {
+    const response = await fetch(`http://localhost:3000/tarifas/${Number(id)}`, {
       method: "DELETE",
       headers: {Authorization: `Bearer ${sesion.token}`,},
     });
@@ -104,15 +104,15 @@ function Tarifas() {
 
   return (
       <div className="tarifas-container">
-        <h1 className="tarifas_titulo">Tarifas</h1>
+        <h2 className="tarifas_titulo">Tarifas</h2>
 
         
             <table  className="tarifas_table">
             <thead>
               <tr >
-                <th className="tarifas_th">tipo de tarifa</th>
-                <th className="tarifas_th">precio</th>
-                <th className="tarifas_th">acciones</th>
+                <th className="tarifas_th">Tipo de tarifa</th>
+                <th className="tarifas_th">Precio</th>
+               <AuthRol superusuario={1}><th className="tarifas_th">Acciones</th></AuthRol>
               </tr>
             </thead>
             {tarifas.map((tarifa) => (
@@ -120,10 +120,15 @@ function Tarifas() {
               <tr>
                 <td className="tarifas_td">{tarifa.tipo_tarifa}</td>
                 <td className="tarifas_td">${tarifa.precio}</td>
-                <td className="tarifas_td"><AuthRol superusuario={1}>
-              <button className="tarifas_button_edit" onClick={() => handleEdit(tarifa)}><img style={{width:"2vw"}} src="/assets/edit.svg" alt="" /></button>
-              <button className="tarifas_button_deletet" onClick={() => deleteTarifa(tarifa.id_tarifa)}><img style={{width:"2vw"}} src="/assets/delete.svg" alt="" /></button>
-            </AuthRol></td>
+               <AuthRol superusuario={1}><td className="tarifas_td tarifas_td_edit"> {/*uso AuthRol para ver quien esta en sesion y sus permisos*/}
+              <button className="tarifas_button_edit" 
+              onClick={() => handleEdit(tarifa)}>
+                <img style={{width:"2vw"}} src="/assets/edit.svg" alt="" />
+              </button>
+              <button className="tarifas_button_delete" 
+              onClick={() => deleteTarifa(tarifa.id_tarifa)}>
+                <img style={{width:"2vw"}} src="/assets/delete.svg" alt="" />
+              </button></td> </AuthRol>
               </tr>
             </tbody>))}
           </table>

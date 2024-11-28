@@ -1,19 +1,15 @@
 import express from "express";
 import {db} from "../db.js"
-import { body,param, validationResult } from "express-validator";
+import { body, validationResult } from "express-validator";
 import { validarId,validarSuperUsuario,validarJwt } from "../validaciones/validaciones.js"
 
 const tarifas = express.Router()
-
 //middleware para validar datos
 const validarTarifa=()=>[
   body("tipo_tarifa").notEmpty(),
   body("precio").isFloat().notEmpty(),
 ]
 
-const validarParametroId = () => [
-  param("id_tarifa").isInt(),
-];
 
 // traer todas las tarifas.
 tarifas.get(
@@ -29,7 +25,6 @@ tarifas.get(
     res.status(500).send("Error al obtener los tarifas");
   }
 });
-
 tarifas.get(
   "/tarifas/:id",
   validarId, 
@@ -102,7 +97,6 @@ tarifas.post("/tarifas",
   });
   //modificar una tarifa
   tarifas.put("/tarifas/:id",
-    validarParametroId(),
     validarId,
     validarJwt,
     validarSuperUsuario,
@@ -132,7 +126,6 @@ tarifas.post("/tarifas",
   //eliminar tarifa
   tarifas.delete(
     "/tarifas/:id",
-    validarParametroId(),
     validarId,
     validarJwt,
     validarSuperUsuario,
