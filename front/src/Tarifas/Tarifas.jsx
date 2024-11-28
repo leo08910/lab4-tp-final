@@ -116,22 +116,31 @@ function Tarifas() {
                <AuthRol superusuario={1}><th className="tarifas_th">Acciones</th></AuthRol>
               </tr>
             </thead>
-            {tarifas.map((tarifa) => (//mapeo tarifas para renderizar ca una de las filas en la tabla
-            <tbody  key={tarifa.id_tarifa}>{/* key unica basada en id_tarifa para identificr los elementos*/}
-              <tr>
-                <td className="tarifas_td">{tarifa.tipo_tarifa}</td>
-                <td className="tarifas_td">${tarifa.precio}</td>
-               <AuthRol superusuario={1}><td className="tarifas_td tarifas_td_edit"> {/*uso AuthRol para ver quien esta en sesion y sus permisos*/}
-              <button className="tarifas_button_edit" 
-              onClick={() => handleEdit(tarifa)}>
-                <img style={{width:"2vw"}} src="/assets/edit.svg" alt="" />
-              </button>
-              <button className="tarifas_button_delete" 
-              onClick={() => deleteTarifa(tarifa.id_tarifa)}>
-                <img style={{width:"2vw"}} src="/assets/delete.svg" alt="" />
-              </button></td> </AuthRol>
-              </tr>
-            </tbody>))}
+            {tarifas.map((tarifa) => (
+  <tbody key={tarifa.id_tarifa}>
+    <tr>
+      <td className="tarifas_td">{tarifa.tipo_tarifa}</td>
+      <td className="tarifas_td">${tarifa.precio}</td>
+      <AuthRol superusuario={1}>
+        <td className="tarifas_td tarifas_td_edit">
+          <button
+            className="tarifas_button_edit"
+            onClick={() => handleEdit(tarifa)}
+          >
+            <img style={{ width: "2vw" }} src="/assets/edit.svg" alt="" />
+          </button>
+          <button
+            className="tarifas_button_delete"
+            onClick={() => deleteTarifa(tarifa.id_tarifa)}
+          >
+            <img style={{ width: "2vw" }} src="/assets/delete.svg" alt="" />
+          </button>
+        </td>
+      </AuthRol>
+    </tr>
+  </tbody>
+))}
+
           </table>
       <AuthRol superusuario={1} > 
         {/* formulario para agregar o editar tarifas */}
