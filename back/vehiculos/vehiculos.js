@@ -5,10 +5,15 @@ export const vehiculosRouter = express.Router()
 
 const validarAuto=()=>[
     body("matricula")
+    .isLength({min:5,max:5}).withMessage('La matricula debe tener 5 caracteres')
     .notEmpty().withMessage('La matricula es obligatoria'),
 
+    body('id_cliente').isNumeric()
+    .withMessage('La id del cliente debe ser un numero')
+    .notEmpty().withMessage('La id del cliente es obligatoria'),
 
-    body('tipo_vehiculo').isAlpha()
+    body('id_tipo_vehiculo').isNumeric()
+    .withMessage('El tipo de vehiculo se indica con un numero')
     .notEmpty().withMessage('El tipo de vehiculo es obligatorio')
 ]
 
@@ -22,37 +27,37 @@ vehiculosRouter.post("/vehiculos", validarAuto(),async (req,res)=>{
     if (!validacion.isEmpty()){
        return res.status(400).send({errores:validacion.array()})
     }
-    const { matricula, tipo_vehiculo } = req.body
+    const { matricula, id_cliente, id_tipo_vehiculo } = req.body
 
-    // const [clienteExiste] = await db.execute(
-    //     'select id_cliente from clientes where id_cliente=?',[id_cliente]
-    // )
-    // if (clienteExiste.length==0){
-    //     return res.status(404).send("Este cliente no existe")
-    // }
+    const [clienteExiste] = await db.execute(
+        'select id_cliente from clientes where id_cliente=?',[id_cliente]
+    )
+    if (clienteExiste.length==0){
+        return res.status(404).send("Este cliente no existe")
+    }
 
-    // const [matriculaRepetida]= await db.execute(
-    //     'select matricula from vehiculos where matricula=?',[matricula]
-    // )
-    // if (matriculaRepetida.length>0){
-    //     return res.status(400).send('Esta matricula ya esta registrada')
-    // }
+    const [matriculaRepetida]= await db.execute(
+        'select matricula from vehiculos where matricula=?',[matricula]
+    )
+    if (matriculaRepetida.length>0){
+        return res.status(400).send('Esta matricula ya esta registrada')
+    }
 
-    // const [vehiculoExiste]= await db.execute(
-    //     'select id_tipo_vehiculo from tipos_vehiculo where id_tipo_vehiculo=?',[id_tipo_vehiculo]
-    // )
-    // if (vehiculoExiste.length==0){
-    //     return res.status(400).send("Tipo de vehiculo invalido")
-    // }
+    const [vehiculoExiste]= await db.execute(
+        'select id_tipo_vehiculo from tipos_vehiculo where id_tipo_vehiculo=?',[id_tipo_vehiculo]
+    )
+    if (vehiculoExiste.length==0){
+        return res.status(400).send("Tipo de vehiculo invalido")
+    }
 
     const sql = await db.execute(
-        "insert into vehiculos (matricula,tipo_vehiculo,estacionado) values(?,?,1)",
-        [matricula,tipo_vehiculo]
+        "insert into vehiculos (matricula,id_cliente,id_tipo_vehiculo,estacionado) values(?,?,?,1)",
+        [matricula,id_cliente,id_tipo_vehiculo]
     )
 
     res
     .status(201)
-    .send({vehiculo:{id_vehiculo:sql.insertId,matricula,tipo_vehiculo}})
+    .send({vehiculo:{id_vehiculo:sql.insertId,matricula,id_cliente,id_tipo_vehiculo}})
 })
 
 /*vehiculosRouter.put('/vehiculos/:id_vehiculo/retirar', async (req,res)=>{

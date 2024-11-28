@@ -11,7 +11,7 @@ function Lugares() {
   const [selectedLugar, setSelectedLugar] = useState(null);
   const [tarifas, setTarifas] = useState([]);
   const [unidadTiempo, setUnidadTiempo] = useState("");
-  const [tipoVehiculo, setTipoVehiculo] = useState({})
+
   const [registros, setRegistros] = useState([]);
 
   useEffect(() => {
@@ -125,13 +125,6 @@ function Lugares() {
       (tarifa) => tarifa.id_tarifa.toString() === formData.id_tarifa
     );
     if (tarifaSeleccionada) {
-      const tipo = tarifaSeleccionada.tipo_tarifa
-      if (tipo.includes("Auto")) {
-        setTipoVehiculo("Auto");
-      }else if (tipo.includes("Moto")){
-        setTipoVehiculo("Moto");
-    }}
-    if (tarifaSeleccionada) {
       const tipo = tarifaSeleccionada.tipo_tarifa.toLowerCase();
       if (tipo.includes("minuto")) {
         setUnidadTiempo("minutos");
@@ -218,33 +211,11 @@ function Lugares() {
       }
       const data = await response.json();
       console.log("Registro cargado exitosamente:", data);
-      postVehiculo()
       handleCloseModal();
     } catch (error) {
       console.error("Error en la solicitud:", error);
     }
-    
     getRegistros();
-  };
-  const postVehiculo = async () => {
-    const vehiculoData = { matricula: formData.matricula, tipo_vehiculo: tipoVehiculo };
-    console.log(vehiculoData); // Asegúrate de que los datos sean correctos
-  
-    const response = await fetch("http://localhost:3000/vehiculos", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${sesion.token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(vehiculoData),
-    });
-  
-    if (response.ok) {
-      console.log(vehiculoData);
-    } else {
-      const error = await response.json();
-      console.error("Error al agregar vehículo:", error);
-    }
   };
   
   

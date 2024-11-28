@@ -11,8 +11,7 @@ export default function ListadoVehiculos() {
                 throw new Error('Error al obtener los datos')
             }
             const data = await response.json()
-            setLista(data.vehiculos)
-            console.log(data.vehiculos);
+            setLista(data)
         }
         catch (err){
             console.error('Error al obtener los registros:',err)
@@ -28,21 +27,17 @@ export default function ListadoVehiculos() {
         <div className="contenedorVehiculos" >
         {lista.length>0 ? (
             <table border="1" style={{width:"100%",textAlign:"left"}}>
-            <thead
-                <tr>
-                    <th>ID Vehiculo</th>
-                    <th>Matricula</th>
-                    <th>Tipo de vehiculo</th>
-                </tr>
+            <thead>
+                <th>ID Vehiculo</th>
+                <th>Matricula</th>
+                <th>Estacionado</th>
             </thead>
             <tbody>
                 {lista.map((vehiculo)=>(
                     <tr key={vehiculo.id_vehiculo}>
-
-                        <td>{vehiculo.id_vehiculo}</td>
-                        <td>{vehiculo.matricula}</td>
-                        <td>{vehiculo.tipo_vehiculo}</td>
-
+                    <td>{vehiculo.id_vehiculo}</td>
+                    <td>{vehiculo.matricula}</td>
+                    <td>{vehiculo.estacionado===1 ? 'Si' : 'No'}</td>
                     </tr>
                 ))}
             </tbody>
