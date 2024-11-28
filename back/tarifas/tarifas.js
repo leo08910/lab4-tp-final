@@ -5,7 +5,10 @@ import { validarId,validarSuperUsuario,validarJwt } from "../validaciones/valida
 
 const tarifas = express.Router()
 
-tarifas.post("")
+const validarTarifa=()=>[
+  body("tipo_tarifa").isAlpha().notEmpty().isLength({ max: 50 }),
+  body("precio").isFloat().notEmpty(),
+]
 
 // traer todas las tarifas.
 tarifas.get(
@@ -39,22 +42,6 @@ tarifas.get(
     res.send({ tarifa: tarifas[0] });
   }
 });
-//traer tipo_vehiculo de por tarifa
-// tarifas.get("/tarifas/:id/tipo_vehiculo", async (req, res) => {
-//    const id = Number(req.params.id);
-//   try {
-//     const sql =
-//     "select tv.id_tipo_vehiculo, tv.tipo_vehiculo \
-//      from tipos_vehiculo tv \
-//      join tarifas t on tv.id_tipo_vehiculo = t.id_tipo_vehiculo \
-//      where t.id_tipo_vehiculo=?";
-//   const [tipos_vehiculo] = await db.execute(sql, [id]);
-
-//   res.send({ tipo_vehiculo: tipos_vehiculo[0] });
-//   } catch (error) {
-//     res.status(500).send("Error al obtener los tarifas");
-//   }
-// }) 
 
 // Obtener todos los tipos de vehículos
 tarifas.get(
@@ -74,8 +61,7 @@ tarifas.get(
 tarifas.post("/tarifas",
   validarJwt,
   validarSuperUsuario,
-  body("tipo_tarifa").isAlpha().notEmpty().isLength({ max: 50 }),
-  body("precio").isDecimal().notEmpty(),
+  validarTarifa(),
   async (req, res) => {
     const validacion = validationResult(req);
     
@@ -113,9 +99,7 @@ tarifas.post("/tarifas",
     validarId,
     validarJwt,
     validarSuperUsuario,
-    body("tipo_tarifa").isString().notEmpty().isLength({ max: 50 }),
-    body("precio").isDecimal().notEmpty(),
-    
+    validarTarifa(),
     async (req, res) => {
       const validacion = validationResult(req);
       
