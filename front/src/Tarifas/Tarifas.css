@@ -1,13 +1,7 @@
-.tarifas-container{
-    color: rgb(28, 29, 29);
-    position: relative;
-    display: flex;
-    flex-direction: column;
-}
 .tarifas_titulo{
     text-align: center;
-
 }
+
 .superusuario{
     width: 30vw;
     height: 40vh;
@@ -61,12 +55,8 @@
     margin: 1vw;
 }
 
-.tarifas_table{
-    border: solid 4px black;
-}
 .tarifas_th, .tarifas_td{
     border-bottom: solid 1px black;
-    font-size: larger;
     justify-content: space-around;
     justify-items: auto;
 }
@@ -74,3 +64,41 @@
     margin-left: 1vw;
  margin-right: 2vw;
 }
+
+  .tarifas-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 90%;
+    width: 40%;
+  }
+  
+  .tarifas_table {
+    height: 50%;
+    width: 100%;
+    overflow-y: auto;
+    border-collapse: collapse;
+  }
+
+  .tarifas_table td,
+  .tarifas_table th {
+    border: 1px solid #949494;
+    text-align: left;
+    padding: 8px;
+  }
+
+  .tarifas_table tr:nth-child(even) {
+    background-color: #dddddd;
+  }
+
+  .tarifas_table th:first-child,
+  .tarifas_table td:first-child {
+    width: 10%;
+    min-width: 80px;
+  }
+
+  .tarifas_table th,
+  .tarifas_table td {
+    word-wrap: break-word;
+  }
