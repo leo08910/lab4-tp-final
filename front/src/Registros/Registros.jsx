@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../Auth";
+import "./Registros.css"
 import getTarifas from "../Tarifas/GetTarifas"
 
 const Registros = () => {
@@ -39,11 +40,11 @@ const Registros = () => {
   };
 
   return (
-    <div>
+    <div className="Registros-container">
       <h2>Registros</h2>
       {error && <p style={{ color: "red" }}>{error}</p>}
       {registros.length > 0 ? (
-        <table border="1" style={{ width: "100%", textAlign: "left" }}>
+        <table className="Registros-table">
           <thead>
             <tr>
               <th>ID</th>
