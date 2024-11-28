@@ -1,20 +1,35 @@
-table {
-    border-collapse: collapse;
-    margin: 20px 0;
-    width: 100%;
+  .Registros-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
   
-  th, td {
-    border: 1px solid #ddd;
+  .Registros-table {
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    border-collapse: collapse;
+  }
+
+  .Registros-table td,
+  .Registros-table th {
+    border: 1px solid #949494;
+    text-align: left;
     padding: 8px;
   }
-  
-  th {
-    background-color: #f4f4f4;
-    text-align: left;
+
+  .Registros-table tr:nth-child(even) {
+    background-color: #dddddd;
   }
-  
-  tr:hover {
-    background-color: #f1f1f1;
+
+  .Registros-table th:first-child,
+  .Registros-table td:first-child {
+    width: 10%;
+    min-width: 80px;
   }
-  
+
+  .Registros-table th,
+  .Registros-table td {
+    word-wrap: break-word;
+  }

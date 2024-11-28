@@ -16,6 +16,9 @@ const RegistroUsuarios = () => {
     const [mensaje, setMensaje] = useState("")
     const [modoEdicion, setModoEdicion] = useState(false)
     const [usuarios, setUsuarios] = useState([])
+    const [modoModificacion, setModoModificacion] = useState(false)
+    const [usuarioAModificar, setUsuarioAModificar] = useState({})
+
 
   
     useEffect(() => {
@@ -150,6 +153,41 @@ const RegistroUsuarios = () => {
 
     }
 
+    const onSubmitModificacion = async (e, usuario)=>{
+      e.preventDefault()
+      if (usuario.id_usuario == sesion.id) {
+        setMensaje("No se puede modificar el usuario que esta usando el sistema.")
+        return
+      }
+      
+      const[nombreFormateado, apellidoFormateado] = formatearNombreYApellido(usuario.nombre,usuario.apellido)
+      const registroFormateado = {...usuario, nombre:nombreFormateado, apellido:apellidoFormateado}
+
+      try {
+        const response = await fetch(`http://localhost:3000/usuarios/${usuario.id_usuario}`, {
+            method: "PUT",
+            headers: {
+                Authorization: `Bearer ${sesion.token}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(registroFormateado),
+        });
+
+        if (response.ok) {
+            setMensaje("Usuario Modificado."); 
+            traerUsuarios()
+        } else {
+            const errorData = await response.json();
+            setMensaje(`Error: ${errorData.message || "No se pudo modificar el usuario."}`);
+        }
+    } catch (error) {
+        console.error(error);
+        setMensaje("Error de red. Intenta nuevamente.");
+    }
+
+
+  }
+
     return (
         <>
           {sesion.superusuario === 1 && !modoEdicion && (
@@ -246,7 +284,10 @@ const RegistroUsuarios = () => {
                     {usuario.nombre} {usuario.apellido} - {usuario.email} -{usuario.superusuario == 1 ? "Es superusuario" : "Usuario comun"} - id: {usuario.id_usuario}
                     <div>
                       <button style={{color:"red"}} onClick={()=>{handleEliminarUsuario(usuario.id_usuario)}}>Eliminar</button>
-                      <button>Modificar</button>
+                      <button onClick={()=> {
+                        setModoModificacion(true);
+                        setUsuarioAModificar(usuario)
+                      }}>Modificar</button>
                     </div>
                   </li>
                 ))}
@@ -254,8 +295,52 @@ const RegistroUsuarios = () => {
               <div className="btn-volver-container">
                 <button  onClick={()=>setModoEdicion(false)}>Volver al registro</button>
               </div>
-              
             </div>
+            </>
+          )}
+          {sesion.superusuario == 1 && modoModificacion && (
+            <>
+            <form onSubmit={onSubmitModificacion}>
+              <label htmlFor="nombre">Nombre:</label>
+              <input
+              value={usuarioAModificar.nombre}
+              onChange={(e) =>
+                setUsuarioAModificar({ ...usuarioAModificar, nombre: e.target.value })
+              }
+              name="nombre"
+              type="text"
+              required
+            />
+              <label htmlFor="apellido">Apellido:</label>
+              <input
+              value={usuarioAModificar.apellido}
+              onChange={(e) =>
+                setUsuarioAModificar({ ...usuarioAModificar, apellido: e.target.value })
+              }
+              name="apellido"
+              type="text"
+              required
+            />
+            <label htmlFor="superusuario">Superusuario:</label>
+            <input
+              checked={usuarioAModificar.superusuario == 1 ? true : false}
+              onChange={(e) =>
+                setUsuarioAModificar({
+                    ...usuarioAModificar,
+                      superusuario: e.target.checked ? parseInt(1) : parseInt(0),
+                    })
+                  }
+                  name="superusuario"
+                  type="checkbox"
+            />
+            <button onClick={(e)=> onSubmitModificacion(e,usuarioAModificar)}>Listo</button>
+            <button type="button" onClick={()=>{
+              setModoModificacion(false);
+              setMensaje("")
+              }
+              }>Cancelar</button>
+            </form>
+            <p style={{color: mensaje == "Usuario Modificado." ? "green" : "red" }}>{mensaje}</p>
             </>
           )}
         </>

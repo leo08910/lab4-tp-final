@@ -57,11 +57,18 @@ usuarios.post("/usuarios",
     }
   });
 
-usuarios.put("/usuarios", async (req, res) => {
-  const {email, superusuario} = req.body;
+usuarios.put("/usuarios/:id",
+  validarJwt,
+  validarId,
+  body("nombre").isAlphanumeric().notEmpty().isLength({ max: 25 }),
+  body("apellido").isAlphanumeric().notEmpty().isLength({ max: 25 }),
+  verificarValidaciones,
+   async (req, res) => {
+  const {nombre,apellido, superusuario} = req.body;
+  const id = Number(req.params.id)
 
   try {
-    const result = await db.query(`UPDATE usuarios SET superusuario = ? WHERE email = ?`, [superusuario, email]);
+    const result = await db.query(`UPDATE usuarios SET nombre = ?, apellido = ?, superusuario = ? WHERE id_usuario = ?`, [nombre, apellido, superusuario, id]);
     res.status(200).send(result);
 
   } catch (error) {

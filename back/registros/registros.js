@@ -164,11 +164,19 @@ registros.put(
         const finFecha = new Date(fin);
 
         if (fechaActual > finFecha) {
-          const minutosTranscurridos = Math.ceil(
-            (fechaActual - inicioFecha) / (1000 * 60)
-          );
 
-          precioFinal += minutosTranscurridos * precio;
+          const [tarifa] = await db.query(
+            "SELECT * FROM tarifas WHERE tipo_tarifa = ?",
+            ["Tiempo indefinido"]
+          );
+    
+          const { precio } = tarifa[0];
+
+          const minutosExtras = Math.ceil(
+            (fechaActual - finFecha) / (1000 * 60)
+          );
+        
+          precioFinal += minutosExtras * precio;
 
         } else {
           precioFinal = precio_final;
