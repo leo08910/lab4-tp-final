@@ -78,10 +78,18 @@ tarifas.post("/tarifas",
   body("precio").isDecimal().notEmpty(),
   async (req, res) => {
     const validacion = validationResult(req);
+    
     if (req.user.superusuario != 1) {
-      res.status(401).send({mensaje: "No tiene permisos para crear una nueva tarifa"})
-    }else{
-          const { tipo_tarifa, precio } = req.body;
+      return res.status(401).send({mensaje: "No tiene permisos para crear una nueva tarifa"})
+    }
+
+    if (!validacion.isEmpty()) {
+      res.status(400).send({ errores: validacion.array() });
+      return;
+    }
+    
+    const { tipo_tarifa, precio } = req.body;
+    
     try {
     const [result] = await db.query(`insert into tarifas(tipo_tarifa, precio) values(?, ?)`,
     [
@@ -97,11 +105,7 @@ tarifas.post("/tarifas",
         res.status(500).send("Error en el servidor");
       }
     }
-    }
-    if (!validacion.isEmpty()) {
-      res.status(400).send({ errores: validacion.array() });
-      return;
-    }
+    
 
   });
   //modificar una tarifa
@@ -114,12 +118,15 @@ tarifas.post("/tarifas",
     
     async (req, res) => {
       const validacion = validationResult(req);
+      
       if (req.user.superusuario != 1) {
-        res.status(401).send({mensaje: "No tiene permisos para ver los usuarios"})
-      }else{
+        return res.status(401).send({mensaje: "No tiene permisos para ver los usuarios"})
+      }
+
       if (!validacion.isEmpty()) {
         return res.status(400).send({ errores: validacion.array() });
       }
+
       const id = Number(req.params.id);
       const { tipo_tarifa, precio } = req.body;
   
@@ -128,7 +135,6 @@ tarifas.post("/tarifas",
         [tipo_tarifa, precio, id]
       );
       res.status(200).send(`tarifa modificada`);
-      }
 
     }
   );

@@ -12,12 +12,12 @@ const validarAuto=()=>[
     .notEmpty().withMessage('El tipo de vehiculo es obligatorio')
 ]
 
-vehiculosRouter.get('/', async (req,res)=>{
+vehiculosRouter.get('/vehiculos', async (req,res)=>{
     const [vehiculos] = await db.execute('select * from vehiculos')
-    res.send({vehiculos})
+    res.send(vehiculos)
 })
 
-vehiculosRouter.post("/", validarAuto(),async (req,res)=>{
+vehiculosRouter.post("/vehiculos", validarAuto(),async (req,res)=>{
     const validacion =validationResult(req);
     if (!validacion.isEmpty()){
        return res.status(400).send({errores:validacion.array()})
@@ -55,7 +55,7 @@ vehiculosRouter.post("/", validarAuto(),async (req,res)=>{
     .send({vehiculo:{id_vehiculo:sql.insertId,matricula,tipo_vehiculo}})
 })
 
-vehiculosRouter.put('/:id_vehiculo/retirar', async (req,res)=>{
+/*vehiculosRouter.put('/vehiculos/:id_vehiculo/retirar', async (req,res)=>{
     const {id_vehiculo}=req.params
 
     const [existe]= await db.execute(
@@ -66,9 +66,9 @@ vehiculosRouter.put('/:id_vehiculo/retirar', async (req,res)=>{
 
     await db.execute('update vehiculos set estacionado=0 where id_vehiculo=?',[id_vehiculo])
     res.status(200).send('Vehiculo retirado')
-})
+})*/
 
-vehiculosRouter.put('/:id_vehiculo/estacionar', async (req,res)=>{
+/*vehiculosRouter.put('/vehiculos/:id_vehiculo/estacionar', async (req,res)=>{
     const {id_vehiculo}= req.params
 
     const [existe]= await db.execute(
@@ -79,4 +79,4 @@ vehiculosRouter.put('/:id_vehiculo/estacionar', async (req,res)=>{
 
     await db.execute('update vehiculos set estacionado=1 where id_vehiculo=?',[id_vehiculo])
     res.status(200).send('Vehiculo ingresado')
-})
+})*/
