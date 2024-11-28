@@ -113,7 +113,7 @@ function Tarifas() {
               <tr >
                 <th className="tarifas_th">Tipo de tarifa</th>
                 <th className="tarifas_th">Precio</th>
-                <th className="tarifas_th">Acciones</th>
+               <AuthRol superusuario={1}><th className="tarifas_th">Acciones</th></AuthRol>
               </tr>
             </thead>
             {tarifas.map((tarifa) => (//mapeo tarifas para renderizar ca una de las filas en la tabla
@@ -121,7 +121,7 @@ function Tarifas() {
               <tr>
                 <td className="tarifas_td">{tarifa.tipo_tarifa}</td>
                 <td className="tarifas_td">${tarifa.precio}</td>
-                <td className="tarifas_td tarifas_td_edit"><AuthRol superusuario={1}>{/*uso AuthRol para ver quien esta en sesion y sus permisos*/}
+               <AuthRol superusuario={1}><td className="tarifas_td tarifas_td_edit"> {/*uso AuthRol para ver quien esta en sesion y sus permisos*/}
               <button className="tarifas_button_edit" 
               onClick={() => handleEdit(tarifa)}>
                 <img style={{width:"2vw"}} src="/assets/edit.svg" alt="" />
@@ -129,8 +129,7 @@ function Tarifas() {
               <button className="tarifas_button_delete" 
               onClick={() => deleteTarifa(tarifa.id_tarifa)}>
                 <img style={{width:"2vw"}} src="/assets/delete.svg" alt="" />
-              </button>
-            </AuthRol></td>
+              </button></td> </AuthRol>
               </tr>
             </tbody>))}
           </table>
