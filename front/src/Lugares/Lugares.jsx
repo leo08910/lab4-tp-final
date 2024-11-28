@@ -247,8 +247,6 @@ function Lugares() {
     getRegistros();
   };
   
-  
-
   return (
     <>
       <h1>Estacionamiento</h1>

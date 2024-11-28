@@ -33,7 +33,7 @@ vehiculosRouter.post("/vehiculos", async (req,res)=>{
     .send({vehiculo:{id_vehiculo:sql.insertId,matricula,id_tipo_vehiculo}})
 })
 
-/*vehiculosRouter.put('/vehiculos/:id_vehiculo/retirar', async (req,res)=>{
+vehiculosRouter.put('/vehiculos/:id_vehiculo/retirar', async (req,res)=>{
     const {id_vehiculo}=req.params
 
     const [existe]= await db.execute(
@@ -44,7 +44,7 @@ vehiculosRouter.post("/vehiculos", async (req,res)=>{
 
     await db.execute('update vehiculos set estacionado=0 where id_vehiculo=?',[id_vehiculo])
     res.status(200).send('Vehiculo retirado')
-})*/
+})
 
 /*vehiculosRouter.put('/vehiculos/:id_vehiculo/estacionar', async (req,res)=>{
     const {id_vehiculo}= req.params
