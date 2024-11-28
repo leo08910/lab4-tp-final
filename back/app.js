@@ -20,7 +20,7 @@ authConfig();
 
 app.use("/", usuarios);
 app.use("/", router);
-app.use("/vehiculos", vehiculosRouter);
+app.use("/", vehiculosRouter);
 app.use("/", tarifas);
 app.use("/",clientes)
 app.use("/", registros);

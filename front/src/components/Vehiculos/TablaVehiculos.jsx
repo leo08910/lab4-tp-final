@@ -30,14 +30,14 @@ export default function ListadoVehiculos() {
             <thead>
                 <th>ID Vehiculo</th>
                 <th>Matricula</th>
-                <th>Tipo de vehiculo</th>
+                <th>Estacionado</th>
             </thead>
             <tbody>
                 {lista.map((vehiculo)=>(
                     <tr key={vehiculo.id_vehiculo}>
                     <td>{vehiculo.id_vehiculo}</td>
                     <td>{vehiculo.matricula}</td>
-                    <td>{vehiculo.id_tipo_vehiculo}</td>
+                    <td>{vehiculo.estacionado===1 ? 'Si' : 'No'}</td>
                     </tr>
                 ))}
             </tbody>
