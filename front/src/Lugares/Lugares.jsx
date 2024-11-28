@@ -11,8 +11,8 @@ function Lugares() {
   const [selectedLugar, setSelectedLugar] = useState(null);
   const [tarifas, setTarifas] = useState([]);
   const [unidadTiempo, setUnidadTiempo] = useState("");
-
   const [registros, setRegistros] = useState([]);
+
 
   useEffect(() => {
     getLugares();
@@ -41,6 +41,9 @@ function Lugares() {
 
   const formularioLiberar = async (id_lugar, id_registro) => {
     const confirmar = window.confirm(`¿Está seguro de liberar el lugar ${id_lugar}`);
+
+    const vehiculo = registros.find((registro)=>registro.id_registro==id_registro)
+
     if (!confirmar) return;
     try {
       const response = await fetch(
@@ -94,6 +97,25 @@ function Lugares() {
         error
       );
     }
+
+    try{
+      const response = await fetch('http://localhost:3000/vehiculos/retirar',{
+        method:'PUT',
+        headers:{
+          Authorization:`Bearer ${sesion.token}`,
+          "Content-Type":"Application/json"
+        },
+        body:JSON.stringify({matricula:vehiculo.matricula})
+      })
+      if (!response.ok){
+        const errorData = await response.json()
+        return console.log("Error al crear el vehiculo",errorData)
+      }
+    }
+    catch (error){
+      console.error("Error al modificar el estado del vehiculo:",error)
+    }
+
   };
 
   const handleClickLugar = (lugar) => {
@@ -164,6 +186,48 @@ function Lugares() {
       "id_tipo_vehiculo":tipoVehiculo
     }
 
+    const vehiculoExiste = registros.find((registro)=>registro.matricula==vehiculoData.matricula)
+
+    if (vehiculoExiste){
+      try{
+        const response = await fetch('http://localhost:3000/vehiculos/estacionar',{
+          method:'PUT',
+          headers:{
+            Authorization:`Bearer ${sesion.token}`,
+            "Content-Type":"Application/json"
+          },
+          body:JSON.stringify({matricula:vehiculoExiste.matricula})
+        })
+        if (!response.ok){
+          const errorData = await response.json()
+          return console.log("Error al crear el vehiculo",errorData)
+        }
+      }
+      catch (error){
+        console.error("Error al modificar el estado del vehiculo:",error)
+      }
+    }
+    else{
+//post para vehiculos
+      try{
+        const response = await fetch('http://localhost:3000/vehiculos',{
+          method:'POST',
+          headers: {
+            Authorization: `Bearer ${sesion.token}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(vehiculoData)
+        })
+        if (!response.ok){
+          const errorData = await response.json()
+          return console.log("Error al crear el vehiculo",errorData)
+        }
+      }
+      catch(error){
+        console.error("Error al crear el vehiculo",error)
+      }
+    }
+
     console.log(regExistentedef);
     if (regExistentedef) {
        return alert(`El vehículo con la matrícula ${formDataAjustado.matricula} ya está estacionado`);
@@ -173,32 +237,10 @@ function Lugares() {
       registro.matricula === formDataAjustado.matricula && registro.fin === null);
     if (regExistenteind) {
       alert("El registro ya existe");
+      
       return;
     }
-
-    //post para vehiculos
-    try{
-      const response = await fetch('http://localhost:3000/vehiculos',{
-        method:'POST',
-        headers: {
-          Authorization: `Bearer ${sesion.token}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(vehiculoData)
-      })
-      if (!response.ok){
-        const errorData = await response.json()
-        return console.log("Error al crear el vehiculo",errorData)
-      }
-    }
-    catch(error){
-      console.error("Error al crear el vehiculo",error)
-    }
       
-    console.log(formData.matricula)
-    console.log(tipoVehiculo)
-
-
     // Post para lugares
     try {
       const response = await fetch(
