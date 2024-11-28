@@ -24,9 +24,9 @@ export default function ListadoVehiculos() {
 
     return (
         <>
-        <div className="contenedorVehiculos" >
+        <div>
         {lista.length>0 ? (
-            <table border="1" style={{width:"100%",textAlign:"left"}}>
+            <table className="Vehiculos-tabla">
             <thead>
                 <tr>
                 <th>ID Vehiculo</th>
