@@ -6,7 +6,7 @@ import { validarId,validarSuperUsuario,validarJwt } from "../validaciones/valida
 const tarifas = express.Router()
 //middleware para validar datos
 const validarTarifa=()=>[
-  body("tipo_tarifa").isAlpha().notEmpty(),
+  body("tipo_tarifa").notEmpty(),
   body("precio").isFloat().notEmpty(),
 ]
 
