@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../Auth";
-import "./Registros.css"
-import getTarifas from "../Tarifas/GetTarifas"
+import "./Registros.css";
+import getTarifas from "../Tarifas/GetTarifas";
 
 const Registros = () => {
   const [registros, setRegistros] = useState([]);
@@ -30,7 +30,7 @@ const Registros = () => {
 
   // Obtener tarifas
   useEffect(() => {
-  getTarifas(sesion,setTarifas);
+    getTarifas(sesion, setTarifas);
   }, []);
 
   // Función para obtener tipo_tarifa
@@ -41,35 +41,41 @@ const Registros = () => {
 
   return (
     <div className="Registros-container">
-      <h2>Registros</h2>
+      <h1>Registros 📒</h1>
       {error && <p style={{ color: "red" }}>{error}</p>}
       {registros.length > 0 ? (
-        <table className="Registros-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>ID Lugar</th>
-              <th>Matrícula</th>
-              <th>Inicio</th>
-              <th>Fin</th>
-              <th>Tipo de Tarifa</th>
-              <th>Precio Final</th>
-            </tr>
-          </thead>
-          <tbody>
-            {registros.map((registro) => (
-              <tr key={registro.id_registro}>
-                <td>{registro.id_registro}</td>
-                <td>{registro.id_lugar}</td>
-                <td>{registro.matricula}</td>
-                <td>{new Date(registro.inicio).toLocaleString()}</td>
-                <td>{registro.fin ? new Date(registro.fin).toLocaleString() : "Indefinido"}</td>
-                <td>{obtenerTipoTarifa(registro.id_tarifa)}</td>
-                <td>{registro.precio_final}</td>
+        <div className="Registros-table-container">
+          <table className="Registros-table">
+            <thead>
+              <tr>
+                <th>Lugar</th>
+                <th>Matrícula</th>
+                <th>Cliente</th>
+                <th>Inicio</th>
+                <th>Fin</th>
+                <th>Tipo de Tarifa</th>
+                <th>Precio Final</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {registros.map((registro) => (
+                <tr key={registro.id_registro}>
+                  <td>Lugar {registro.id_lugar}</td>
+                  <td>{registro.matricula}</td>
+                  <td>{registro.cliente}</td>
+                  <td>{new Date(registro.inicio).toLocaleString()}</td>
+                  <td>
+                    {registro.fin
+                      ? new Date(registro.fin).toLocaleString()
+                      : "Indefinido"}
+                  </td>
+                  <td>{obtenerTipoTarifa(registro.id_tarifa)}</td>
+                  <td>${registro.precio_final}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : (
         <p>No hay registros disponibles.</p>
       )}
