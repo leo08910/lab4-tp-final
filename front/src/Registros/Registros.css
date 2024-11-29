@@ -4,11 +4,22 @@
     justify-content: center;
     align-items: center;
   }
-  
-  .Registros-table {
-    height: 100%;
-    width: 100%;
+
+  .Registros-container h1 {
+    margin: 0 0 30px 0;
+  }
+
+  .Registros-table-container {
+    max-height: 90%;
+    width: 110%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
     overflow-y: auto;
+  }
+
+  .Registros-table {
+    width: 99%;
     border-collapse: collapse;
   }
 
