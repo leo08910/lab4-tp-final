@@ -1,5 +1,6 @@
 .titulo_estacionamiento {
-    color: #4a0fc9; /* Tono más suave */
+    color: #4a0fc9;
+    /* Tono más suave */
     text-align: center;
     margin-bottom: 20px;
     font-size: 2rem;
@@ -9,18 +10,31 @@
 /* Estilo del contenedor de estacionamiento */
 .estacionamiento {
     display: grid;
-    grid-template-columns: repeat(5, 150px); 
-    grid-template-rows: repeat(2, 150px); 
-    gap: 20px; 
+    grid-template-columns: repeat(5, 150px);
+    grid-template-rows: repeat(2, 150px);
+    gap: 20px;
     padding: 20px;
-    background-color: #ffffff; 
-    border: 3px solid #4a0fc9;
+    background-color: #ffffff;
     border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     width: 90%;
-    max-width: 800px; 
+    max-width: 800px;
     margin: 0 auto;
     justify-content: center;
+    border-radius: 30px;
+    background: lightgrey;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 50px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 26px -18px inset;
+}
+
+.estacionamiento button {
+    height: 90%;
+    width: 90%;
+    margin: 10px 0 0 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: small;
 }
 
 /* Estilo de cada lugar */
@@ -33,12 +47,14 @@
     font-weight: bold;
     border: 2px solid #333;
     border-radius: 10px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Transición suave */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    /* Transición suave */
     cursor: pointer;
 }
 
 .lugar:hover {
-    transform: scale(1.05); /* Efecto de agrandamiento al pasar el mouse */
+    transform: scale(1.05);
+    /* Efecto de agrandamiento al pasar el mouse */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
@@ -47,11 +63,11 @@
     background-color: #28a745;
     color: white;
     border-color: #1e7e34;
-    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1); 
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .libre:hover {
-    background-color: #218838; 
+    background-color: #218838;
 }
 
 
@@ -64,14 +80,14 @@
 }
 
 .ocupado:hover {
-    opacity: 1; 
+    opacity: 1;
 }
 
 /* Ajustes responsivos */
 @media (max-width: 768px) {
     .estacionamiento {
-        grid-template-columns: repeat(3, 100px); 
-        grid-template-rows: repeat(3, 100px); 
+        grid-template-columns: repeat(3, 100px);
+        grid-template-rows: repeat(3, 100px);
         gap: 15px;
     }
 
@@ -87,7 +103,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.4);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -95,11 +111,20 @@
 }
 
 .modal-content {
-    background: white;
+    background: #E0E0E0;
     padding: 20px;
     border-radius: 10px;
-    width: 400px;
+    width: 30%;
+    height: 70%;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content h2 {
+    margin: 0 0 20px 0;
 }
 
 .close {
@@ -108,20 +133,72 @@
     right: 10px;
     background: transparent;
     border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
+    font-size: 1.4rem;
+    font-weight: bold;
+    height: 40px;
+    width: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #f3f7fe;
+    background-color: #f63b3b;
+    border-radius: 6px;
+    transition: 0.3s;
+}
+
+.close:hover {
+    background-color: #af2b2b;
+    color: #fff;
 }
 
 .modal-content form div {
-    margin-bottom: 10px;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    margin: 10px 0;
 }
 
-.modal-content button {
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
+.modal-content input {
+    outline: none;
+    border: none;
+    background-color: #ffffff;
+    padding: 0.6rem;
+    line-height: 1.25rem;
+    width: 60%;
+    border-radius: 8px;
+    box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.05);
+    width: 100%;
+    margin: 2px 0 0 0;
+}
+
+.modal-content select {
+    outline: none;
+    border: none;
+    background-color: #ffffff;
+    padding: 0.6rem;
+    line-height: 1.25rem;
+    border-radius: 8px;
+    box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.05);
+    width: 105%;
+    margin: 2px 0 0 0;
+}
+
+.modal-confirm {
+    background-color: #f3f7fe;
+    color: #3b82f6;
     border: none;
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 8px;
+    width: 100px;
+    height: 45px;
+    transition: 0.3s;
+    font-weight: 500;
+    margin: 20px 0 0 0;
+}
+
+
+.modal-confirm:hover {
+    background-color: #3b82f6;
+    box-shadow: 0 0 0 5px #3b83f65f;
+    color: #fff;
 }

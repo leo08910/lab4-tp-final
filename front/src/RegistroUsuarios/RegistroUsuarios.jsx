@@ -88,10 +88,8 @@ const RegistroUsuarios = () => {
         return regex.test(email);
     };
 
-    const validarNumeroDeTelefono = (numero) =>  numero.length == 10
+  const validarNumeroDeTelefono = (numero) =>  numero.length == 10
 
-
-    
     const validarPassword = (password) => {
         const tieneMinuscula = /[a-z]/.test(password);
         const tieneMayuscula = /[A-Z]/.test(password);

@@ -1,24 +1,38 @@
-.contenedorVehiculos{
-    width: 40vw;
-    height: 50vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: #a5a5a5;
-    border-radius: 7vw 7vh 7vw 7vh;
-    
+h1 {
+  margin: 0 0 30px 0;
 }
 
-.Textos{
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: bold;
+.Vehiculos-table-container {
+  max-height: 70%;
+  width: 50%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow-y: auto;
 }
 
-.divVehiculos{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 20px;
+.Vehiculos-tabla {
+  width: 98%;
+  border-collapse: collapse;
+}
+
+.Vehiculos-tabla td,
+.Vehiculos-tabla th {
+  border: 1px solid #949494;
+  text-align: left;
+  padding: 8px;
+}
+
+.Vehiculos-tabla tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+.Vehiculos-tabla th:first-child,
+.Vehiculos-tabla td:first-child {
+  min-width: 80px;
+}
+
+.Vehiculos-tabla th,
+.Vehiculos-tabla td {
+  word-wrap: break-word;
 }

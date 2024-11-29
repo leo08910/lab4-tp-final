@@ -1,13 +1,13 @@
 import { Route, Routes } from "react-router-dom";
 import { Layout } from "./Layout";
-import { PerfilPage } from "./PerfilPage";
+import { PerfilPage } from "../src/Perfil/PerfilPage";
 import { LoginPage } from "./LoginPage";
 import { SinRuta } from "./SinRuta";
 import { AuthPage } from "./Auth";
 import Tarifas from "../src/Tarifas/Tarifas";
 import Registros from "../src/Registros/Registros";
 import Lugares from "../src/Lugares/Lugares"
-import AgregarVehiculos from "./components/Vehiculos/AgregarVehiculos"
+import ListadoVehiculos from "./components/Vehiculos/TablaVehiculos";
 import RegistroUsuarios  from "../src/RegistroUsuarios/RegistroUsuarios";
 
 import "./App.css";
@@ -58,10 +58,10 @@ function App() {
             }
           />
           <Route
-            path="/agregarVehiculos"
+            path="/ListaVehiculos"
             element={
               <AuthPage>
-                <AgregarVehiculos/>
+                <ListadoVehiculos/>
               </AuthPage>
             }
           />

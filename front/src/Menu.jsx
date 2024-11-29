@@ -1,5 +1,6 @@
 import './Layout.css' 
 import { Link,Outlet } from 'react-router-dom'
+import { AuthRol } from './Auth'
 
 export const Menu =()=>{
 
@@ -29,15 +30,18 @@ export const Menu =()=>{
           </li>
         
         <li>
-          <Link to='/AgregarVehiculos' className="nav-button">
-            <img src="./assets/auto.svg" alt="AgregarVehiculos" />
+          <Link to='/ListaVehiculos' className="nav-button">
+            <img src="./assets/auto.svg" alt="ListaVehiculos" />
           </Link>
         </li>
+        <AuthRol superusuario={1}>
           <li>
             <Link to="/usuarios" className="nav-button">
             <img src="./assets/usuarios.svg" alt="Usuarios" />
             </Link>
           </li>
+        </AuthRol>
+
         </ul>
       </nav>
       <div className="content">
