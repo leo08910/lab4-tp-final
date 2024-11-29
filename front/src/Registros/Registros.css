@@ -10,13 +10,15 @@
   }
 
   .Registros-table-container {
-    max-height: 90%;
+    height: calc(100vh - 200px);
+    max-height: calc(100vh - 100px);
     width: 110%;
     display: flex;
     align-items: flex-start;
     justify-content: center;
     overflow-y: auto;
   }
+  
 
   .Registros-table {
     width: 99%;
@@ -44,3 +46,4 @@
   .Registros-table td {
     word-wrap: break-word;
   }
+
