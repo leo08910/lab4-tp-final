@@ -171,10 +171,10 @@ function Lugares() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    const fecha = new Date(formData.inicioFecha);
+    let fecha = new Date(formData.inicioFecha);
     fecha.setHours(fecha.getHours() - 6);
-    const fechaAjustada = fecha.toISOString().slice(0, 19).replace("T", " ");
-    const formDataAjustado = { ...formData, inicioFecha: fechaAjustada };
+    let fechaAjustada = fecha.toISOString().slice(0, 19).replace("T", " ");
+    let formDataAjustado = { ...formData, inicioFecha: fechaAjustada };
     const { matricula } = formData;
 
 
@@ -287,6 +287,11 @@ function Lugares() {
     } catch (error) {
       console.error("Error en la solicitud:", error);
     }
+
+    fecha = new Date(formData.inicioFecha);
+    fecha.setHours(fecha.getHours() - 6);
+    fechaAjustada = fecha.toISOString().slice(0, 19).replace("T", " ");
+    formDataAjustado = { ...formData, inicioFecha: fechaAjustada };
   
     // POST para crear registro
     try {
