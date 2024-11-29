@@ -206,7 +206,8 @@ function Lugares() {
     };
   
     const vehiculoExiste = registros.find((registro) => registro.matricula === vehiculoData.matricula);
-  
+    console.log(vehiculoExiste)
+
     if (vehiculoExiste) {
       try {
         const response = await fetch('http://localhost:3000/vehiculos/estacionar', {
@@ -224,9 +225,9 @@ function Lugares() {
       } catch (error) {
         console.error("Error al modificar el estado del vehículo:", error);
       }
-    } else {
-      
-      // POST para crear vehículo
+    } 
+    else{
+// POST para crear vehículo
       try {
         const response = await fetch('http://localhost:3000/vehiculos', {
           method: 'POST',
@@ -244,6 +245,8 @@ function Lugares() {
         console.error("Error al crear el vehículo:", error);
       }
     }
+      
+    
   
     // Verificar registros existentes
     const regExistentedef = registros.find((registro) =>
