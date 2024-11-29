@@ -285,7 +285,7 @@ const RegistroUsuarios = () => {
                   <li key={i}>
                     {usuario.nombre} {usuario.apellido} - {usuario.email} -{usuario.superusuario == 1 ? "Es superusuario" : "Usuario comun"} - id: {usuario.id_usuario}
                     <div>
-                      <button style={{color:"red"}} onClick={()=>{handleEliminarUsuario(usuario.id_usuario)}}>Eliminar</button>
+                      <button disabled={usuario.id_usuario == sesion.id} style={{color:"red"}} onClick={()=>{handleEliminarUsuario(usuario.id_usuario)}}>Eliminar</button>
                       <button onClick={()=> {
                         setModoModificacion(true);
                         setUsuarioAModificar(usuario)
