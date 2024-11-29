@@ -311,7 +311,7 @@ function Lugares() {
   
   return (
     <>
-      <h1>Estacionamiento</h1>
+      <h1>Estacionamiento 🚘</h1>
       <div className="estacionamiento">
         {lugares.map((lugar) => {
           const registroAsociado = registros.find(
@@ -352,7 +352,7 @@ function Lugares() {
         <div className="modal">
           <div className="modal-content">
             <button className="close" onClick={handleCloseModal}>
-              &times;
+              X
             </button>
             <h2>Ocupar Lugar {selectedLugar?.id_lugar}</h2>
             <form onSubmit={handleSubmit}>
@@ -363,16 +363,19 @@ function Lugares() {
                   name="matricula"
                   value={formData.matricula}
                   onChange={handleChange}
+                  placeholder="Ej: ABC 234"
                   required
+                  maxLength={7}
                 />
               </div>
               <div>
-                <label>Dueño del vehículo:</label>
+                <label>Nombre del cliente:</label>
                 <input
                   type="text"
                   name="cliente"
                   value={formData.cliente}
                   onChange={handleChange}
+                  placeholder="Ej: Sergio Pérez"
                   required
                 />
               </div>
@@ -405,7 +408,7 @@ function Lugares() {
                   />
                 </div>
               )}
-              <button type="submit">Confirmar</button>
+              <button type="submit" className="modal-confirm">Confirmar</button>
             </form>
           </div>
         </div>
