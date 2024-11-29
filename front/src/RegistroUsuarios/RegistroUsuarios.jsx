@@ -76,6 +76,11 @@ const RegistroUsuarios = () => {
         alert("No se puede eliminar un usuario mientras se esta modificando.")
         return
       }
+      if (id == sesion.id) {
+        alert("No se puede eliminar al usuario porque esta en sesion")
+        return
+      }
+
       const confirmacion = window.confirm("¿Esta seguro de eliminar el usuario?")
       if (confirmacion){
         await eliminarUsuario(id)
@@ -287,7 +292,7 @@ const RegistroUsuarios = () => {
                   <li key={i}>
                     {usuario.nombre} {usuario.apellido} - {usuario.email} -{usuario.superusuario == 1 ? "Es superusuario" : "Usuario comun"} - id: {usuario.id_usuario}
                     <div>
-                      <button disabled={usuario.id_usuario == sesion.id } style={{color:"red"}} onClick={()=>{handleEliminarUsuario(usuario.id_usuario)}}>Eliminar</button>
+                      <button  style={{color:"red"}} onClick={()=>{handleEliminarUsuario(usuario.id_usuario)}}>Eliminar</button>
                       <button onClick={()=> {
                         setModoModificacion(true);
                         setUsuarioAModificar(usuario)
