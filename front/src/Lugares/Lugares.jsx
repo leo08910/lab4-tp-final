@@ -171,14 +171,15 @@ function Lugares() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Ajuste de la fecha
     const fecha = new Date(formData.inicioFecha);
     fecha.setHours(fecha.getHours() - 6);
     const fechaAjustada = fecha.toISOString().slice(0, 19).replace("T", " ");
     const formDataAjustado = { ...formData, inicioFecha: fechaAjustada };
     const { matricula } = formData;
+
+
     // Validación de la matrícula    
-    const letras = matricula.slice(0, 3); // Primeros 3 caracteres
+    const letras = matricula.slice(0, 3);
     const espacio = matricula.slice(3,4)
     const numeros = matricula.slice(4);
      
@@ -188,19 +189,14 @@ function Lugares() {
       return alert("La matrícula debe tener exactamente 7 caracteres");
     }
   
-  // Últimos 3 caracteres
-  
-    // Verificar que los primeros 3 sean letras
     if (!letras.split("").every(char => "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".includes(char))) {
       return alert("Los primeros 3 caracteres deben ser letras");
     }
   
-    // Verificar que los últimos 3 sean números
     if (!numeros.split("").every(char => "0123456789".includes(char))) {
       return alert("Los últimos 3 caracteres deben ser números");
     }
   
-    // Resto del código...
     const tarifaSeleccionada = tarifas.find((tarifa) => tarifa.id_tarifa == formData.id_tarifa);
     const tipoVehiculo = tarifaSeleccionada.tipo_tarifa.includes('Auto') ? 1 : 2;
   
@@ -229,6 +225,7 @@ function Lugares() {
         console.error("Error al modificar el estado del vehículo:", error);
       }
     } else {
+      
       // POST para crear vehículo
       try {
         const response = await fetch('http://localhost:3000/vehiculos', {

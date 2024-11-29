@@ -24,7 +24,8 @@ export default function ListadoVehiculos() {
 
     return (
         <>
-        <div>
+        <h1>Vehículos 🚗</h1>
+        <div className="Vehiculos-table-container">
         {lista.length>0 ? (
             <table className="Vehiculos-tabla">
             <thead>
