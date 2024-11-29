@@ -7,20 +7,20 @@ export const PerfilPage = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout(() => navigate("/")); // Al cerrar sesión, redirige a la página principal
+    logout(() => navigate("/"));
   };
   return (
     <>
     <div className="Contenedor-Perfil">
-      <h1 className="Perfil-Usuario">Perfil de Usuario</h1>
+      <h1 className="Perfil-Usuario">Perfil de Usuario 👤</h1>
       <p className="Perfil-Nombre">Nombre: {sesion?.nombre}</p>
-      <button onClick={handleLogout} className="Boton-Salir">Salir</button>
       <AuthRol superusuario={1}>
-        <p className="Admin">Soy admin!</p>
+        <p className="Admin">Es administrador</p>
       </AuthRol>
       <AuthRol superusuario={0} >
-        <p className="Usuario">Soy usuario!</p>
+        <p className="Usuario">Es usuario</p>
       </AuthRol>
+      <button onClick={handleLogout} className="Boton-Salir">Salir</button>
     </div>
     </>
   );
