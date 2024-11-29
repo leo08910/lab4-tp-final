@@ -158,7 +158,7 @@ function Tarifas() {
                 <option value="Auto p/turno">Auto p/turno</option>
                 <option value="Auto p/hora">Auto p/hora</option>
                 <option value="Auto p/día">Auto p/día</option>
-                <option value="Auto p/día">Auto p/semana</option>
+                <option value="Auto p/semana">Auto p/semana</option>
                 <option value="Auto p/mes">Auto p/mes</option>
                 <option value="Moto p/turno">Moto p/turno</option>
                 <option value="Moto p/hora">Moto p/hora</option>
